@@ -1,5 +1,7 @@
+import Header from "./Components/Header/Header.js";
+
 export default function Home(){
         return(
-            <h1>Hello world</h1>
+            <Header/>
         )
 }
