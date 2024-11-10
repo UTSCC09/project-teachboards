@@ -1,9 +1,10 @@
 import React from "react";
 
+import Drawing from "../Drawing/Drawing.mjs";
 export default function MainPage(){
     return(
         <div>
-            <h1>main</h1>
+            <Drawing/>
         </div>
     )
 }
