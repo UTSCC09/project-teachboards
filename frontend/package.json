@@ -7,9 +7,11 @@
         "start": "next start"
     },
     "dependencies": {
+        "konva": "^9.3.16",
         "next": "^13.0.0",
         "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "react-dom": "^18.0.0",
+        "react-konva": "^18.2.10"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",

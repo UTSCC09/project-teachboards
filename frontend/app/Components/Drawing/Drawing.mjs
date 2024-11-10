@@ -9,9 +9,6 @@ export default function Drawing() {
     const [penSize, setPenSize] = useState(2);
     const [penColor, setPenColor] = useState("#000000");
 
-    const [width, setWidth] = useState(null);
-    const [height, setHeight] = useState(null);
-
     const selectTextMode = () => setMode("text");
     const selectPenMode = () => setMode("pen");
 
@@ -26,21 +23,7 @@ export default function Drawing() {
             canvasRef.current.loadSaveData(savedData);
         }
     };
-
-
-    useEffect(()=>{
-
-        const handleResize = () => {
-            setWidth(window.innerWidth * 0.9);
-            setHeight(window.innerHeight * 0.7);
-        }
-
-        window.addEventListener('resize', handleResize);
-        handleResize();
-        return () =>{
-            window.removeEventListener("resize",handleResize);
-        }
-    },[])
+    
     return (
         <div className="total">
             <div className="canvasContainer">
@@ -73,8 +56,8 @@ export default function Drawing() {
                             canvasWidth={2800}  
                             canvasHeight={1200} 
                             style={{
-                                width: `${width}px`,
-                                height: `${height}px`,
+                                width: `1400px`,
+                                height: `600px`,
                             }}
                         />
                 </div>
