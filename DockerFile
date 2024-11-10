@@ -1,23 +1,32 @@
-# Use the official Node.js image as the base image
+# Use an official Node.js image as the base image
 FROM node:16
 
-# Set the working directory in the container
+# Set the initial working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy package.json and package-lock.json specifically from the frontend folder
+COPY frontend/package*.json ./frontend/
 
-# Install dependencies
-RUN npm install
+# Change the working directory to /app/frontend
+WORKDIR /app/frontend
 
-# Copy the rest of your application files
-COPY . .
+# Set NODE_ENV to development to ensure all dependencies are installed
+ENV NODE_ENV=development
 
-# Build the Next.js app
+# Install all dependencies in /app/frontend
+RUN npm install --legacy-peer-deps
+
+# Set NODE_ENV back to production for build and runtime
+ENV NODE_ENV=production
+
+# Copy the rest of the frontend application files to /app/frontend
+COPY frontend .
+
+# Run the build command in /app/frontend
 RUN npm run build
 
 # Expose the port that Next.js runs on
 EXPOSE 3000
 
-# Start the Next.js application
+# Start the Next.js application from /app/frontend
 CMD ["npm", "start"]
