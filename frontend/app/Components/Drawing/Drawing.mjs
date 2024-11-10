@@ -36,7 +36,7 @@ export default function Drawing() {
     const handleLoad = () => {
         const savedData = localStorage.getItem("drawing");
         if (savedData) {
-            canvasRef.current.loadSaveData(savedData);
+            canvasRef.current.loadSaveData(savedData, true);
         }
     };
     
