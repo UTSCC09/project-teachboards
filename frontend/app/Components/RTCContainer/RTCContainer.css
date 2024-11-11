@@ -1,0 +1,21 @@
+#videos {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+input {
+    display: inline-block; /* Make sure it's visible */
+    width: 100%;
+    padding: 8px;
+    border: 1px solid black
+}
+
+button {
+    width: 100%;
+}
+
+button:hover {
+    background-color: darkgray;
+}
