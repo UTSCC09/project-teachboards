@@ -11,6 +11,6 @@ export default function VideoStream({stream}) {
     }, [stream]);
 
     return (
-        <video className="video-stream" ref={videoRef} autoPlay playsInline></video>
+        <video className="video-stream" ref={videoRef} autoPlay playsInline onContextMenu={(e)=> e.preventDefault()}></video>
     );
 }

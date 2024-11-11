@@ -1,8 +1,8 @@
 .video-stream {
     flex-basis: 1;
-    flex-grow: 1;
     height: auto;
     object-fit: contain;
     border-radius: 20px;
-    border: 10px solid black;
+    border: 10px solid grey;
+    box-shadow: 3px 8px 8px;
 }

@@ -1,8 +1,19 @@
+#rtc-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 #videos {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+#videos * {
+    max-width: 500px;
 }
 
 input {
@@ -19,3 +30,4 @@ button {
 button:hover {
     background-color: darkgray;
 }
+

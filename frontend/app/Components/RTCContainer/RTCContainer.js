@@ -103,7 +103,6 @@ export default function RTCContainer({ servers }) {
         }
 
         setupOffer();
-        remoteDrawing.setCanvas(localStorage.getItem("drawing"));
     }
 
     const answerCall = async () => {
@@ -142,17 +141,27 @@ export default function RTCContainer({ servers }) {
                 }
             });
         });
+        
     }
 
+    useEffect(() => {
+        if (remoteDrawing.current) {
+            remoteDrawing.current.setCanvas(localStorage.getItem("drawing"));
+        }
+    }, [remoteDrawing.current]);  // This ensures it runs after the component has mounted and the ref is set
+    
+
     return (
-        <div id="videos">
+        <div id="rtc-container">
             <VideoStream stream={localStream} />
-            <VideoStream stream={remoteStream.current} />
-            <Drawing ref={remoteDrawing}/>
+            <div id="videos">
+                <VideoStream stream={remoteStream.current} />
+            </div>
+            <Drawing ref={remoteDrawing} canvasWidth={300} canvasHeight={300} noControls={true}/>
             <div id="call-controls">
                 <input type="text" ref={callInput} />
-                <button onClick={createCall}>Create call</button>
-                <button onClick={answerCall}>Join call</button>
+                <button onClick={createCall}>Create new call</button>
+                <button onClick={answerCall}>Join this call</button>
             </div>
         </div>
     );

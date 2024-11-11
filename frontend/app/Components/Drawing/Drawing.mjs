@@ -1,9 +1,9 @@
 'use client'
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import ReactCanvasDraw from "react-canvas-draw";
 import "./Drawing.css";
 
-export default function Drawing() {
+const Drawing = forwardRef(({canvasWidth, canvasHeight, noControls}) => {
     const canvasRef = useRef(null);
     const [mode, setMode] = useState("pen");
     const [penSize, setPenSize] = useState(2);
@@ -42,11 +42,12 @@ export default function Drawing() {
 
     const setCanvas = (data) => {
         try {
-            canvasRef.current.loadSaveData(data);
+            canvasRef.current.loadSaveData(data, true);
         } catch (e) {
             throw new Error(e);
         }
     }
+    useEffect(handleLoad, []);
     
     const handleUndo = () =>{
         const saveData = canvasRef.current.getSaveData();
@@ -70,11 +71,12 @@ export default function Drawing() {
     const stopUndo = () => {
         setUndo([])
     };
+    console.log(noControls)
 
     return (
         <div className="total">
             <div className="canvasContainer">
-                <div className="controlContainer">
+                <div className={`controlContainer ${noControls ? 'hidden' : ''}`}>
                     <button onClick={selectPenMode}>Pen</button>
                     <button onClick={selectEraserMode}>Eraser</button>
                     <label>{mode} Size:</label>
@@ -105,11 +107,11 @@ export default function Drawing() {
                             brushRadius={penSize}
                             hideGrid={true}
                             lazyRadius={4}
-                            canvasWidth={2800}  
-                            canvasHeight={1200} 
+                            canvasWidth={canvasWidth || 2800}  
+                            canvasHeight={canvasHeight || 1200} 
                             style={{
-                                width: `1400px`,
-                                height: `600px`,
+                                width: `${canvasWidth || 1600}px`,
+                                height:`${canvasHeight || 600}px`,
                                 backgroundColor:backgroundColor,
                             }}
                         />
@@ -118,4 +120,7 @@ export default function Drawing() {
             </div>
         </div>
     );
-}
+});
+
+
+export default Drawing;
