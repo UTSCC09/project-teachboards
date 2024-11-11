@@ -9,7 +9,7 @@ import { doc, collection, getDoc, setDoc, updateDoc, onSnapshot, addDoc } from "
 
 export default function RTCContainer({ servers }) {
     const [localStream, setLocalStream] = useState(null);
-    const remoteStream = useRef(new MediaStream());  // Use ref to store remote stream
+    const remoteStream = useRef(null);  // Use ref to store remote stream
     const pc = useRef(null);
     const callInput = useRef(null);
     const remoteDrawing = useRef(null);
