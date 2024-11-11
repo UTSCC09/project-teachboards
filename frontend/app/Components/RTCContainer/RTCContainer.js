@@ -153,16 +153,21 @@ export default function RTCContainer({ servers }) {
 
     return (
         <div id="rtc-container">
-            <VideoStream stream={localStream} />
-            <div id="videos">
-                <VideoStream stream={remoteStream.current} />
-            </div>
-            <Drawing ref={remoteDrawing} canvasWidth={300} canvasHeight={300} noControls={true}/>
-            <div id="call-controls">
-                <input type="text" ref={callInput} />
-                <button onClick={createCall}>Create new call</button>
-                <button onClick={answerCall}>Join this call</button>
-            </div>
+    <div id="video-container">
+        <VideoStream stream={localStream} />
+        <div id="videos">
+            <VideoStream stream={remoteStream.current} />
         </div>
+    </div>
+    <div id="drawing-container">
+        <Drawing ref={remoteDrawing} canvasWidth={300} canvasHeight={300} noControls={true}/>
+    </div>
+    <div id="call-controls">
+        <input type="text" ref={callInput} placeholder="Enter Call ID" />
+        <button onClick={createCall}>Create new call</button>
+        <button onClick={answerCall}>Join this call</button>
+    </div>
+</div>
+
     );
 }
