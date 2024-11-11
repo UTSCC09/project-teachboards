@@ -3,14 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import "./RTCContainer.css";
 import VideoStream from "../VideoStream/VideoStream.js";
+import Drawing from "../Drawing/Drawing.mjs"
 import { useFirestore } from "../../firebase.js"; // Assuming a custom hook for Firestore
-import { doc, collection, getDoc, setDoc, updateDoc, onSnapshot, addDoc } from "firebase/firestore"; // import necessary functions
+import { doc, collection, getDoc, setDoc, updateDoc, onSnapshot, addDoc } from "firebase/firestore"; 
 
 export default function RTCContainer({ servers }) {
     const [localStream, setLocalStream] = useState(null);
-    const [remoteStream, setRemoteStream] = useState(null);
+    const remoteStream = useRef(new MediaStream());  // Use ref to store remote stream
     const pc = useRef(null);
     const callInput = useRef(null);
+    const remoteDrawing = useRef(null);
+    const drawingChannel = useRef(null);
 
     const { firestore } = useFirestore(); // Custom hook to interact with Firestore
 
@@ -19,27 +22,35 @@ export default function RTCContainer({ servers }) {
         pc.current = peerConnection;
 
         // Setup local stream
-        console.log('displaying local stream');
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((stream) => {
-                console.log(stream);
                 setLocalStream(stream);
                 stream.getTracks().forEach((track) => {
                     peerConnection.addTrack(track, stream);
                 });
+                console.log('displaying local stream');
             })
             .catch((error) => console.error('Error accessing media devices.', error));
 
-        // Setup remote stream
-        setRemoteStream(new MediaStream());
+        // Setup remote stream handling
         peerConnection.ontrack = (event) => {
             event.streams[0].getTracks().forEach((track) => {
-                remoteStream.addTrack(track);
+                remoteStream.current.addTrack(track);
             });
         };
 
-    }, [servers]);
+        // Set up drawing channel
+        drawingChannel.current = pc.current.createDataChannel('drawingData');
+        drawingChannel.current.onopen = () => {
+            console.log("Data channel is open and ready to send data");
+        };
+        drawingChannel.current.onmessage = (event) => {
+            // When the drawing data is received, update the remote display
+            const drawingData = JSON.parse(event.data);
+            updateDrawingOnCanvas(drawingData);
+        };
 
+    }, [servers]);
 
     // Handle signaling in another useEffect
     async function createCall(e){
@@ -47,20 +58,13 @@ export default function RTCContainer({ servers }) {
 
         const callsCollectionRef = collection(firestore, 'calls');
 
-        // Step 2: Create a new document with an auto-generated ID in the 'calls' collection
         const callDoc = doc(callsCollectionRef); // Creates a new doc reference with an ID
-
-        // Step 3: Set data on the new call document
-        await setDoc(callDoc, { createdAt: new Date() });
-
-        // Step 4: Assign the document ID to the input field
         callInput.current.value = callDoc.id;
 
-        // Step 5: Get references to the 'answerCandidates' and 'offerCandidates' sub-collections
         const answerCandidates = collection(callDoc, 'answerCandidates');
         const offerCandidates = collection(callDoc, 'offerCandidates');
 
-        // Setup the Ice candidate handling and listen for real-time updates
+        // ICE candidate handling
         pc.current.onicecandidate = (event) => {
             if (event.candidate) {
                 addDoc(answerCandidates, event.candidate.toJSON());
@@ -76,20 +80,18 @@ export default function RTCContainer({ servers }) {
                 type: offerDescription.type,
             };
 
-            await setDoc(callDoc, {offer});
-            console.log(offer);
+            await setDoc(callDoc, { offer });
 
-            // listen for remote answer
+            // Listen for remote answer
             onSnapshot(callDoc, (snapshot) => {
                 const data = snapshot.data();
                 if (!pc.current.currentRemoteDescription && data?.answer) {
-                    // answer is recieved
                     const answerDescription = new RTCSessionDescription(data.answer);
                     pc.current.setRemoteDescription(answerDescription);
                 }
-            })
+            });
 
-            // when answered, add candidate
+            // Handle incoming candidates
             onSnapshot(answerCandidates, (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === 'added') {
@@ -97,19 +99,19 @@ export default function RTCContainer({ servers }) {
                         pc.current.addIceCandidate(candidate);
                     }
                 });
-            })
+            });
         }
 
         setupOffer();
-    };
+        remoteDrawing.setCanvas(localStorage.getItem("drawing"));
+    }
 
     const answerCall = async () => {
-        console.log("answerCAll")
+        console.log("answerCall");
         const callId = callInput.current.value;
         const callDoc = doc(firestore, 'calls', callId);
         const answerCandidates = collection(callDoc, 'answerCandidates');
         const offerCandidates = collection(callDoc, 'offerCandidates');
-
 
         pc.current.onicecandidate = (event) => {
             if (event.candidate) {
@@ -124,31 +126,34 @@ export default function RTCContainer({ servers }) {
 
         const answerDescription = await pc.current.createAnswer();
         await pc.current.setLocalDescription(answerDescription);
+
         const answer = {
             type: answerDescription.type,
-            sdp: answerDescription.sdp
+            sdp: answerDescription.sdp,
         };
 
-        await updateDoc(callDoc, {answer});
+        await updateDoc(callDoc, { answer });
 
         onSnapshot(offerCandidates, (snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 if (change.type === 'added') {
-                    let data = change.doc.data();
-                    pc.current.addIceCandidate(new RTCIceCandidate(data));
+                    const candidate = new RTCIceCandidate(change.doc.data());
+                    pc.current.addIceCandidate(candidate);
                 }
             });
-        })
-    };
+        });
+    }
 
     return (
         <div id="videos">
             <VideoStream stream={localStream} />
-            <VideoStream stream={remoteStream} />
-            <input type="text" ref={callInput} />
-            <button onClick={createCall}>call</button>
-            <button onClick={answerCall}>answer</button>
+            <VideoStream stream={remoteStream.current} />
+            <Drawing ref={remoteDrawing}/>
+            <div id="call-controls">
+                <input type="text" ref={callInput} />
+                <button onClick={createCall}>Create call</button>
+                <button onClick={answerCall}>Join call</button>
+            </div>
         </div>
     );
 }
-

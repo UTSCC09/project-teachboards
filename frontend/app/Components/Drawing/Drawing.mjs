@@ -39,6 +39,14 @@ export default function Drawing() {
             canvasRef.current.loadSaveData(savedData);
         }
     };
+
+    const setCanvas = (data) => {
+        try {
+            canvasRef.current.loadSaveData(data);
+        } catch (e) {
+            throw new Error(e);
+        }
+    }
     
     const handleUndo = () =>{
         const saveData = canvasRef.current.getSaveData();
@@ -62,7 +70,6 @@ export default function Drawing() {
     const stopUndo = () => {
         setUndo([])
     };
-
 
     return (
         <div className="total">
