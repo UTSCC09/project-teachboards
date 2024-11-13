@@ -1,45 +1,40 @@
-version: '2'
-
+version: '3'
 services:
-  # Nginx reverse proxy for handling frontend requests
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    container_name: nginx-proxy
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs
-      - ./vhost:/etc/nginx/vhost.d
-      - ./html:/usr/share/nginx/html
-
-  # Let's Encrypt companion for automatic SSL certificates
-  nginx-proxy-acme:
-    image: nginxproxy/acme-companion
-    container_name: nginx-proxy-acme
-    restart: always
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./acme:/etc/acme.sh
-    environment:
-      - DEFAULT_EMAIL=${DEFAULT_EMAIL}
-
-  # Frontend service (Next.js)
+  # Frontend service
   frontend:
     build:
-      context: .  # Use the Dockerfile in the current directory for building the frontend
+      context: .
       dockerfile: frontend.dockerfile
     container_name: frontend
     restart: always
-    environment:
-      - VIRTUAL_HOST=${FRONTEND_DOMAIN}
-      - LETSENCRYPT_HOST=${FRONTEND_DOMAIN}
     expose:
-      - "3000"  # Expose the Next.js port internally
+      - "3000"  # Only expose port 3000 within the Docker network
+
+  # Nginx reverse proxy for HTTP (and HTTPS later if needed)
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"       # Expose HTTP on port 80
+      - "443:443"     # Placeholder for HTTPS on port 443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Mount Nginx config
+      - /etc/letsencrypt:/etc/letsencrypt         # Mount Let's Encrypt SSL directory
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
