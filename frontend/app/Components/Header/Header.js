@@ -31,7 +31,7 @@ export default function Header(){
             <div className = "Nav-Bar-Container">
                 <ul className = "Nav-List">
                     <li className = "Nav-Title">TeachBoards</li>
-                    {width <= 700 && <li className ="Nav-EXTRA"onClick={changeMenu}>
+                    {width <= 710 && <li className ="Nav-EXTRA"onClick={changeMenu}>
                         <div className="container">
                             <p>Menu</p>
                             {menuDropDown && <div className = "DropDown">
@@ -45,11 +45,11 @@ export default function Header(){
                             </div>}
                         </div>
                     </li>}
-                    {width > 700 && <li className = "Nav-Options"><p>Home</p></li>}
-                    {width > 700 && <li className = "Nav-Options"><p>Courses</p></li>}
-                    {width > 700 && <li className = "Nav-Options"><p>Profile</p></li>}
-                    {width > 700 && buttonChoice === "Login" &&  <li className = "Nav-Options" ><p>Login</p></li>}
-                    {width > 700 && buttonChoice === "Logout" && <li className = "Nav-Options" ><p>Login</p></li>}
+                    {width > 710 && <li className = "Nav-Options"><p>Home</p></li>}
+                    {width > 710 && <li className = "Nav-Options"><p>Courses</p></li>}
+                    {width > 710 && <li className = "Nav-Options"><p>Profile</p></li>}
+                    {width > 710 && buttonChoice === "Login" &&  <li className = "Nav-Options" ><p>Login</p></li>}
+                    {width > 710 && buttonChoice === "Logout" && <li className = "Nav-Options" ><p>Login</p></li>}
                 </ul>
             </div>
         </div>
