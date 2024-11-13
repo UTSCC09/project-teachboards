@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import ReactCanvasDraw from "react-canvas-draw";
 import "./Drawing.css";
 
-const Drawing = forwardRef(({canvasWidth, canvasHeight, noControls}) => {
+const Drawing = forwardRef(({canvasWidth, canvasHeight, noControls}, ref) => {
     const canvasRef = useRef(null);
     const [mode, setMode] = useState("pen");
     const [penSize, setPenSize] = useState(2);

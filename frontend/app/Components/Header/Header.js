@@ -5,6 +5,7 @@ import "./Header.css";
 export default function Header(){
     const [width, setWidth] = useState(0);
     const [menuDropDown, setmenuDropDown] = useState(false);
+    const [buttonChoice, setButtonChoice] = useState("Login");
     const modelRef = React.useRef();
 
     useEffect(()=>{
@@ -30,7 +31,7 @@ export default function Header(){
             <div className = "Nav-Bar-Container">
                 <ul className = "Nav-List">
                     <li className = "Nav-Title">TeachBoards</li>
-                    {width <= 600 && <li className ="Nav-EXTRA"onClick={changeMenu}>
+                    {width <= 700 && <li className ="Nav-EXTRA"onClick={changeMenu}>
                         <div className="container">
                             <p>Menu</p>
                             {menuDropDown && <div className = "DropDown">
@@ -38,13 +39,17 @@ export default function Header(){
                                     <li className = "DD-Option"><p>Home</p></li>
                                     <li className = "DD-Option"><p>Courses</p></li>
                                     <li className = "DD-Option"><p>Profile</p></li>
+                                    {buttonChoice === "Login" && <li className = "DD-Option"><p>Login</p></li>}
+                                    {buttonChoice === "Logout" && <li className = "DD-Option"><p>LogOut</p></li>}
                                 </ul>
                             </div>}
                         </div>
                     </li>}
-                    {width > 600 && <li className = "Nav-Options"><p>Home</p></li>}
-                    {width > 600 && <li className = "Nav-Options"><p>Courses</p></li>}
-                    {width > 600 && <li className = "Nav-Options"><p>Profile</p></li>}
+                    {width > 700 && <li className = "Nav-Options"><p>Home</p></li>}
+                    {width > 700 && <li className = "Nav-Options"><p>Courses</p></li>}
+                    {width > 700 && <li className = "Nav-Options"><p>Profile</p></li>}
+                    {width > 700 && buttonChoice === "Login" &&  <li className = "Nav-Options" ><p>Login</p></li>}
+                    {width > 700 && buttonChoice === "Logout" && <li className = "Nav-Options" ><p>Login</p></li>}
                 </ul>
             </div>
         </div>
