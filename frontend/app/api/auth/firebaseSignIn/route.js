@@ -26,7 +26,7 @@ export async function POST(req) {
             status: 201,
             headers: { 
                 "Content-Type": "application/json" ,
-                "Set-Cookie": `session=${token}; Path=/; HttpOnly;  Max-Age=604800`
+                "Set-Cookie": `session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`
             },
         });
     } catch (error) {
