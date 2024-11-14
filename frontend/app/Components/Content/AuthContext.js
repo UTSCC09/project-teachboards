@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
             setUser(data);
         } else {
-            console.log("No session");
             setUser(null); 
         }
     };
