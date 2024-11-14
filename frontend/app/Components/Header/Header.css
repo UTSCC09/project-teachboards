@@ -102,8 +102,8 @@
 }
 
 .DropDown {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 60px;
     background-color: #ffffff;
     border-radius: 5px;
     border: 1px solid black;
