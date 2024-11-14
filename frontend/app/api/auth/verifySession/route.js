@@ -13,7 +13,11 @@ export async function GET(req) {
 
     try {
         const { payload } = await jwtVerify(sessionToken, JWT_SECRET);
-        return new Response(JSON.stringify(payload), { status: 200 });
+        const { id, firstName, lastName } = payload; 
+        return new Response(
+            JSON.stringify({ id, firstName, lastName }), 
+            { status: 200, headers: { "Content-Type": "application/json" } }
+        );
     } catch (error) {
         console.error("Invalid session:", error);
         return new Response(JSON.stringify({ message: "Invalid session" }), { status: 403 });

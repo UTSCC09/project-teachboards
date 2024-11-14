@@ -19,7 +19,7 @@ export async function POST(req) {
             throw new Error("User not found in the database");
         }
         const { firstName, lastName } = userDoc.data();
-        const token = await new SignJWT({ email, firstName, lastName })
+        const token = await new SignJWT({ id, firstName, lastName })
         .setProtectedHeader({alg:"HS256"}).setIssuedAt().setExpirationTime("7d").sign(JWT_SECRET);
         
         return new Response(JSON.stringify({ message: "User signed in" }), {

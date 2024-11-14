@@ -11,8 +11,8 @@ export const AuthProvider = ({ children }) => {
         const response = await fetch("/api/auth/verifySession", { method: "GET" });
         if (response.ok) {
             const data = await response.json();
+            setUser(data); 
             router.push("/home");
-            setUser(data);
         } else {
             setUser(null); 
         }
@@ -24,9 +24,8 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         checkAuthStatus();
     }, []);
-
     return (
-        <AuthContext.Provider value={{ user, setUser, logout,checkAuthStatus }}>
+        <AuthContext.Provider value={{ user, setUser, logout, checkAuthStatus }}>
             {children}
         </AuthContext.Provider>
     );
