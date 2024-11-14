@@ -1,57 +1,76 @@
-"use client"
-import React, {useState, useEffect} from "react";
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import "./Header.css";
 
-export default function Header(){
-    const [width, setWidth] = useState(0);
-    const [menuDropDown, setmenuDropDown] = useState(false);
-    const [buttonChoice, setButtonChoice] = useState("Login");
-    const modelRef = React.useRef();
+export default function Header() {
+    const [width, setWidth] = useState(1500);
+    const [menuDropDown, setMenuDropDown] = useState(false);
+    const modelRef = useRef();
 
-    useEffect(()=>{
+    useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
-        const handlePressed = (e) => {
-            if (modelRef.current && !modelRef.current.contains(e.target)){
-                setmenuDropDown(false);
+        setWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const toggleMenu = () => setMenuDropDown((prev) => !prev);
+
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (modelRef.current && !modelRef.current.contains(e.target)) {
+                setMenuDropDown(false);
             }
         };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        document.addEventListener('mousedown', handlePressed);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            document.removeEventListener('mousedown', handlePressed);
-        }
-    },[]);
 
-    const changeMenu = () =>{setmenuDropDown(true);};
+        document.addEventListener("mousedown", handleOutsideClick);
+        return () => document.removeEventListener("mousedown", handleOutsideClick);
+    }, []);
 
-    return(
+    return (
         <div className="Nav-Bar">
-            <div className = "Nav-Bar-Container">
-                <ul className = "Nav-List">
-                    <li className = "Nav-Title">TeachBoards</li>
-                    {width <= 710 && <li className ="Nav-EXTRA"onClick={changeMenu}>
-                        <div className="container">
-                            <p>Menu</p>
-                            {menuDropDown && <div className = "DropDown">
-                                <ul className = "DropDown-List" ref={modelRef}>
-                                    <li className = "DD-Option"><p>Home</p></li>
-                                    <li className = "DD-Option"><p>Courses</p></li>
-                                    <li className = "DD-Option"><p>Profile</p></li>
-                                    {buttonChoice === "Login" && <li className = "DD-Option"><p>Login</p></li>}
-                                    {buttonChoice === "Logout" && <li className = "DD-Option"><p>LogOut</p></li>}
-                                </ul>
-                            </div>}
-                        </div>
-                    </li>}
-                    {width > 710 && <li className = "Nav-Options"><p>Home</p></li>}
-                    {width > 710 && <li className = "Nav-Options"><p>Courses</p></li>}
-                    {width > 710 && <li className = "Nav-Options"><p>Profile</p></li>}
-                    {width > 710 && buttonChoice === "Login" &&  <li className = "Nav-Options" ><p>Login</p></li>}
-                    {width > 710 && buttonChoice === "Logout" && <li className = "Nav-Options" ><p>Login</p></li>}
+            <div className="Nav-Bar-Container">
+                <ul className="Nav-List">
+                    <li className="Nav-Title">TeachBoards</li>
+
+                    {width <= 710 ? (
+                        <li className="Nav-EXTRA" onClick={toggleMenu}>
+                            MENU
+                            {menuDropDown && (
+                                <div className="DropDown" ref={modelRef}>
+                                    <ul className="DropDown-List">
+                                        <li className="DD-Option">
+                                            <Link href="/home">Home</Link>
+                                        </li>
+                                        <li className="DD-Option">
+                                            <Link href="/classroom">Classroom</Link>
+                                        </li>
+                                        <li className="DD-Option">
+                                            <Link href="/login">Login</Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        </li>
+                    ) : (
+                        <>
+                            <li className="Nav-Options">
+                                <Link href="/home"><p>Home</p></Link>
+                            </li>
+                            <li className="Nav-Options">
+                                <Link href="/classroom"><p>Classroom</p></Link>
+                            </li>
+                            <li className="Nav-Options">
+                                <Link href="/profile"><p>Profile</p></Link>
+                            </li>
+                            <li className="Nav-Options">
+                                <Link href="/login"><p>Login</p></Link>
+                            </li>
+                        </>
+                    )}
                 </ul>
             </div>
         </div>
     );
-};
+}

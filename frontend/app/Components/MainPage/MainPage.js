@@ -3,8 +3,6 @@ import React from "react";
 
 import Drawing from "../Drawing/Drawing.mjs";
 import RTCContainer from "../RTCContainer/RTCContainer.js"
-import Loginpage from "../Loginpage/Loginpage.js";
-import HomePage from "../HomePage/HomePage.js";
 const servers = {}
 servers.iceServers = [
     {
@@ -19,9 +17,7 @@ export default function MainPage(){
             {/*<Drawing/>*/}
             {/*<RTCContainer servers={servers}/>*/}
             {/*<Loginpage/>*/}
-            <HomePage>
-
-            </HomePage>
+            {/*<HomePage/>*/}
         </div>
     )
 }

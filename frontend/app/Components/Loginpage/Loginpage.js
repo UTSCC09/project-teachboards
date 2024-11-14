@@ -1,3 +1,4 @@
+"use client";
 import "./Loginpage.css";
 import React, {useEffect, useRef, useState} from "react";
 

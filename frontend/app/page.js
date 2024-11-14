@@ -1,13 +1,5 @@
-import Header from "./Components/Header/Header.js";
-import MainPage from "./Components/MainPage/MainPage.js";
+import HomePage from "./Components/HomePage/HomePage.js";
 
-export default function Home(){
-        return(
-            <div>
-                <Header/>
-                <MainPage/>
-            </div> 
-        )
+export default function Home() {
+    return <HomePage />;
 }
-
-

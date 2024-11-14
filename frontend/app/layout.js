@@ -1,9 +1,11 @@
-import "./Global.css"
+import "./Global.css";
+import Header from "./Components/Header/Header.js";
 
-export default function RootLayout({children}){
+export default function RootLayout({ children }) {
     return (
-        <html lang="en">
-            <body>{children}</body>
-        </html>
-    )
-}   
+        <>
+            <Header /> 
+            <main>{children}</main>
+        </>
+    );
+}
