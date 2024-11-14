@@ -78,7 +78,7 @@ export default function Header() {
                                 )}
                             </li>
                             {user && <li>
-                                <Link className="Nav-Options" href="/call"><p>New Call</p></Link>
+                                <Link className="Nav-Options" href="/draw"><p>draw</p></Link>
                             </li>}
                         </>
                     )}

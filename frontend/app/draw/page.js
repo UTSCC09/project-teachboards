@@ -1,5 +1,5 @@
-import RTCContainer from "../Components/RTCContainer/RTCContainer.js";
+import MainPage from "../Components/MainPage/MainPage.js";
 
 export default function draw() {
-    return <RTCContainer />;
+    return <MainPage />;
 }

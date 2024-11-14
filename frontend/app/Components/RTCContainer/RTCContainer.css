@@ -6,31 +6,31 @@
     padding: 20px;
 }
 
-#video-container {
+#rtc-container #video-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px; /* Space between video and drawing */
 }
 
-#videos {
+#rtc-container #videos {
     display: flex;
     justify-content: center;
     margin-top: 10px;
 }
 
-#videos * {
+#rtc-container #videos * {
     max-width: 500px;
     margin: 0 10px;
 }
 
-#drawing-container {
+#rtc-container #drawing-container {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
 }
 
-#call-controls {
+#rtc-container #call-controls {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,7 +43,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-input {
+#rtc-container input {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -51,7 +51,7 @@ input {
     border-radius: 5px;
 }
 
-button {
+#rtc-container button {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -62,15 +62,15 @@ button {
     font-size: 16px;
 }
 
-button:hover {
+#rtc-container button:hover {
     background-color: #0056b3;
 }
 
-button:disabled {
+#rtc-container button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
 }
 
-input::placeholder {
+#rtc-container input::placeholder {
     color: #aaa;
 }
