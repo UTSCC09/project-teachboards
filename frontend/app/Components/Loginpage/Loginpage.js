@@ -1,16 +1,14 @@
 "use client";
 import "./Loginpage.css";
 import React, {useEffect, useRef, useState} from "react";
+import { useRouter } from "next/navigation";
 import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "../../firebase.js";
-import {useRouter} from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
 
 export default function Loginpage(){
     const [errorMessage,seterrorMessage] = useState("Error mesasge");
     const [LoginOrOut, setLoginOrOut] = useState("Login");
     const router = useRouter();
-
-    const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/";
 
     const handleSignIn = async (e) =>{
         e.preventDefault();
@@ -21,7 +19,7 @@ export default function Loginpage(){
             const id = await signInWithEmailAndPassword(auth, email, password);
             console.log("User signed in successfully");
             e.target.reset();
-            router.push(returnUrl);
+            router.back();
         } catch (error) {
             console.error("Error signing in", error.message);
             seterrorMessage("Could not sign in, please try again");
