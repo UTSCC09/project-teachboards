@@ -106,7 +106,7 @@ const Drawing = forwardRef(({canvasWidth, canvasHeight, noControls}, ref) => {
                             brushColor={penColor}
                             brushRadius={penSize}
                             hideGrid={true}
-                            lazyRadius={4}
+                            lazyRadius={1}
                             canvasWidth={canvasWidth || 2800}  
                             canvasHeight={canvasHeight || 1200} 
                             style={{
