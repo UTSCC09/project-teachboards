@@ -44,7 +44,8 @@ export default function Loginpage(){
         const email = e.target.email.value;
         const password = e.target.password.value;
         const role = e.target.role.value;
-        const pack = {email,firstName,lastName,password,role};
+        const classes = [];
+        const pack = {email,firstName,lastName,password,role, classes};
         try{
             const response = await fetch("/api/auth/firebaseSignUp",{
                 method:"POST",

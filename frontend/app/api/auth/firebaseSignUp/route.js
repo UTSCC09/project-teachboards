@@ -8,6 +8,7 @@ export async function POST(req){
     const lastName = validator.escape(body.lastName);
     const email = validator.escape(body.email);
     const password = body.password;
+    const classes = body.classes;
     const role = body.role;
     
     try{
@@ -18,6 +19,7 @@ export async function POST(req){
             lastName,
             email,
             role,
+            classes,
             uid: id
         });
         return new Response(JSON.stringify({ message: "User signed in" }), {
