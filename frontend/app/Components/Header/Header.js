@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-
+import { useAuth } from "../Content/AuthContext"; 
 import "./Header.css";
 
 export default function Header() {
+    const { user, logout } = useAuth();
     const [width, setWidth] = useState(1500);
     const [menuDropDown, setMenuDropDown] = useState(false);
     const modelRef = useRef();
@@ -48,7 +49,11 @@ export default function Header() {
                                             <Link href="/classroom">Classroom</Link>
                                         </li>
                                         <li className="DD-Option">
-                                            <Link href="/login">Login</Link>
+                                            {user ? (
+                                                <button onClick={logout}>Logout</button>
+                                            ) : (
+                                                <Link href="/login">Login</Link>
+                                            )}
                                         </li>
                                     </ul>
                                 </div>
@@ -56,17 +61,21 @@ export default function Header() {
                         </li>
                     ) : (
                         <>
-                            <li >
+                            <li>
                                 <Link className="Nav-Options" href="/"><p>Home</p></Link>
                             </li>
-                            <li >
+                            <li>
                                 <Link className="Nav-Options" href="/classroom"><p>Classroom</p></Link>
                             </li>
                             <li>
                                 <Link className="Nav-Options" href="/profile"><p>Profile</p></Link>
                             </li>
                             <li>
-                                <Link className="Nav-Options" href="/login"><p>Login</p></Link>
+                                {user ? (
+                                    <button className="Nav-Options" onClick={logout}><p>Logout</p></button>
+                                ) : (
+                                    <Link className="Nav-Options" href="/login"><p>Login</p></Link>
+                                )}
                             </li>
                             <li>
                                 <Link className="Nav-Options" href="/call"><p>New Call</p></Link>

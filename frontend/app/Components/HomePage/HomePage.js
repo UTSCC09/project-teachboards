@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import "./HomePage.css";
+import { useAuth } from "../context/AuthContext";
 
 export default function HomePage() {
-    const username = "User";
+    const {user, loading} = useAuth();
 
     const classrooms = [
         "Classroom 1", "Classroom 2", "Classroom 3", "Classroom 4", "Classroom 5",
@@ -17,7 +18,7 @@ export default function HomePage() {
 
     return (
         <div className="HomePageContainer">
-            <div className="welcome">Welcome {username}</div>
+            <div className="welcome">Welcome {user ? user.firstName : "Loading..."}</div>
             <button className="AddClassroomButton" onClick={handleAddClassroom}>
                 Add Classroom
             </button>
