@@ -60,6 +60,8 @@ export default function Loginpage(){
             console.log("User created");
             setLoginOrOut("Login");
             e.target.reset();
+            await checkAuthStatus();
+            router.back();
         }
         catch(error){
             console.error("error signing up", error.message);
