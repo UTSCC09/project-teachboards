@@ -2,8 +2,7 @@
 import "./Loginpage.css";
 import React, {useEffect, useRef, useState} from "react";
 import { useRouter } from "next/navigation";
-import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "../../firebase.js";
-import { doc, setDoc } from "firebase/firestore";
+
 
 export default function Loginpage(){
     const [errorMessage,seterrorMessage] = useState("Error mesasge");
@@ -14,9 +13,19 @@ export default function Loginpage(){
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
+        const pack = {email,password};
         
         try {
-            const id = await signInWithEmailAndPassword(auth, email, password);
+            const response = await fetch("/api/auth/firebaseSignIn", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(pack),
+            });
+            const userReturn = await response.json();
+            if (!response.ok){
+                seterrorMessage("could not sign in rip");
+                return;
+            }
             console.log("User signed in successfully");
             e.target.reset();
             router.back();
@@ -33,24 +42,25 @@ export default function Loginpage(){
         const email = e.target.email.value;
         const password = e.target.password.value;
         const role = e.target.role.value;
-    
-        try {
-            const userInfo = await createUserWithEmailAndPassword(auth, email, password);
-            const id = userInfo.user.uid;
-
-            await setDoc(doc(db, "users", id), {
-                firstName,
-                lastName,
-                email,
-                role,
-                uid: id
+        const pack = {email,firstName,lastName,password,role};
+        try{
+            const response = await fetch("/api/auth/firebaseSignUp",{
+                method:"POST",
+                headers:{"Content-Type": "application/json",},
+                body: JSON.stringify(pack),
             });
-
-            console.log("User account made");
+            const userReturn = await response.json();
+            if (!response.ok){
+                seterrorMessage("Could not create account");
+                return;
+            }
+            console.log("User created");
+            setLoginOrOut("Login");
             e.target.reset();
-        } catch (error) {
-            console.error("Error signing up", error.message);
-            seterrorMessage(error.message); 
+        }
+        catch(error){
+            console.error("error signing up", error.message);
+            seterrorMessage(error.message);
         }
     };
 
