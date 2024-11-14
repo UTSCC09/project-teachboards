@@ -35,7 +35,7 @@ export default function Header() {
                 <ul className="Nav-List">
                     <li className="Nav-Title">TeachBoards</li>
 
-                    {width <= 710 ? (
+                    {width <= 1400 ? (
                         <li className="Nav-EXTRA" onClick={toggleMenu}>
                             MENU
                             {menuDropDown && (
