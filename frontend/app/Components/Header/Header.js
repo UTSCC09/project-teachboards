@@ -50,7 +50,7 @@ export default function Header() {
                                         </li>
                                         <li className="DD-Option">
                                             {user ? (
-                                                <button onClick={logout}>Logout</button>
+                                                <button onClick={logout}>LOGOUT</button>
                                             ) : (
                                                 <Link href="/login">Login</Link>
                                             )}
@@ -75,7 +75,7 @@ export default function Header() {
                             </li>}
                             <li>
                                 {user ? (
-                                    <button className="Nav-Options" onClick={logout}><p>Logout</p></button>
+                                    <button className="Nav-Options" onClick={logout}><p>LOGOUT</p></button>
                                 ) : (
                                     <Link className="Nav-Options" href="/login"><p>Login</p></Link>
                                 )}
