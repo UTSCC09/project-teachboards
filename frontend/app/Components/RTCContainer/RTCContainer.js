@@ -7,7 +7,7 @@ import Drawing from "../Drawing/Drawing.mjs"
 import { useFirestore } from "../../firebase.js"; // Assuming a custom hook for Firestore
 import { doc, collection, getDoc, setDoc, updateDoc, onSnapshot, addDoc } from "firebase/firestore"; 
 
-export default function RTCContainer({ servers }) {
+export default function RTCContainer() {
     const [localStream, setLocalStream] = useState(null);
     const remoteStream = useRef(null);  // Use ref to store remote stream
     const pc = useRef(null);
@@ -18,7 +18,7 @@ export default function RTCContainer({ servers }) {
     const { firestore } = useFirestore(); // Custom hook to interact with Firestore
 
     useEffect(() => {
-        const peerConnection = new RTCPeerConnection(servers);
+        const peerConnection = new RTCPeerConnection(process.env.servers);
         pc.current = peerConnection;
 
         // Setup local stream
@@ -34,6 +34,9 @@ export default function RTCContainer({ servers }) {
 
         // Setup remote stream handling
         peerConnection.ontrack = (event) => {
+            if (!remoteStream.current) {
+                remoteStream.current = new MediaStream();  // Initialize MediaStream
+            }
             event.streams[0].getTracks().forEach((track) => {
                 remoteStream.current.addTrack(track);
             });
@@ -50,7 +53,7 @@ export default function RTCContainer({ servers }) {
             updateDrawingOnCanvas(drawingData);
         };
 
-    }, [servers]);
+    }, []);
 
     // Handle signaling in another useEffect
     async function createCall(e){
@@ -68,7 +71,7 @@ export default function RTCContainer({ servers }) {
         pc.current.onicecandidate = (event) => {
             if (event.candidate) {
                 addDoc(answerCandidates, event.candidate.toJSON());
-            }
+            };
         };
 
         const setupOffer = async () => {
@@ -85,18 +88,33 @@ export default function RTCContainer({ servers }) {
             // Listen for remote answer
             onSnapshot(callDoc, (snapshot) => {
                 const data = snapshot.data();
-                if (!pc.current.currentRemoteDescription && data?.answer) {
+                console.log("Received snapshot data:", data);
+                if (data?.answer && !pc.current.remoteDescription) {
                     const answerDescription = new RTCSessionDescription(data.answer);
-                    pc.current.setRemoteDescription(answerDescription);
+                    pc.current.setRemoteDescription(answerDescription)
+                        .then(() => {
+                            console.log("Remote description set successfully");
+                        })
+                        .catch((error) => {
+                            console.error("Error setting remote description:", error);
+                        });
                 }
             });
+            
 
             // Handle incoming candidates
             onSnapshot(answerCandidates, (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === 'added') {
-                        const candidate = new RTCIceCandidate(change.doc.data());
-                        pc.current.addIceCandidate(candidate);
+                        const candidateData = change.doc.data();
+                        if (pc.current.remoteDescription) {
+                            const candidate = new RTCIceCandidate(candidateData);
+                            pc.current.addIceCandidate(candidate);
+                            console.log("added ice candidate:");
+                            console.log(candidate);
+                        } else {
+                            console.log("ICE candidate received before remote description");
+                        }
                     }
                 });
             });
@@ -149,7 +167,7 @@ export default function RTCContainer({ servers }) {
             remoteDrawing.current.setCanvas(localStorage.getItem("drawing"));
         }
     }, [remoteDrawing.current]);  // This ensures it runs after the component has mounted and the ref is set
-    
+     
 
     return (
         <div id="rtc-container">
@@ -159,8 +177,7 @@ export default function RTCContainer({ servers }) {
             </div>
             <div id="videos">
                     <VideoStream stream={remoteStream.current} />
-                    <Drawing ref={remoteDrawing} canvasWidth={300} canvasHeight={300} noControls={true}/>
-
+                    <Drawing ref={remoteDrawing} noControls={true}/>
             </div>
 
             <div id="call-controls">

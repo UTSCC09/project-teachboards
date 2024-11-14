@@ -7,7 +7,7 @@ export default function VideoStream({stream}) {
     const videoRef = useRef(null);
 
     useEffect(() => {
-        if (videoRef.current && stream) {
+        if (videoRef.current && stream != null) {
             videoRef.current.srcObject = stream;
         }
     }, [stream]);
