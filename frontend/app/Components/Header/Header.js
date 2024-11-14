@@ -68,7 +68,7 @@ export default function Header() {
                                 <Link className="Nav-Options" href="/login"><p>Login</p></Link>
                             </li>
                             <li>
-                                <Link className="Nav-Options" href="/call"><p>New Call</p></Link>
+                                <Link className="Nav-Options" href="/room"><p>Start Room Call</p></Link>
                             </li>
                         </>
                     )}
