@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import "./HomePage.css";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../Content/AuthContext";
 
 export default function HomePage() {
     const {user} = useAuth();
@@ -18,17 +18,18 @@ export default function HomePage() {
 
     return (
         <div className="HomePageContainer">
-            <div className="welcome">{user ? user.firstName : "Please login"}</div>
-            <button className="AddClassroomButton" onClick={handleAddClassroom}>
+            <div className="welcome">{user ? user.firstName : " Please Login"}</div>
+            {user && <button className="AddClassroomButton" onClick={handleAddClassroom}>
                 Add Classroom
-            </button>
-            <div className="ClassRoomComponentHolder">
+            </button> }
+            {user && <div className="ClassRoomComponentHolder">
                 {classrooms.map((classroom, index) => (
                     <div key={index} className="ClassroomBox">
                         {classroom}
-                    </div>
-                ))}
-            </div>
+                    </div> 
+                ))} 
+            </div> }
         </div>
     );
 }
+

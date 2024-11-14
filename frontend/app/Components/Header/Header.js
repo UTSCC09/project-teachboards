@@ -64,12 +64,12 @@ export default function Header() {
                             <li>
                                 <Link className="Nav-Options" href="/"><p>Home</p></Link>
                             </li>
-                            <li>
+                            {user && <li>
                                 <Link className="Nav-Options" href="/classroom"><p>Classroom</p></Link>
-                            </li>
-                            <li>
+                            </li>}
+                            {user && <li>
                                 <Link className="Nav-Options" href="/profile"><p>Profile</p></Link>
-                            </li>
+                            </li>}
                             <li>
                                 {user ? (
                                     <button className="Nav-Options" onClick={logout}><p>Logout</p></button>
@@ -77,9 +77,9 @@ export default function Header() {
                                     <Link className="Nav-Options" href="/login"><p>Login</p></Link>
                                 )}
                             </li>
-                            <li>
+                            {user && <li>
                                 <Link className="Nav-Options" href="/call"><p>New Call</p></Link>
-                            </li>
+                            </li>}
                         </>
                     )}
                 </ul>

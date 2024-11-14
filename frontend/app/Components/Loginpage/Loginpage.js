@@ -2,12 +2,13 @@
 import "./Loginpage.css";
 import React, {useEffect, useRef, useState} from "react";
 import { useRouter } from "next/navigation";
-
+import {useAuth} from "../Content/AuthContext";
 
 export default function Loginpage(){
     const [errorMessage,seterrorMessage] = useState("Error mesasge");
     const [LoginOrOut, setLoginOrOut] = useState("Login");
     const router = useRouter();
+    const { checkAuthStatus } = useAuth();
 
     const handleSignIn = async (e) =>{
         e.preventDefault();
@@ -28,6 +29,7 @@ export default function Loginpage(){
             }
             console.log("User signed in successfully");
             e.target.reset();
+            await checkAuthStatus();
             router.back();
         } catch (error) {
             console.error("Error signing in", error.message);
