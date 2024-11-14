@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import "./HomePage.css";
+import "./Components/HomePage/HomePage.css";
 
 export default function HomePage() {
     const username = "User";

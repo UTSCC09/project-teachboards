@@ -1,46 +1,65 @@
 "use client";
 import "./Loginpage.css";
 import React, {useEffect, useRef, useState} from "react";
+import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "../../firebase.js";
+import {useRouter} from "next/navigation";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function Loginpage(){
-    const [displayError, setdisplayError] = useState(false);
     const [errorMessage,seterrorMessage] = useState("Error mesasge");
-    const [LoginOrOut, setLoginOrOut] = useState("SignUp");
+    const [LoginOrOut, setLoginOrOut] = useState("Login");
+    const router = useRouter();
 
-    const handleSignIn = (e) =>{
+    const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/";
+
+    const handleSignIn = async (e) =>{
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
-        //do a funciton that handles this submitting 
-
-        console.log(email + " " + password );
-
-        //insert he code between these things 
-        e.target.reset();
+        
+        try {
+            const id = await signInWithEmailAndPassword(auth, email, password);
+            console.log("User signed in successfully");
+            e.target.reset();
+            router.push(returnUrl);
+        } catch (error) {
+            console.error("Error signing in", error.message);
+            seterrorMessage("Could not sign in, please try again");
+        }
     };
-    const handleSignUp =(e) => {
+    
+    const handleSignUp = async (e) => {
         e.preventDefault();
         const firstName = e.target.FirstName.value;
         const lastName = e.target.LastName.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
-        //do a funciton that handles this submitting 
-        console.log(firstName + " " + lastName + " " + email + " " + password );
-        //insert he code between these things 
-        e.target.reset();
-    };
-    const badInput = () =>{
-        //Please have this function be the implementatino of all the backend code for this 
-        setdisplayError(true);
-        seterrorMessage("Please put the error message return here");
+        const role = e.target.role.value;
+    
+        try {
+            const userInfo = await createUserWithEmailAndPassword(auth, email, password);
+            const id = userInfo.user.uid;
+
+            await setDoc(doc(db, "users", id), {
+                firstName,
+                lastName,
+                email,
+                role,
+                uid: id
+            });
+
+            console.log("User account made");
+            e.target.reset();
+        } catch (error) {
+            console.error("Error signing up", error.message);
+            seterrorMessage(error.message); 
+        }
     };
 
     const switchform = () =>{
         if (LoginOrOut === "Login") setLoginOrOut("SignUp");
         if (LoginOrOut === "SignUp") setLoginOrOut("Login");
     }
-
-    //Still need to add the function that closes this form btw... lmaooo player 
     
     return (
         <div className="SignInContainer"> 
@@ -58,7 +77,6 @@ export default function Loginpage(){
             <button type="submit" className="SignInBtn">Sign In</button>
             <div className="signup" onClick={switchform}>Click to SignUp</div>
             </form>
-            {displayError && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </div> }
         
         {LoginOrOut === "SignUp" && <div className = "SignInBox">
@@ -80,10 +98,16 @@ export default function Loginpage(){
                 <label htmlFor="password">Password</label> 
                 <input type="password" id="password" name="password" required></input>
             </div>
+            <div className="SignInInput">
+                <label htmlFor="role"></label>
+                <select id="role" name="role" required>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                </select>
+            </div>
             <button type="submit" className="SignInBtn">SignUp</button>
             <div className="signup" onClick={switchform}>Click to SignIn</div>
             </form>
-            {displayError && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </div>}
 
     </div>

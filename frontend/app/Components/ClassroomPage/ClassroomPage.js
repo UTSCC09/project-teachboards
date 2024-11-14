@@ -7,12 +7,12 @@ export default function ClassroomPage() {
     //add sorting fuctions 
     return (
         <div className="ClassroomPageContainer">
-            <header className="ClassroomHeader">
-                <h2>Classroom Name</h2>
+            <div className="ClassroomHeader">
+                <h2 className="title">Classroom Name</h2>
                 <div className="SortOptions">
                     <div className="SortButton">Sort</div>
                 </div>
-            </header>
+            </div>
             <div className="DateComponentHolder">
                 {dates.map((date, index) => (
                     <div key={index} className="DateBox">
