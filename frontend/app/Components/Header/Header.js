@@ -55,17 +55,20 @@ export default function Header() {
                         </li>
                     ) : (
                         <>
-                            <li className="Nav-Options">
-                                <Link href="/home"><p>Home</p></Link>
+                            <li >
+                                <Link className="Nav-Options" href="/"><p>Home</p></Link>
                             </li>
-                            <li className="Nav-Options">
-                                <Link href="/classroom"><p>Classroom</p></Link>
+                            <li >
+                                <Link className="Nav-Options" href="/classroom"><p>Classroom</p></Link>
                             </li>
-                            <li className="Nav-Options">
-                                <Link href="/profile"><p>Profile</p></Link>
+                            <li>
+                                <Link className="Nav-Options" href="/profile"><p>Profile</p></Link>
                             </li>
-                            <li className="Nav-Options">
-                                <Link href="/login"><p>Login</p></Link>
+                            <li>
+                                <Link className="Nav-Options" href="/login"><p>Login</p></Link>
+                            </li>
+                            <li>
+                                <Link className="Nav-Options" href="/call"><p>New Call</p></Link>
                             </li>
                         </>
                     )}
