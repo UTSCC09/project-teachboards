@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
         await fetch("/api/auth/logout", { method: "POST" });
         setUser(null);
     };
-
     useEffect(() => {
         checkAuthStatus();
     }, []);
