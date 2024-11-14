@@ -4,7 +4,7 @@ import "./Components/HomePage/HomePage.css";
 import { useAuth } from "./Components/Content/AuthContext.js";
 
 export default function HomePage() {
-    const {user, loading} = useAuth();
+    const {user} = useAuth();
 
     const classrooms = [
         "Classroom 1", "Classroom 2", "Classroom 3", "Classroom 4", "Classroom 5",
