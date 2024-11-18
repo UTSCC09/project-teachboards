@@ -1,7 +1,7 @@
 import { db } from "../../firebase.js";
 import { doc, collection, addDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import validator from "validator";
-
+//add check to see if user id is holds or exist in the database
 export async function POST(req) {
     const body = await req.json();
     const className = validator.escape(body.className);
