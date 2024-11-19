@@ -1,15 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./HomePage.css";
+import Link from "next/link";
 import { useAuth } from "../Content/AuthContext";
+
+// all i need now is the a way to get to the clasroom rn 
 
 export default function HomePage() {
     const { user } = useAuth();
     const [className, setClassName] = useState("");
-    const [classrooms, setClassrooms] = useState([
-        "Classroom 1", "Classroom 2", "Classroom 3", "Classroom 4", "Classroom 5",
-        "Classroom 6", "Classroom 7", "Classroom 8", "Classroom 9", "Classroom 10",
-    ]);
+    const [classrooms, setClassrooms] = useState([]);
     const handleAddClassroom = async (e) => {
         e.preventDefault();
         const id = user.id;
@@ -27,13 +27,42 @@ export default function HomePage() {
                 return;
             }
             console.log("Classroom created:", data.classRoomId);
-            setClassrooms([...classrooms, className]);
+            setClassrooms([data,...classrooms]);
             setClassName(""); 
             e.target.reset();
         } catch (error) {
             console.error("Error creating classroom:", error);
         }
     };
+
+    const handleGetClassroom = async (e) =>{
+        const id = user.id;
+        if (id != null){
+            try{    
+                const response = await fetch(`/api/classroom/${id}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });                
+                const data = await response.json();
+                if (!response.ok){
+                    console.log("could not get clasrooms");
+                    setClassrooms([])
+                    return;
+                }
+                setClassrooms(data);
+            }
+            catch(error){
+                console.error("error gettinv classroom", error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            handleGetClassroom();
+        }
+    }, [user]); 
+
     return (
         <div className="HomePageContainer">
             <div className="welcome">{user ? `Welcome, ${user.firstName}` : "Please Login"}</div>
@@ -53,11 +82,14 @@ export default function HomePage() {
             
             {user && (
                 <div className="ClassRoomComponentHolder">
-                    {classrooms.map((classroom, index) => (
-                        <div key={index} className="ClassroomBox">
-                            {classroom}
-                        </div>
-                    ))}
+                {classrooms.map((classroom) => (
+                    <Link key={classroom.classRoomID} href={{pathname: `/classroom/${classroom.classRoomID}`, 
+                        query:{name: classroom.className}}}>
+                    <div key={classroom.classRoomID} id={classroom.classRoomID} className="ClassroomBox">
+                        {classroom.className}
+                    </div>
+                    </Link>
+                ))}
                 </div>
             )}
         </div>

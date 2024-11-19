@@ -46,9 +46,6 @@ export default function Header() {
                                             <Link href="/home">Home</Link>
                                         </li>
                                         <li className="DD-Option">
-                                            <Link href="/classroom">Classroom</Link>
-                                        </li>
-                                        <li className="DD-Option">
                                             {user ? (
                                                 <button onClick={logout}>LOGOUT</button>
                                             ) : (
@@ -67,9 +64,6 @@ export default function Header() {
                             <li>
                                 <Link className="Nav-Options" href="/"><p>Home</p></Link>
                             </li>
-                            {user && <li>
-                                <Link className="Nav-Options" href="/classroom"><p>Classroom</p></Link>
-                            </li>}
                             {user && <li>
                                 <Link className="Nav-Options" href="/profile"><p>Profile</p></Link>
                             </li>}
