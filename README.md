@@ -50,3 +50,8 @@ in profile id
 signin
 signup
 singout
+
+
+
+
+add a remove friends option kms

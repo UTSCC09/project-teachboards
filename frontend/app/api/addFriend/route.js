@@ -1,6 +1,6 @@
 import { db } from "../../firebase.js";
 import { doc, collection, updateDoc, query, where, getDocs, getDoc} from "firebase/firestore";
-
+import validator from "validator";
 
 export async function POST(req){
     const body = await req.json();
