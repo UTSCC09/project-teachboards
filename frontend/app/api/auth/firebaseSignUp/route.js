@@ -15,16 +15,15 @@ export async function POST(req){
     const friendsPending= {};
     const role = body.role;
     const username = validator.escape(body.username);
+    console.log(username);
     const status = "online";
 
     
     try{
-        //check if username exist or not already later....
-        //change ID to username since its safer 
         const userQuery = query((collection(db, "users")), where("username", "==", username));
         const existingUser = await getDocs(userQuery);
 
-        if (existingUser.length !== 0){
+        if (!existingUser.empty){
             console.log("Username bad");
             return new Response(JSON.stringify({ message: "User exist" }), {
                 status: 400,
@@ -52,7 +51,7 @@ export async function POST(req){
             status: 201,
             headers: {
                 "Content-Type": "application/json",
-                 "Set-Cookie": `session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`
+                 "Set-Cookie": `session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`
             },
 
         });
