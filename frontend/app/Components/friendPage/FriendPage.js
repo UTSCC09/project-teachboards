@@ -9,6 +9,8 @@ export default function FriendPage() {
     const [showPopup, setShowPopup] = useState(false);
     const [username, setUsername] = useState("");
     const [mode, setMode] = useState(true);
+    const [penorfre, setpenorfre] = useState("Friends");
+    const [penorfre2,setpenorfre2] = useState("Pending Friends");
     const { user } = useAuth();
 
     useEffect(() => {
@@ -93,6 +95,13 @@ export default function FriendPage() {
     const handleSwitch = () =>{
         if (mode){
             retrivePending();
+            setpenorfre("Pending Friends");
+            setpenorfre2("Friends");
+        }
+        if (!mode){
+            setpenorfre("Friends");
+            setpenorfre2("Pending Friends");
+            retriveFriends();
         }
         setMode(!mode);
     };
@@ -104,7 +113,7 @@ export default function FriendPage() {
             const response = await fetch(`/api/acceptFriend/${id}`,{
                 method:"PATCH",
                 headers:{"Content-Type":"application/json"},
-                body:JSON.stringify(username),
+                body:JSON.stringify({username:username}),
             });
             await response.json();
             if (!response.ok){
@@ -127,12 +136,13 @@ export default function FriendPage() {
                         Add Friend
                     </button>
                     <button className="header-btn" onClick={handleSwitch}>
-                        Pending Requests
+                        {penorfre2}
                     </button>
                     <button className="header-btn">Messages</button>
                 </header>
-
+                <h2 className="BRO">{penorfre}</h2>
                 {mode && (
+                    
                     <div className="friends-list">
                         {friends.map((friend, index) => (
                             <div key={friend.id || index} className="friend-card">
