@@ -130,3 +130,18 @@ Prompt was using this image can you generate me a popup for adding a friend?
 .h2{
     text-align:center;
 }
+
+.accept-btn {
+    padding: 5px 10px;
+    background-color: #1d672e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.accept-btn:hover {
+    background-color: #14571c;
+}
