@@ -6,7 +6,6 @@ export default function Status() {
     const { user } = useAuth();
     const statusLoopRef = useRef(null); 
     const tabActiveRef = useRef(true);
-
     useEffect(() => {
         if (!user || !user.id) return;
         const id = user.id;
@@ -53,7 +52,6 @@ export default function Status() {
             statusLoopRef.current = null;
             sendStatus("offline");
         }
-
         startloop();
         window.addEventListener("beforeunload", removeAll);
         document.addEventListener("visibilitychange", onTab);
