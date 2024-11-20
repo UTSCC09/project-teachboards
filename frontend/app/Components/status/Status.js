@@ -31,6 +31,7 @@ export default function Status(){
             }
         };
         window.addEventListener("beforeunload", removeAll);
+        
         document.addEventListener("visibilitychange", onTab);
         return () =>{
             clearInterval(statusLoop);
