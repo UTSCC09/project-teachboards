@@ -65,7 +65,9 @@
 .status.offline {
     background-color: #000000;
 }
-
+/*GOT THE CSS STYLING FROM CHATGPT FOR THE POPUP, however since I uploaded a photo I cannot share the chat
+Prompt was using this image can you generate me a popup for adding a friend?
+*/
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -123,4 +125,8 @@
 
 .popup-actions button:hover {
     background-color: #b7b7b7;
+}
+
+.h2{
+    text-align:center;
 }

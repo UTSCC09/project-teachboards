@@ -35,6 +35,7 @@ export async function PATCH(req,{params}){
             },
         });
     }
+    
     catch(error){
         console.log("error changing user detail");
         return new Response(JSON.stringify({message:"Failed to change users"}),{

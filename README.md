@@ -32,3 +32,14 @@ ik this isnt in the scope of this anymore but might as well
 
 
 add a username field 
+
+
+
+do the other auth thing 
+
+
+
+CHANGE ALL USER OF ID TO USERNAME BTW LATER SINCE ITS TECHNICALLY SAFER \
+
+
+add pop up that tell you when error return happens

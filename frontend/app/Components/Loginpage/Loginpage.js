@@ -44,8 +44,8 @@ export default function Loginpage(){
         const email = e.target.email.value;
         const password = e.target.password.value;
         const role = e.target.role.value;
-        const classes = [];
-        const pack = {email,firstName,lastName,password,role, classes};
+        const username = e.target.Username.value;
+        const pack = {email,firstName,lastName,password,role,username};
         try{
             const response = await fetch("/api/auth/firebaseSignUp",{
                 method:"POST",
@@ -102,6 +102,10 @@ export default function Loginpage(){
             <div className="SignInInput">
                 <label htmlFor="LastName">Last Name</label>
                 <input type="text" id="text" name="LastName" required></input>
+            </div>
+            <div className="SignInInput">
+                <label htmlFor="Username">Username</label>
+                <input type="text" id="text" name="Username" required></input>
             </div>
             <div className="SignInInput">
                 <label htmlFor="email">Email</label>

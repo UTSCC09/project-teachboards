@@ -1,29 +1,90 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./friendPage.css";
+import { useAuth } from "../Content/AuthContext";
 
 export default function FriendPage() {
-    const [friends, setFriends] = useState([
-        { id: 1, name: "Alice Johnson", status: "Online" },
-        { id: 2, name: "Bob Smith", status: "Busy" },
-        { id: 3, name: "Charlie Davis", status: "Online" },
-        { id: 4, name: "Diana Prince", status: "Online" },
-        {id: 5, name:"Peter Yoo", status:"Offline"},
-    ]); // Dummy data for friends
+    const [friends, setFriends] = useState([]);
+    const [pendingFriends, setPendingFriends] = useState([]);
+    const [showPopup, setShowPopup] = useState(false);
+    const [username, setUsername] = useState("");
+    const { user } = useAuth();
 
-    const [showPopup, setShowPopup] = useState(false); 
-    const [username, setUsername] = useState(""); 
+    useEffect(() => {
+        if (user && user.id) {
+            retriveFriends(); 
+            //retrivePending();
+            const interval = setInterval(() => {retriveFriends(); }, 60000); 
+            return () => clearInterval(interval); 
+        }
+    }, [user]);
 
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
 
-    const handleAddFriend = () => {
-        if (username.trim() === "") return;
-        const newFriend = { id: Date.now(), name: username, status: "Pending" };
-        setFriends([...friends, newFriend]);
-        setUsername(""); 
-        setShowPopup(false); 
+    const retriveFriends = async () => {
+        if (!user || !user.id) return;
+        const id = user.id;
+        try {
+            const response = await fetch(`/api/retriveFriends/${id}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                console.log("Could not retrieve friends");
+                return;
+            }
+            console.log("Friends retrieved:", data);
+            setFriends(data.friendsWithStatus || []);
+        } catch (error) {
+            console.error("Error retrieving friends:", error);
+        }
+    };
+
+    const retrivePending = async () => {
+        if (!user || !user.id) return;
+        const id = user.id;
+        try {
+            const response = await fetch(`/api/retrivePending/${id}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                console.log("Could not retrieve pending friend requests");
+                return;
+            }
+            console.log("Pending friends retrieved:", data);
+            setPendingFriends(data.pendingFriends || []);
+        } catch (error) {
+            console.error("Error retrieving pending friends:", error);
+        }
+    };
+
+    const handleAddFriend = async () => {
+        if (!user || username.trim() === "") return;
+        const newfriend = username.trim();
+        const id = user.id;
+        try {
+            const response = await fetch("/api/addFriend", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, newfriend }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                console.log("Could not add friend");
+                return;
+            }
+            console.log("Friend added:", data);
+            setUsername("");
+            setShowPopup(false);
+            //retrivePending();
+        } catch (error) {
+            console.error("Error adding friend:", error);
+        }
     };
 
     return (
@@ -33,14 +94,16 @@ export default function FriendPage() {
                     <button className="header-btn" onClick={togglePopup}>
                         Add Friend
                     </button>
-                    <button className="header-btn">Pending Requests</button>
+                    <button className="header-btn" onClick={retrivePending}>
+                        Pending Requests
+                    </button>
                     <button className="header-btn">Messages</button>
                 </header>
 
                 <div className="friends-list">
                     {friends.map((friend) => (
                         <div key={friend.id} className="friend-card">
-                            <span>{friend.name}</span>
+                            <span>{friend.username}</span>
                             <span className={`status ${friend.status.toLowerCase()}`}>{friend.status}</span>
                         </div>
                     ))}
@@ -58,12 +121,16 @@ export default function FriendPage() {
                             onChange={(e) => setUsername(e.target.value)}
                         />
                         <div className="popup-actions">
-                            <button className="Cancel" onClick={togglePopup}>Cancel</button>
-                            <button className="Add" onClick={handleAddFriend}>Add</button>
+                            <button className="Cancel" onClick={togglePopup}>
+                                Cancel
+                            </button>
+                            <button className="Add" onClick={handleAddFriend}>
+                                Add
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
-        </>
+    </>
     );
 }

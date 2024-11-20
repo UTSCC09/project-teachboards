@@ -2,14 +2,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuth } from "../Content/AuthContext"; 
+import { useRouter } from "next/navigation";
 import "./Header.css";
 
 export default function Header() {
     const { user, logout } = useAuth();
     const [width, setWidth] = useState(1500);
     const [menuDropDown, setMenuDropDown] = useState(false);
+    const router = useRouter();
     const modelRef = useRef();
 
+    const handleLogout = () =>{
+        logout();
+        router.push("/home");
+    };
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
         setWidth(window.innerWidth);
@@ -56,7 +62,7 @@ export default function Header() {
                                         </li>}
                                         <li className="DD-Option">
                                             {user ? (
-                                                <button onClick={logout}>LOGOUT</button>
+                                                <button onClick={handleLogout}>LOGOUT</button>
                                             ) : (
                                                 <Link href="/login">Login</Link>
                                             )}
@@ -84,7 +90,7 @@ export default function Header() {
                             </li>}
                             <li>
                                 {user ? (
-                                    <button className="Nav-Options" onClick={logout}><p>LOGOUT</p></button>
+                                    <button className="Nav-Options" onClick={handleLogout}><p>LOGOUT</p></button>
                                 ) : (
                                     <Link className="Nav-Options" href="/login"><p>Login</p></Link>
                                 )}

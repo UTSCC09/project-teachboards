@@ -1,6 +1,8 @@
 import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "../../../firebase.js";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, query, collection, where, getDocs } from "firebase/firestore";
 import validator from "validator";
+import { SignJWT } from "jose";
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function POST(req){
     const body = await req.json();
@@ -8,23 +10,51 @@ export async function POST(req){
     const lastName = validator.escape(body.lastName);
     const email = validator.escape(body.email);
     const password = body.password;
-    const classes = body.classes;
+    const classRooms = [];
+    const friends = {};
+    const friendsPending= {};
     const role = body.role;
+    const username = validator.escape(body.username);
+    const status = "online";
+
     
     try{
-        const userInfo = await createUserWithEmailAndPassword(auth,email,password);
+        //check if username exist or not already later....
+        //change ID to username since its safer 
+        const userQuery = query((collection(db, "users")), where("username", "==", username));
+        const existingUser = await getDocs(userQuery);
+
+        if (existingUser.length !== 0){
+            console.log("Username bad");
+            return new Response(JSON.stringify({ message: "User exist" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        let userInfo = await createUserWithEmailAndPassword(auth,email,password);
+        userInfo = await signInWithEmailAndPassword(auth, email, password);
         const id = userInfo.user.uid;
         await setDoc(doc(db,"users",id), {
             firstName,
             lastName,
+            username,
             email,
             role,
-            classes,
+            friends,
+            friendsPending,
+            status,
+            classRooms,
             uid: id
         });
+        const token = await new SignJWT({id, firstName, lastName})
+        .setProtectedHeader({alg:"HS256"}).setIssuedAt().setExpirationTime("7d").sign(JWT_SECRET);
         return new Response(JSON.stringify({ message: "User signed in" }), {
             status: 201,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                 "Set-Cookie": `session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`
+            },
+
         });
     }
     catch (error){
