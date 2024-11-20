@@ -7,9 +7,10 @@ import { useAuth } from "../Content/AuthContext";
 // all i need now is the a way to get to the clasroom rn 
 
 export default function HomePage() {
-    const { user } = useAuth();
+    const { user,checkAuthStatus} = useAuth();
     const [className, setClassName] = useState("");
     const [classrooms, setClassrooms] = useState([]);
+
     const handleAddClassroom = async (e) => {
         e.preventDefault();
         const id = user.id;
@@ -35,7 +36,7 @@ export default function HomePage() {
         }
     };
 
-    const handleGetClassroom = async (e) =>{
+    const handleGetClassroom = async () =>{
         const id = user.id;
         if (id != null){
             try{    
@@ -61,7 +62,7 @@ export default function HomePage() {
         if (user) {
             handleGetClassroom();
         }
-    }, [user]); 
+    }, [user,checkAuthStatus]); 
 
     return (
         <div className="HomePageContainer">

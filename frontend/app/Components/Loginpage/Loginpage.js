@@ -30,7 +30,7 @@ export default function Loginpage(){
             console.log("User signed in successfully");
             e.target.reset();
             await checkAuthStatus();
-            router.back();
+            router.push("/home");
         } catch (error) {
             console.error("Error signing in", error.message);
             seterrorMessage("Could not sign in, please try again");

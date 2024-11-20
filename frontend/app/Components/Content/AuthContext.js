@@ -1,18 +1,15 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); 
-    const router = useRouter();
 
     const checkAuthStatus = async () => {
         const response = await fetch("/api/auth/verifySession", { method: "GET" });
         if (response.ok) {
             const data = await response.json();
             setUser(data); 
-            router.push("/home");
         } else {
             setUser(null); 
         }
