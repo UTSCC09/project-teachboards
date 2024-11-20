@@ -43,3 +43,10 @@ CHANGE ALL USER OF ID TO USERNAME BTW LATER SINCE ITS TECHNICALLY SAFER \
 
 
 add pop up that tell you when error return happens
+
+
+thing to change like secure 
+in profile id 
+signin
+signup
+singout
