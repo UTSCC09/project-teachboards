@@ -45,6 +45,15 @@ export default function Header() {
                                         <li className="DD-Option">
                                             <Link href="/home">Home</Link>
                                         </li>
+                                        {user && <li className="DD-Option">
+                                            <Link href="/messages">Messages</Link>
+                                        </li>}
+                                        {user && <li className="DD-Option">
+                                            <Link href="/friends">Friends</Link>
+                                        </li>}
+                                        {user && <li className="DD-Option">
+                                            <Link href="/profile">Profile</Link>
+                                        </li>}
                                         <li className="DD-Option">
                                             {user ? (
                                                 <button onClick={logout}>LOGOUT</button>
@@ -62,8 +71,14 @@ export default function Header() {
                     ) : (
                         <>
                             <li>
-                                <Link className="Nav-Options" href="/"><p>Home</p></Link>
+                                <Link className="Nav-Options" href="/home"><p>Home</p></Link>
                             </li>
+                            {user && <li>
+                                <Link className="Nav-Options" href="/messages"><p>Messages</p></Link>
+                            </li>}
+                            {user && <li>
+                                <Link className="Nav-Options" href="/friends"><p>Friends</p></Link>
+                            </li>}
                             {user && <li>
                                 <Link className="Nav-Options" href="/profile"><p>Profile</p></Link>
                             </li>}
