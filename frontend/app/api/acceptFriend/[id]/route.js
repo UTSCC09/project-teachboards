@@ -12,7 +12,7 @@ export async function PATCH(req, { params }){
         const userQuery = query((collection(db,"users")),where("username", "==", otherUsername));
         const userExist = await getDocs(userQuery);
 
-        if (userExist.length === 0 || !userExist.docs[0]){
+        if (userExist.empty || !userExist.docs[0]){
             console.log("no user exist with that name");
             return new Response(JSON.stringify({ message: "User does not exist" }), {
                 status: 400,

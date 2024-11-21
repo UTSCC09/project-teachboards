@@ -10,7 +10,7 @@ export async function POST(req){
     try {
         const userQuery = query((collection(db,"users")),where("username", "==",username));
         const userExist = await getDocs(userQuery);
-        if (userExist.length === 0){
+        if (userExist.empty){
             console.log("no user exist with that name");
             return new Response(JSON.stringify({ message: "User does not exist" }), {
                 status: 400,
