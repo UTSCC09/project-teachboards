@@ -47,7 +47,7 @@ export default function HomePage() {
                 const data = await response.json();
                 if (!response.ok){
                     console.log("could not get clasrooms");
-                    setClassrooms([])
+                    setClassrooms([]);
                     return;
                 }
                 setClassrooms(data);

@@ -32,14 +32,13 @@
 
 .friend-card {
     padding: 15px;
-    border: 1px solid #ddd;
+    background-color: #f5f5f5;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 200px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ccc;
 }
 
 .friend-card span:first-child {
@@ -81,14 +80,14 @@ Prompt was using this image can you generate me a popup for adding a friend?
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 .popup {
-    background-color: #fff;
+    background-color: #f5f5f5;
     padding: 20px;
     border-radius: 8px;
     width: 300px;
@@ -104,7 +103,7 @@ Prompt was using this image can you generate me a popup for adding a friend?
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 8px;
 }
 
