@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./HomePage.css";
 import Link from "next/link";
-import { useAuth } from "../Content/AuthContext";
+import { useAuth } from "../Content/AuthContext.js";
 
 // all i need now is the a way to get to the clasroom rn 
 

@@ -12,6 +12,18 @@ services:
     expose:
       - "3000"  # Only expose port 3000 within the Docker network
 
+   # Backend WebSocket service
+  backend:
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    container_name: backend
+    restart: always
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "4000:4000" # Expose WebSocket backend
+
   # Nginx reverse proxy for HTTP (and HTTPS later if needed)
   nginx:
     image: nginx:latest
