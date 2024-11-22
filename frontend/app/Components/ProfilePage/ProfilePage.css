@@ -1,23 +1,26 @@
-
-.SignInContainer {
+.screen {
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; 
-    background-color: rgba(0, 0, 0, 0.1); 
-    position: fixed; 
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1);
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
 }
 
-.SignInBox {
+.profilePageContainer {
     background-color: #fff;
-    padding: 40px;
+    padding: 35px;
     border-radius: 10px;
-    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1); 
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 h2 {
@@ -27,18 +30,19 @@ h2 {
     text-align: center;
 }
 
-.SignInInput {
+.profileField {
+    width: 100%;
     margin-bottom: 20px;
 }
 
-.SignInInput label {
+.profileField label {
     display: block;
     margin-bottom: 8px;
     font-size: 14px;
     color: #555;
 }
 
-.SignInInput input {
+.profileField input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -47,7 +51,7 @@ h2 {
     font-size: 16px;
 }
 
-.SignInBtn {
+.submitButton {
     width: 100%;
     padding: 12px;
     background-color: #191919;
@@ -59,17 +63,6 @@ h2 {
     transition: background-color 0.3s ease;
 }
 
-.SignInBtn:hover {
+.submitButton:hover {
     background-color: #4b4b4b;
-}
-
-.signup{
-    color:rgb(0, 0, 0);
-    text-align:center;
-    font-size:18px;
-    cursor:pointer;
-}
-
-.signup:active{
-    color:rgb(144, 144, 144);
 }

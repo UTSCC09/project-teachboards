@@ -1,14 +1,13 @@
-/* Header.css */
-
 .Nav-Bar {
     width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     z-index: 2;
-  }
-  
-  .Nav-Bar-Container {
+}
+
+.Nav-Bar-Container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,114 +15,125 @@
     height: 80px;
     width: 100%;
     align-self: flex-start;
-  }
-  
-  .Nav-List {
+}
+
+.Nav-List {
     width: 100%;
     list-style: none;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-  }
-  
-  .Nav-Options {
-      position: relative;
-      width: 140px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      user-select: none;
-      cursor: pointer;
-      margin: 0 30px;
-      border: 2px solid black;
-      overflow: hidden;
-  }
-  
-  .Nav-Options p {
-      font-size: 16px;
-      text-transform: uppercase;
-      color: black;
-      z-index: 100;
-      text-decoration: none;
-      transition: color 200ms ease;
-  }
-  
-  .Nav-Options:hover p {
-      color: white;
-  }
-  
-  .Nav-Options::before {
-      content: ""; /* This is here so that we can use before and after*/
-      position: absolute;
-      width: 0%;
-      height: 100%;
-      transform: skew(30deg);
-      background: black;
-      transition: width 400ms ease;
-      transform: skew(-20deg);
-  }
-  
-  /*This hover is triggering the before*/
-  .Nav-Options:hover::before {
-      width: 120%;
-  }
-  
-  .Nav-EXTRA {
-      position: relative;
-      width: 140px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      user-select: none;
-      cursor: pointer;
-      margin: 0 30px;
-      border: 2px solid black;
-      overflow: hidden;
-      font-size: 16px;
-      text-transform: uppercase;
-      color: black;
-      z-index: 10;
-      text-decoration: none;
-  }
-  
-  .Nav-Title {
-      font-size: 20px;
-      font-weight: bold;
-      color: black;
-  }
-  
-  .container {
-      display: flex;
-      flex-direction: column;
-      position: fixed; 
-      align-items: center;
-  }
-  
-  .DropDown {
-      position: absolute;
-      top: 100%;
-      background-color: #ffffff;
-      border-radius: 5px;
-      border: 1px solid black;
-      box-shadow: rgba(0, 0, 0, 0.25) 0px 8px 16px;
-      z-index: 10;
-  }
-  
-  .DropDown-List {
-      display: flex;
-      flex-direction: column;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-  }
-  
-  .DD-Option {
-      padding: 10px 20px;
-      cursor: pointer;
-      border: 1px solid black;
-  }
-  
+}
+
+.Nav-Options {
+    position: relative;
+    width: 8vw;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    margin: 0 1vw;
+    border: 2px solid black;
+    overflow: hidden;
+}
+
+.Nav-Options p {
+    font-size: 16px;
+    text-transform: uppercase;
+    color: black;
+    z-index: 100;
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.Nav-Options:hover p {
+    color: white;
+}
+
+.Nav-Options::before {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 100%;
+    transform: skew(30deg);
+    background: black;
+    transition: width 400ms ease;
+    transform: skew(-20deg);
+}
+
+.Nav-Options:hover::before {
+    width: 120%;
+}
+
+.Nav-EXTRA {
+    position: relative;
+    width: 140px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    margin: 0 30px;
+    border: 2px solid black;
+    overflow: hidden;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: black;
+    z-index: 10;
+    text-decoration: none;
+}
+
+.Nav-Title {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    align-items: center;
+}
+
+.DropDown {
+    position: fixed;
+    top: 60px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 8px 16px;
+    z-index: 10;
+}
+
+.DropDown-List {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.DD-Option {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+
+@media (max-width: 1400px) {
+    .Nav-Options {
+        width: 112px;
+        margin: 0 14px;
+    }
+
+    .Nav-EXTRA {
+        width: 112px; 
+        margin: 0 14px;
+    }
+}

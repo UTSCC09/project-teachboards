@@ -1,4 +1,3 @@
-version: '3'
 services:
   # Frontend service
   frontend:
@@ -7,6 +6,9 @@ services:
       dockerfile: frontend.dockerfile
     container_name: frontend
     restart: always
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=487def17ca241bb783ed1fdcb9ebc7ef21dd87d180bd40fc8b6fddb2e839110c
     expose:
       - "3000"  # Only expose port 3000 within the Docker network
 

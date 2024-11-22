@@ -1,0 +1,48 @@
+# Dependencies
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build output
+/dist
+
+# Debug
+*.swp
+*.swo
+*.swn
+*.swm
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Miscellaneous
+*.bak
+*.tmp
+*.lock
+
+# Ignore socket logs
+socket-logs/
+
+# Ignore Docker generated files (if any)
+/docker-compose.override.yml
