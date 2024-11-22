@@ -55,3 +55,11 @@ singout
 
 
 add a remove friends option kms
+
+
+
+
+
+
+ALSO ADD A FEATURE IN new message THAT MAKE IT SO IT CHECK IF YOU ARE FRIENDS FIRST 
+ADD SOMETHING THAT PREVENT SPACES IN USERNAME 
