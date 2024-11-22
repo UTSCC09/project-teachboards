@@ -10,9 +10,10 @@ export async function POST(req){
     const lastName = validator.escape(body.lastName);
     const email = validator.escape(body.email);
     const password = body.password;
-    const classRooms = [];
+    const classrooms = [];
     const friends = {};
     const friendsPending= {};
+    const chatrooms = [];
     const role = body.role;
     const username = validator.escape(body.username);
     console.log(username);
@@ -42,7 +43,8 @@ export async function POST(req){
             friends,
             friendsPending,
             status,
-            classRooms,
+            classrooms,
+            chatrooms,
             uid: id
         });
         const token = await new SignJWT({id, firstName, lastName})
