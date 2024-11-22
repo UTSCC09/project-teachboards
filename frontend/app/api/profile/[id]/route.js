@@ -31,7 +31,7 @@ export async function PATCH(req,{params}){
         return new Response(JSON.stringify({message:"Successfully changed data"}),{
             status:200,
             headers:{"Content-Type":"application/json",
-            "Set-Cookie": `session=${token}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=604800`
+            "Set-Cookie": `session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`
             },
         });
     }
