@@ -81,6 +81,10 @@ export default function Allmessage() {
             shouldContinueRef.current = true;
             getMessages();
         }
+        else{
+            shouldContinueRef.current = false;
+            setMessages([]);
+        }   
 
         return () => {
             shouldContinueRef.current = false;
@@ -153,6 +157,12 @@ export default function Allmessage() {
         console.error("Could not create chat", error);
     }
   };
+  const switchChats = (chat) => {
+    setCurrentChat(null);
+    setTimeout(() => {
+        setCurrentChat(chat); 
+    }, 500);
+};
 //
   return (
     <div className="AM-container">
@@ -170,7 +180,7 @@ export default function Allmessage() {
                         currentChat?.chatID === chat.chatID ? "AM-active" : ""
                     }`}
                     onClick={() => {
-                        setCurrentChat(chat);
+                        switchChats(chat);
                         shouldContinueRef.current = true;
                     }}
                     

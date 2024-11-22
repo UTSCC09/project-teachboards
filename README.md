@@ -63,3 +63,14 @@ add a remove friends option kms
 
 ALSO ADD A FEATURE IN new message THAT MAKE IT SO IT CHECK IF YOU ARE FRIENDS FIRST 
 ADD SOMETHING THAT PREVENT SPACES IN USERNAME 
+
+
+
+
+i need to add better scroll handling in messages
+basically i need to query less messags 
+and have the message stack upards once they hit the bottom...
+also i need to make sure when i scroll up that new message load
+
+
+PREVENT XXS attack using valiator 

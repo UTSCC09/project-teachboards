@@ -9,13 +9,17 @@ export default function ProfilePage() {
     const [profileFirstName, setProfileFirstName] = useState("");
     const [profileLastName, setProfileLastName] = useState("");
     const [profileEmail, setProfileEmail] = useState("");
+    const [profileUsername, setProfileUsername] = useState("");
 
     const handleSubmit = async (e) => {
         const id = user.id;
         e.preventDefault();
-        const pack = {firstName:profileFirstName,
+        const pack = {
+            firstName:profileFirstName,
             lastName: profileLastName,
-            email: profileEmail};
+            email: profileEmail,
+            username: profileUsername};
+            
         try{
             const response = await fetch(`/api/profile/${id}`,{
                 method:"PATCH",
@@ -49,6 +53,7 @@ export default function ProfilePage() {
             setProfileFirstName(returnValue.firstName);
             setProfileLastName(returnValue.lastName);
             setProfileEmail(returnValue.email);
+            setProfileUsername(returnValue.username);
         }   
         catch(error){
             console.log("error getting user data", error.message);
@@ -83,10 +88,19 @@ export default function ProfilePage() {
                     />
                 </div>
                 <div className="profileField">
+                    <label htmlFor="profileUsername">Username:</label>
+                    <input
+                        id="profileUsername"
+                        type="text"
+                        value={profileUsername}
+                        onChange={(e) => setProfileUsername(e.target.value)}
+                    />
+                </div>
+                <div className="profileField">
                     <label htmlFor="profileEmail">Email:</label>
                     <input
                         id="profileEmail"
-                        type="email"
+                        type="text"
                         value={profileEmail}
                         onChange={(e) => setProfileEmail(e.target.value)}
                     />

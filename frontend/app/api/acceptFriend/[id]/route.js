@@ -6,9 +6,10 @@ import { doc, collection, updateDoc, query, where, getDocs, deleteField, getDoc}
 export async function PATCH(req, { params }){
     const body = await req.json();
     const {id} = params;
-    const otherUsername = body.username;
+    let otherUsername = body.username;
 
     try{
+        otherUsername = otherUsername.toLowerCase();
         const userQuery = query((collection(db,"users")),where("username", "==", otherUsername));
         const userExist = await getDocs(userQuery);
 
