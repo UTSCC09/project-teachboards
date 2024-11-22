@@ -9,9 +9,22 @@ services:
     environment:
       - NODE_ENV=production
       - JWT_SECRET=487def17ca241bb783ed1fdcb9ebc7ef21dd87d180bd40fc8b6fddb2e839110c
+    env_file: .env
     expose:
       - "3000"  # Only expose port 3000 within the Docker network
-      
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    container_name: backend
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - API_KEY=AIzaSyDjwwn1vo3g1KUV7p3stN2uq3_Vy6EKHZ8
+    expose:
+      - "4000"  # Expose port 4000 within the Docker network
+
   # Nginx reverse proxy for HTTP (and HTTPS later if needed)
   nginx:
     image: nginx:latest

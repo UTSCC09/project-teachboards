@@ -45,34 +45,6 @@ export default function Header() {
                     {width <= 825 ? (
                         <li className="Nav-EXTRA" onClick={toggleMenu}>
                             MENU
-                            {menuDropDown && (
-                                <div className="DropDown" ref={modelRef}>
-                                    <ul className="DropDown-List">
-                                        <li className="DD-Option">
-                                            <Link href="/home">Home</Link>
-                                        </li>
-                                        {user && <li className="DD-Option">
-                                            <Link href="/messages">Messages</Link>
-                                        </li>}
-                                        {user && <li className="DD-Option">
-                                            <Link href="/friends">Friends</Link>
-                                        </li>}
-                                        {user && <li className="DD-Option">
-                                            <Link href="/profile">Profile</Link>
-                                        </li>}
-                                        <li className="DD-Option">
-                                            {user ? (
-                                                <button onClick={handleLogout}>LOGOUT</button>
-                                            ) : (
-                                                <Link href="/login">Login</Link>
-                                            )}
-                                        </li>
-                                        {user && <li className="DD-Option">
-                                            <Link href="/draw"><p>draw</p></Link>
-                                        </li>}
-                                    </ul>
-                                </div>
-                            )}
                         </li>
                     ) : (
                         <>
@@ -102,6 +74,34 @@ export default function Header() {
                     )}
                 </ul>
             </div>
+            {menuDropDown && (
+                                <div className="DropDown" ref={modelRef}>
+                                    <ul className="DropDown-List">
+                                        <li className="DD-Option">
+                                            <Link href="/home">Home</Link>
+                                        </li>
+                                        {user && <li className="DD-Option">
+                                            <Link href="/messages">Messages</Link>
+                                        </li>}
+                                        {user && <li className="DD-Option">
+                                            <Link href="/friends">Friends</Link>
+                                        </li>}
+                                        {user && <li className="DD-Option">
+                                            <Link href="/profile">Profile</Link>
+                                        </li>}
+                                        <li className="DD-Option">
+                                            {user ? (
+                                                <button onClick={handleLogout}>LOGOUT</button>
+                                            ) : (
+                                                <Link href="/login">Login</Link>
+                                            )}
+                                        </li>
+                                        {user && <li className="DD-Option">
+                                            <Link href="/draw"><p>draw</p></Link>
+                                        </li>}
+                                    </ul>
+                                </div>
+            )}
         </div>
     );
 }

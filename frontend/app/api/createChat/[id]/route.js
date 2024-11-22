@@ -32,11 +32,12 @@ export async function POST(req,{params}){
 
         const updatePromises = usernameList.map(async (username) => {
             try{
-            const userQuery = query(collection(db, "users"), where("username", "==", username));
-            const userSnapshot = await getDocs(userQuery);
+            const name = username.toLowerCase();
+            const userDoc = query(collection(db, "users"), where("username", "==", name));
+            const userReturn = await getDocs(userDoc);
       
-            if (!userSnapshot.empty) {
-              const userDocRef = userSnapshot.docs[0].ref; 
+            if (!userReturn.empty) {
+              const userDocRef = userReturn.docs[0].ref; 
               return updateDoc(userDocRef, {
                 chatrooms: arrayUnion({chatID:chatID, chatName:chatName}),
               });

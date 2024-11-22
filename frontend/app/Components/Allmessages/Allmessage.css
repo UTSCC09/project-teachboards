@@ -1,16 +1,29 @@
+/*
+black: rgb(13, 16, 15);
+actual white: rgb(232, 229, 229);
+acutal whit hover:rgb(215, 211, 211);
+anoter off white: rgb(255, 252, 240);
+hover off white:rgb(229, 228, 218);
+*/
+
+
+
 body, html {
     overflow-x: hidden; 
+    background-color:rgb(13, 16, 15);
 }
 
 .AM-container {
     display: flex;
     height: 100vh;
+    
     overflow: hidden; 
 }
 
 .AM-left-panel {
     width: 25%;
-    background-color: #ffffff; 
+    background-color: rgb(13, 16, 15);
+    color:rgb(232, 229, 229);
     border-right: 1px solid #2a2a2a; 
     display: flex;
     flex-direction: column;
@@ -18,38 +31,38 @@ body, html {
 }
   
 .AM-create-chat-btn {
-    background-color: #2a2a2a; 
-    color: white; 
+    background-color:rgb(13, 16, 15); 
+    color: rgb(232, 229, 229);
     border: none;
     padding: 15px;
     cursor: pointer;
     text-align: center;
     font-size: 16px;
-    border-bottom: 0.5px solid #ffffff; 
 }
   
 .AM-chat-list {
     flex: 1;
     overflow-y: auto;
-    background-color: #ffffff; 
+    background-color: rgb(13, 16, 15);
+    color:rgb(232, 229, 229);
 }
   
 .AM-chat-item {
     padding: 15px 10px;
     cursor: pointer;
     font-size: 14px;
-    color: black; 
+    color:rgb(232, 229, 229);
     transition: background-color 0.3s;
 }
   
 .AM-chat-item.AM-active {
-    background-color: #2a2a2a; 
-    color:white;
+    background-color: rgb(35, 35, 35);
+    color:rgb(232, 229, 229);
     font-weight: bold;
 }
   
 .AM-chat-item:hover {
-    background-color: #838383; 
+    background-color: rgb(30, 30, 30);
 }
   
 
@@ -57,19 +70,19 @@ body, html {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #ffffff;
+    background-color: rgb(13, 16, 15);
     position: relative; 
     overflow: hidden; 
+    color:rgb(232, 229, 229); 
 }
   
 .AM-chat-header {
     padding: 15px;
-    background-color: #2a2a2a; 
-    color: white; 
+    background-color: rgb(30, 30, 30); 
+    color: rgb(232, 229, 229);
     font-size: 16px;
-    border-left:0.5px solid white;
     font-weight: bold;
-    border-bottom: 0.5px solid #ffffff; 
+    border-bottom: 0.5px solid rgb(35, 35, 35);
 }
   
 .AM-chat-messages {
@@ -78,7 +91,7 @@ body, html {
     padding: 15px;
     box-sizing: border-box;
     margin-bottom: 60px; 
-    background-color: #ffffff; 
+    background-color: rgb(13, 16, 15);
 }
   
 .AM-message {
@@ -87,6 +100,7 @@ body, html {
     border-radius: 10px;
     max-width: 70%;
     word-wrap: break-word; 
+    color: rgb(232, 229, 229); 
 }
   
 .AM-message.AM-sent {
@@ -96,8 +110,8 @@ body, html {
 }
   
 .AM-message.AM-received {
-    background-color: #464646; 
-    color: #ffffff; 
+    background-color: rgb(35, 35, 35);
+    color: rgb(232, 229, 229); 
 }
   
 .AM-chat-input {
@@ -109,20 +123,17 @@ body, html {
     width: 75%;      
     box-sizing: border-box; 
     z-index: 10; 
-    background-color: #ffffff; 
-    border-top: 1px solid #2a2a2a; 
 }
 
 .AM-chat-input textarea {
     flex: 1; 
     resize: none; 
-    border: 1px solid #e0e0e0; 
     padding: 10px;
     font-size: 14px;
-    color:black;
+    color: rgb(232, 229, 229); 
+    background-color:rgb(35, 35, 35);
     border-radius: 5px;
     box-sizing: border-box;
-    background-color: #ffffff; 
     cursor:text;
 }
 
@@ -140,7 +151,7 @@ body, html {
   }
   
   .AM-create-content {
-    background-color: #f5f5f5;
+    background-color: rgb(232, 229, 229);
     padding: 20px;
     border-radius: 10px;
     width: 400px;
@@ -174,11 +185,12 @@ body, html {
   }
 
 .AMCreate {
-    background-color: #2a2a2a;
-    color: white;
+    background-color:rgb(13, 16, 15) ;
+    color:rgb(232, 229, 229);
   }
   
 .AMCancel {
-    background-color: #ccc;
+    background-color: rgb(13, 16, 15);
+    color:rgb(232, 229, 229);
   }
   

@@ -11,6 +11,7 @@ export async function PATCH(req,{params}){
     const firstName = validator.escape(body.firstName);
     const lastName = validator.escape(body.lastName);
     const email = validator.escape(body.email);
+    let username = validator.escape(body.username);
 
     if (!id){
         return new Response(JSON.stringify({message:"Id is invalid"}),{
@@ -20,18 +21,20 @@ export async function PATCH(req,{params}){
     }
 
     try{
+        username = username.toLowerCase();
         const userDB = doc(db, "users", id);
         await updateDoc(userDB, {
             firstName: firstName,
             lastName: lastName,
             email: email,
+            username:username,
         });
         const token = await new SignJWT({ id, firstName, lastName }).setProtectedHeader({alg:"HS256"}).setIssuedAt().setExpirationTime("7d").sign(JWT_SECRET);
 
         return new Response(JSON.stringify({message:"Successfully changed data"}),{
             status:200,
             headers:{"Content-Type":"application/json",
-            "Set-Cookie": `session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`
+            "Set-Cookie": `session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`
             },
         });
     }
@@ -68,6 +71,7 @@ export async function GET(req, { params }) {
             email: userData.email,
             firstName: userData.firstName,
             lastName: userData.lastName,
+            username:userData.username,
         };
         return new Response(JSON.stringify(userReturn),{
             status:200,
