@@ -5,9 +5,10 @@ import validator from "validator";
 export async function POST(req){
     const body = await req.json();
     const id = body.id;
-    const username = validator.escape(body.newfriend);
+    let username = validator.escape(body.newfriend);
     // still need to retrive the status from this 
     try {
+        username = username.toLowerCase();
         const userQuery = query((collection(db,"users")),where("username", "==",username));
         const userExist = await getDocs(userQuery);
         if (userExist.empty){

@@ -15,12 +15,13 @@ export async function POST(req){
     const friendsPending= {};
     const chatrooms = [];
     const role = body.role;
-    const username = validator.escape(body.username);
+    let username = validator.escape(body.username);
     console.log(username);
     const status = "online";
 
     
     try{
+        username = username.toLowerCase();
         const userQuery = query((collection(db, "users")), where("username", "==", username));
         const existingUser = await getDocs(userQuery);
 
