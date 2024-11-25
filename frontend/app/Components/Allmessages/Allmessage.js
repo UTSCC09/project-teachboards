@@ -2,8 +2,9 @@
 import "./Allmessage.css";
 import React, { useState, useEffect,useRef } from "react";
 import { useAuth } from "../Content/AuthContext.js";
+import {io} from "socket.io-client";
 
-
+const socket = io("http://localhost:4000");
 
 export default function Allmessage() {
     const { user } = useAuth();
@@ -14,85 +15,67 @@ export default function Allmessage() {
     const [createOpen, setCreateOpen] = useState(false); 
     const [chatName, setChatName] = useState(""); 
     const [usernames, setUsernames] = useState(""); 
-    const shouldContinueRef = useRef(false);
+    const [isConnected,setConnected] = useState(false);
 
-    const handleEnter = async (e) => {
-        if(e.key === "Enter" && !e.shiftKey){
-            e.preventDefault();
-            if (!currentChat) return;
-            if (!sendMessage.trim() || !user) return;
-            const chatID = currentChat.chatID;
-            const pack = {chatID:chatID, messageText:sendMessage,
-                messageSender:user.firstName,dateSent: new Date().toISOString(),};
-
-            try{
-                const response = await fetch(`/api/sendMessage`,{
-                    method:"POST",
-                    headers:{"Content-Type":"application/json"},
-                    body:JSON.stringify(pack),
-                })
-
-                const data = await response.json();
-
-                if(!response.ok){
-                    console.error("failed to send message");
-                    return;
-                }
-                setsendMessage("");
-            }
-            catch(error){
-                console.log(error);
-            }
-        }
-    };
-    //this box here is all for longpulling the messages 
-    const getMessages = async () => {
-        if (!currentChat || !shouldContinueRef.current) {
-            return;
-        }
-        try {
-            const response = await fetch(`/api/chatlongpull/${currentChat.chatID}`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
-    
-            const data = await response.json();
-    
-            if (!response.ok) {
-                console.error("Could not get messages:", data.message);
-                setMessages([]);
-                return;
-            }
-            console.log("Retrieved message"); 
-            setMessages(Array.isArray(data.messagereturn) ? data.messagereturn : []);
-            if (shouldContinueRef.current) {
-                setTimeout(getMessages, 500); 
-            }
-        } catch (error) {
-            console.error("Error fetching messages:", error);
-            if (shouldContinueRef.current) {
-                setTimeout(getMessages, 3000); 
-            }
-        }
-    };
-    
-    useEffect(() => {
-        if (currentChat) {
-            shouldContinueRef.current = true;
-            getMessages();
-        }
-        else{
-            shouldContinueRef.current = false;
-            setMessages([]);
-        }   
-
-        return () => {
-            shouldContinueRef.current = false;
-        };
-    }, [currentChat]);
-    
     //
+    const joinChat = (chatID) => {
+      if (!chatID) {
+        console.log("no class room man");
+        return;
+      }
+      clearALL();
+      const chatid = chatID.chatID;
+      socket.emit("retrived-message", chatid);
+      socket.on("retrived-messages", (data) => {
+        setConnected(true);
+        setMessages(data.messageReturn);
+      });
+      socket.on("retrived-error", (error) => {
+        console.error(error.message);
+      });
+      socket.on("receive-message", (data) => {
+        console.log("New message received:", data);
+        setMessages((prevMessages) => [...prevMessages, data]);
+      });
+    };
+    
+    const handleEnter = (e)=>{
+        if(e.key === "Enter" && !e.shiftKey && isConnected){
+          e.preventDefault();
+          if(!sendMessage.trim()){return;} 
+          if(!sendMessage || !user || !currentChat.chatID) return;
+          const chatID = currentChat.chatID;
+          const data = {
+            chatID:chatID,
+            messageText: sendMessage,
+            messageSender: user.firstName
+          };
+          setMessages((prevMessages) =>[...prevMessages,data,]);
+          socket.emit("send-message",data);
+          socket.on("send-error", (error)=>{
+            console.error(error);
+          })
+          setsendMessage("");
+      }
+    }
+    const clearALL =() =>{
+      setConnected(false);
+      socket.off("retrived-messages");
+      socket.off("retrived-error");
+      socket.off("receive-message");
+      socket.off("send-error");
+    }
 
+    const switchChat = (chatID) =>{
+      setCurrentChat(chatID);
+      setMessages([]);
+      joinChat(chatID);
+    };
+    useEffect(()=>{
+      return()=>{      
+        clearALL();
+      }
+    },[])
     //this area is handling the getting the chatrooms in general
     useEffect(()=>{
         if(user){
@@ -157,12 +140,7 @@ export default function Allmessage() {
         console.error("Could not create chat", error);
     }
   };
-  const switchChats = (chat) => {
-    setCurrentChat(null);
-    setTimeout(() => {
-        setCurrentChat(chat); 
-    }, 500);
-};
+
 //
   return (
     <div className="AM-container">
@@ -180,8 +158,7 @@ export default function Allmessage() {
                         currentChat?.chatID === chat.chatID ? "AM-active" : ""
                     }`}
                     onClick={() => {
-                        switchChats(chat);
-                        shouldContinueRef.current = true;
+                        switchChat(chat);
                     }}
                     
                 >
@@ -200,11 +177,14 @@ export default function Allmessage() {
           <>
             <div className="AM-chat-header">{currentChat.chatName}</div>
             <div className="AM-chat-messages">
-              {messages.map((msg) => (
-                <div key={msg.id} className={`AM-message AM-NONE`}>
-                  {msg.messageSender + ": " + msg.messageText}
-                </div>
-              ))}
+                {messages.map((msg, index) => (
+                    <div
+                        key={msg.id || `msg-${index}`} 
+                        className={`AM-message AM-NONE`}
+                    >
+                        {msg.messageSender + ": " + msg.messageText}
+                    </div>
+                ))}
             </div>
             <div className="AM-chat-input">
                 <textarea 

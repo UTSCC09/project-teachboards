@@ -1,9 +1,21 @@
+/*
+black: rgb(13, 16, 15);
+actual white: rgb(232, 229, 229);
+acutal whit hover:rgb(215, 211, 211);
+anoter off white: rgb(255, 252, 240);
+hover off white:rgb(229, 228, 218);
+*/
+
+.body, html{
+    background-color:rgb(13, 16, 15);
+}
+
+
 .SignInContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.1);
     position: absolute; 
     top: 0;
     left: 0;
@@ -12,10 +24,9 @@
 
 
 .SignInBox {
-    background-color: #fff;
+    background-color: rgb(232, 229, 229);
     padding: 35px;
     border-radius: 10px;
-    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1); 
     max-width: 400px;
     width: 100%;
 }
@@ -23,7 +34,7 @@
 h2 {
     margin-bottom: 20px;
     font-size: 28px;
-    color: #333;
+    color: rgb(13, 16, 15);
     text-align: center;
 }
 
@@ -35,7 +46,7 @@ h2 {
     display: block;
     margin-bottom: 8px;
     font-size: 14px;
-    color: #555;
+    color: rgb(13, 16, 15);
 }
 
 .SignInInput input {
@@ -50,8 +61,8 @@ h2 {
 .SignInBtn {
     width: 100%;
     padding: 12px;
-    background-color: #191919;
-    color: white;
+    background-color: rgb(13, 16, 15);;
+    color: rgb(232, 229, 229);
     border: none;
     border-radius: 5px;
     font-size: 16px;
@@ -60,7 +71,7 @@ h2 {
 }
 
 .SignInBtn:hover {
-    background-color: #4b4b4b;
+    background-color: rgb(29, 36, 34);;
 }
 
 .signup{
@@ -71,6 +82,3 @@ h2 {
     padding-top:20px;
 }
 
-.signup:active{
-    color:rgb(144, 144, 144);
-}
