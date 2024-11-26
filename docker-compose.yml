@@ -9,6 +9,8 @@ services:
     environment:
       - NODE_ENV=production
       - JWT_SECRET=487def17ca241bb783ed1fdcb9ebc7ef21dd87d180bd40fc8b6fddb2e839110c
+      - GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
     expose:
       - "3000"  # Only expose port 3000 within the Docker network
 
