@@ -5,9 +5,9 @@ import { useAuth } from "../Content/AuthContext.js";
 import {io} from "socket.io-client";
 
 //const socket = io("http://localhost:4000");
-const socket = io("https://petersyoo.com/socket.io", {
+
+const socket = io("http://backend:4000", {
   transports: ["websocket"], // Force WebSocket transport
-  secure: true, // Use HTTPS
 });
 
 export default function Allmessage() {
