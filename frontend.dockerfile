@@ -1,43 +1,27 @@
-# Stage 1: Build the Next.js application
+# frontend.dockerfile
 FROM --platform=linux/amd64 node:lts-slim as build
 
-# Set the working directory
+# Set the working directory to /frontend within the container
 WORKDIR /frontend
 
-# Copy package.json and package-lock.json for dependency installation
-COPY ./frontend/package*.json ./
+# Copy the frontend folder and .env file into the container
+COPY ./frontend /frontend
+COPY ./frontend/.env /frontend/.env
 
 # Install dependencies, handling potential peer dependency conflicts
 RUN npm install --legacy-peer-deps
 
-# Copy the rest of the frontend code to the working directory
-COPY ./frontend ./
-
-# Add environment variables for the build phase
-ARG NEXT_PUBLIC_GOOGLE_CLIENTID
-ARG NEXT_PUBLIC_GOOGLE_SECRET
-ENV NEXT_PUBLIC_GOOGLE_CLIENTID=$NEXT_PUBLIC_GOOGLE_CLIENTID
-ENV NEXT_PUBLIC_GOOGLE_SECRET=$NEXT_PUBLIC_GOOGLE_SECRET
-
 # Build the Next.js application for production
 RUN npm run build
 
-# Stage 2: Create a lightweight production image
+# Set up a lightweight final stage for serving the application
 FROM --platform=linux/amd64 node:lts-slim as production
 
-# Set the working directory
 WORKDIR /frontend
+COPY --from=build /frontend /frontend
 
-# Copy the built Next.js application from the build stage
-COPY --from=build /frontend ./
-
-# Set environment variables explicitly for runtime (optional)
-ENV NODE_ENV=production
-ENV NEXT_PUBLIC_GOOGLE_CLIENTID=$NEXT_PUBLIC_GOOGLE_CLIENTID
-ENV NEXT_PUBLIC_GOOGLE_SECRET=$NEXT_PUBLIC_GOOGLE_SECRET
-
-# Expose the port Next.js will run on
+# Expose the port Next.js will run on (default is 3000)
 EXPOSE 3000
 
-# Command to start the app in production mode
+# Command to run the app in production mode
 CMD ["npm", "run", "start"]

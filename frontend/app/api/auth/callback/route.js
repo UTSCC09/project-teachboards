@@ -4,8 +4,8 @@ import { doc, updateDoc, setDoc, addDoc,collection, getDocs, query, where } from
 import {db } from "../../../firebase.js";
 import { SignJWT } from "jose";
 
-const GOOGLE_CLIENTID = process.env.GOOGLE_CLIENTID;
-const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
+const GOOGLE_CLIENTID = process.env.NEXT_PUBLIC_GOOGLE_CLIENTID;
+const GOOGLE_SECRET = process.env.NEXT_PUBLIC_GOOGLE_SECRET;
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 //This code here was taken by chatgpt 
