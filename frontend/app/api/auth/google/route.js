@@ -5,8 +5,9 @@ import {NextResponse} from 'next/server';
 //I have a next.js app how do I do the google OAUTH im really confused pls help is the best way using api calls or is the best way using the next js thing auth 
 //uploaded a picture so i cannot get the prompt 
 
-const GOOGLE_CLIENTID = process.env.NEXT_PUBLIC_GOOGLE_CLIENTID;
-const GOOGLE_SECRET = process.env.NEXT_PUBLIC_GOOGLE_SECRET;
+const GOOGLE_CLIENTID = process.env.GOOGLE_CLIENTID;
+const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
+
 const NEXTAUTH_URL = "https://petersyoo.com";
 
 export async function GET(){

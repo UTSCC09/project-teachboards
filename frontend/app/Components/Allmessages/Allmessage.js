@@ -9,7 +9,7 @@ import {io} from "socket.io-client";
 const socket = io("https://petersyoo.com", {
   path: "/socket.io",
   transports: ["websocket"],
-  secure: true, // Ensure HTTPS
+  secure: true, 
 });
 
 
