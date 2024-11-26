@@ -11,6 +11,7 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 //This code here was taken by chatgpt 
 // The prompt was I have a next.js app how do I do the google OAUTH im really confused pls help is the best way using api calls or is the best way using the next js thing auth 
 //However a picture was uploaded so I cannot upload the share the chat
+
 export async function GET(request){
     try{
         const {searchParams} = new URL(request.url);
@@ -51,7 +52,7 @@ export async function GET(request){
             response.cookies.set("session", token, {
                 httpOnly: true,
                 sameSite: "Strict",
-                secure: true,
+                secure: false,
                 path: "/",
                 maxAge: 60 * 60 * 24 * 7, // 7 days
             });

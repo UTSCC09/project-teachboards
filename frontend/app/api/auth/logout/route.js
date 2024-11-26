@@ -8,7 +8,7 @@ export async function POST(req, res) {
             status: 200,
             headers: {
                 "Content-Type": "application/json",
-                "Set-Cookie": `session=; Path=/; HttpOnly; Secure, SameSite=Strict; Max-Age=0`,
+                "Set-Cookie": `session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0`,
             },
         });
     } catch (error) {
