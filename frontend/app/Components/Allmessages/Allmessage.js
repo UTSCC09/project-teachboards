@@ -6,9 +6,12 @@ import {io} from "socket.io-client";
 
 //const socket = io("http://localhost:4000");
 
-const socket = io("http://backend:4000", {
-  transports: ["websocket"], // Force WebSocket transport
+const socket = io("https://petersyoo.com", {
+  path: "/socket.io",
+  transports: ["websocket"],
+  secure: true, // Ensure HTTPS
 });
+
 
 export default function Allmessage() {
     const { user } = useAuth();

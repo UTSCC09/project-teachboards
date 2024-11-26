@@ -87,7 +87,7 @@ export function createServer(port, corsOptions) {
 export function startServer() {
   const PORT = 4000;
   const corsOptions = {
-    origin: "https://petersyoo.com", 
+    origin: "*", 
     methods: ["GET", "POST"],
   };
 
