@@ -61,6 +61,7 @@ h2 {
 .SignInBtn {
     width: 100%;
     padding: 12px;
+    margin-top:10px;
     background-color: rgb(13, 16, 15);;
     color: rgb(232, 229, 229);
     border: none;
@@ -80,5 +81,6 @@ h2 {
     font-size:18px;
     cursor:pointer;
     padding-top:20px;
+    margin-top:0px;
 }
 

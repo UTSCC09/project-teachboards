@@ -2,15 +2,18 @@
 FROM --platform=linux/amd64 node:lts-slim
 
 # Set the working directory in the container
-WORKDIR /socket-server
+WORKDIR /backend/socket-server
 
-# Copy the backend code into the container
-COPY ./socket-server /socket-server
+# Copy package.json and package-lock.json from the backend/socket-server directory
+COPY ./backend/socket-server/package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
-# Expose the port the backend WebSocket server will run on (default is 4000)
+# Copy the rest of the backend code from backend/socket-server into the container
+COPY ./backend/socket-server /backend/socket-server
+
+# Expose the port the backend WebSocket server will run on
 EXPOSE 4000
 
 # Command to start the WebSocket server

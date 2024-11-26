@@ -3,8 +3,10 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, addDoc, getDocs, where, orderBy, collection, query, serverTimestamp} from 'firebase/firestore';
 import validator from "validator";
 
+const apiKey = process.env.apiKey;
+
 const firebaseConfig = {
-    apiKey: "AIzaSyDjwwn1vo3g1KUV7p3stN2uq3_Vy6EKHZ8",
+    apiKey: `${apiKey}`,
     authDomain: "teachboards.firebaseapp.com",
     projectId: "teachboards",
     storageBucket: "teachboards.firebasestorage.app",
@@ -17,12 +19,10 @@ const firestore = getFirestore(app);
 const db = getFirestore(app);
 
 //
-
 export function socketStuff(io){
   io.on("connection",(socket)=>{
     console.log("Users just connected");
     //this is for initializing the message
-
     socket.on("retrived-message", async(data)=>{
       try{
         const chatID= data;
@@ -71,24 +71,23 @@ export function socketStuff(io){
         socket.emit("send-error",{message:"Cannot save message"});
       }
     });
-
     //disconnecting 
     socket.on("disconnect", () =>{
       console.log("user disconnected", socket.id);
     });
   });
 } 
-
 // Function to start the server
 export function createServer(port, corsOptions) {
     return new Server(port, {
       cors: corsOptions,
     });
 }
+
 export function startServer() {
   const PORT = 4000;
   const corsOptions = {
-    origin: "*", 
+    origin: "https://petersyoo.com", 
     methods: ["GET", "POST"],
   };
 
@@ -98,5 +97,4 @@ export function startServer() {
   console.log(`Socket.IO server running on http://localhost:${PORT}`);
 }
 
-// Run the server
 startServer();

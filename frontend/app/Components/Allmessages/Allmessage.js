@@ -4,7 +4,11 @@ import React, { useState, useEffect,useRef } from "react";
 import { useAuth } from "../Content/AuthContext.js";
 import {io} from "socket.io-client";
 
-const socket = io("http://localhost:4000");
+//const socket = io("http://localhost:4000");
+const socket = io("https://petersyoo.com/socket.io", {
+  transports: ["websocket"], // Force WebSocket transport
+  secure: true, // Use HTTPS
+});
 
 export default function Allmessage() {
     const { user } = useAuth();
@@ -71,11 +75,13 @@ export default function Allmessage() {
       setMessages([]);
       joinChat(chatID);
     };
+    
     useEffect(()=>{
       return()=>{      
         clearALL();
       }
     },[])
+
     //this area is handling the getting the chatrooms in general
     useEffect(()=>{
         if(user){

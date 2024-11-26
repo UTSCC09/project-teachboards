@@ -4,8 +4,6 @@ import "./HomePage.css";
 import Link from "next/link";
 import { useAuth } from "../Content/AuthContext.js";
 
-// all i need now is the a way to get to the clasroom rn 
-
 export default function HomePage() {
     const { user,checkAuthStatus} = useAuth();
     const [className, setClassName] = useState("");

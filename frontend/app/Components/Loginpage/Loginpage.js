@@ -2,14 +2,18 @@
 import "./Loginpage.css";
 import React, {useEffect, useRef, useState} from "react";
 import { useRouter } from "next/navigation";
+
 import {useAuth} from "../Content/AuthContext";
+
 
 export default function Loginpage(){
     const [errorMessage,seterrorMessage] = useState("Error mesasge");
     const [LoginOrOut, setLoginOrOut] = useState("Login");
     const router = useRouter();
     const { checkAuthStatus } = useAuth();
-
+    const googleAuth = () =>{
+        window.location.href = `/api/auth/google`;
+    };
     const handleSignIn = async (e) =>{
         e.preventDefault();
         const email = e.target.email.value;
@@ -78,7 +82,7 @@ export default function Loginpage(){
         <div className="SignInContainer"> 
         {LoginOrOut === "Login" && <div className="SignInBox">
             <h2>Sign In</h2>
-            <form method="POST" onSubmit={handleSignIn}>
+            <form onSubmit={handleSignIn}>
             <div className="SignInInput">
                 <label htmlFor="email">Email</label>
                 <input type="email" id="email" name="email" required></input>
@@ -88,18 +92,19 @@ export default function Loginpage(){
                 <input type="password" id="password" name="password" required></input>
             </div>
             <button type="submit" className="SignInBtn">Sign In</button>
-            <div className="signup" onClick={switchform}>Click to SignUp</div>
             </form>
+            <button onClick={googleAuth} className= "SignInBtn">Login with Google</button>
+            <div className="signup" onClick={switchform}>Click to SignUp</div>
         </div> }
         
         {LoginOrOut === "SignUp" && <div className = "SignInBox">
             <h2>Sign up</h2>
-            <form method="POST" onSubmit={handleSignUp}>
+            <form onSubmit={handleSignUp}>
             <div className="SignInInput">
                 <label htmlFor="FirstName">First Name</label>
                 <input type="text" id="text" name="FirstName" required></input>
             </div>
-            <div className="SignInInput">
+            <div className="SignInInput">z
                 <label htmlFor="LastName">Last Name</label>
                 <input type="text" id="text" name="LastName" required></input>
             </div>
@@ -126,6 +131,7 @@ export default function Loginpage(){
             <div className="signup" onClick={switchform}>Click to SignIn</div>
             </form>
         </div>}
+
 
     </div>
     )
