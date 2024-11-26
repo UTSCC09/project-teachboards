@@ -14,7 +14,7 @@ export async function GET(){
     const googleURL = 'https://accounts.google.com/o/oauth2/v2/auth';
     const options = new URLSearchParams({
         client_id:GOOGLE_CLIENTID,
-        redirect_uri: `${NEXTAUTH_URL}/api/auth/callback`,
+        redirect_uri: `https://petersyoo.com/api/auth/callback`,
         response_type: 'code',
         scope: 'openid profile email',
         access_type: 'offline',

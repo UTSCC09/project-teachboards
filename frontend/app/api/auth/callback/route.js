@@ -17,12 +17,13 @@ export async function GET(request){
         const code = searchParams.get('code');
         if(!code) return NextResponse.json({error:"No code provided"},{status: 400});
         const client = new OAuth2Client(
-            GOOGLE_CLIENTID, GOOGLE_SECRET, `http://localhost:3000/api/auth/callback`
+            GOOGLE_CLIENTID, GOOGLE_SECRET, "https://petersyoo.com/api/auth/callback"
         );
         const {tokens} = await client.getToken(code);
         const idToken = tokens.id_token;
         const ticket = await client.verifyIdToken({idToken,audience: GOOGLE_CLIENTID, });
         const payload = ticket.getPayload();
+
 //HERE IS THE STOP POINT 
 
         const firstName = payload.name.split(' ')[0];
@@ -46,7 +47,7 @@ export async function GET(request){
             const token = await new SignJWT({ id, firstName, lastName})
             .setProtectedHeader({alg:"HS256"}).setIssuedAt().setExpirationTime("7d").sign(JWT_SECRET);
 
-            const response = NextResponse.redirect("http://localhost:3000/home");
+            const response = NextResponse.redirect("https://petersyoo.com/home");
             response.cookies.set("session", token, {
                 httpOnly: true,
                 sameSite: "Strict",
