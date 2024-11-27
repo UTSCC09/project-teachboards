@@ -12,6 +12,7 @@
         "encoding": "^0.1.13",
         "firebase": "^11.0.1",
         "google-auth-library": "^9.15.0",
+        "gsap": "^3.12.5",
         "jose": "^5.9.6",
         "konva": "^9.3.16",
         "next": "^13.0.0",
