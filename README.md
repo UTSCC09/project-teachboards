@@ -74,3 +74,19 @@ also i need to make sure when i scroll up that new message load
 
 
 PREVENT XXS attack using valiator 
+
+
+
+remeber set something that saves all users name as lower case and then when it does anything it
+set the username to lower case
+
+
+
+colors 
+/*
+black: rgb(13, 16, 15);
+actual white: rgb(232, 229, 229);
+acutal whit hover:rgb(215, 211, 211);
+anoter off white: rgb(255, 252, 240);
+hover off white:rgb(229, 228, 218);
+*/

@@ -4,8 +4,9 @@ FROM --platform=linux/amd64 node:lts-slim as build
 # Set the working directory to /frontend within the container
 WORKDIR /frontend
 
-# Copy only the frontend folder contents to /frontend in the container
+# Copy the frontend folder and .env file into the container
 COPY ./frontend /frontend
+COPY ./frontend/.env /frontend/.env
 
 # Install dependencies, handling potential peer dependency conflicts
 RUN npm install --legacy-peer-deps
@@ -24,21 +25,3 @@ EXPOSE 3000
 
 # Command to run the app in production mode
 CMD ["npm", "run", "start"]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

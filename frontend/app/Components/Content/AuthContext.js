@@ -1,7 +1,8 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext();
-
+// go the idea as well as some of the code from CHATGPT using the prompt,"" what does use AuthContext do and why is it important"
+//sorry uploaded a picture earlier so I do not have access to sharing the logs 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); 
 
