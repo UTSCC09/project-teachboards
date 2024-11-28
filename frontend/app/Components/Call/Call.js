@@ -19,7 +19,7 @@ import Videos from "../Videos/Videos";
 export default function Call({channelName, appId}) {
 
     const client = useRTCClient(AgoraRTC.createClient({mode: "live", codec: "vp8", role: "host"}));
-    const token = "007eJxTYDCMe/yNa7sc+6UNxy5KPzG88qe5Jt9qQnPsO6vXAZEfzmUoMJgmGZgkpxmmJKYYmJmYGlpYJqWYmRobJ6emmScbGZpaSM53S28IZGTYta6cmZEBAkF8FobcxMw8BgYAzsAg+A==";
+    const token = "007eJxTYDCMe/yNa7sc+007eJxTYOgzfrQv8pWsTe+GGs6bp09cqP3Bdk0z4En8waJZJ8yOXFqqwGCaZGCSnGaYkphiYGZiamhhmZRiZmpsnJyaZp5sZGhq0R3tkS7Ax8AgOvcuMyMDIwMLAyMDiM8EJpnBJAuUzE3MzONiMLKwMDI2MTQyNwYAZScilQ==";
 
     const [ localUsername, setLocalUsername ] = useState("");
     const [ localUID, setLocalUID ] = useState("");

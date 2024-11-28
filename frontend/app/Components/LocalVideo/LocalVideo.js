@@ -31,7 +31,7 @@ export default function LocalVideo( { videoRef, audio, onClick, focused, name })
             }} 
             ref={videoRef} autoPlay playsInline onContextMenu={(e)=> e.preventDefault()} muted></video>
             <p>{name} {volume}</p>
-            <Drawing canvasWidth={400}/>
+            <Drawing canvasWidth={400} noControls/>
         </div>
     );
 }

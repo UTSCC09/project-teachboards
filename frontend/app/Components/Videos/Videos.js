@@ -77,8 +77,7 @@ export default function Videos({AppID, channelName, token, uid, username}) {
     useJoin({
         appid: '5b04cf1dad0645189bd6533cef7c2158',
         channel: 'main',
-        token: token,    
-        //uid: uid
+        token: "007eJxTYJhuv/SsysN3X+ZNl/jfxLPoY9Q/R3PZ2e/Mkuw/XVT3LQ9SYDBNMjBJTjNMSUwxMDMxNbSwTEoxMzU2Tk5NM082MjS1+F7mkd4QyMjwt1KbgREKQXwWhtzEzDwGBgDVtiD2",
     });
     usePublish([localMicrophoneTrack, localCameraTrack]);
 
@@ -111,10 +110,6 @@ export default function Videos({AppID, channelName, token, uid, username}) {
         setCalling(false);
     }
 
-    const handleFocusChange = (userId) => {
-        setFocusedUser(userId);
-    };
-
     return (
         <div className="videos-wrapper">
             {isConnected ? (
@@ -123,17 +118,17 @@ export default function Videos({AppID, channelName, token, uid, username}) {
                     focused={focusedUser === "local"}
                     videoRef={localVideoRef}
                     audio={localMicrophoneTrack} 
-                    onClick={(e) => setFocusedUser(0)}
+                    onClick={(e) => setFocusedUser("local")}
                     name={username}>
 
                     </LocalVideo>
                     {remoteUsers.map((user, i) => (
                         <LocalVideo 
                         key={i}
-                        focused={false}
+                        focused={focusedUser === user.uid}
                         videoRef={el => remoteVideoRefs.current[i] = el} 
                         audio={user.audioTrack} 
-                        onClick={() => handleFocusChange(i)}>
+                        onClick={() => setFocusedUser(user.uid)}>
 
                         </LocalVideo>
                     ))}
@@ -146,7 +141,6 @@ export default function Videos({AppID, channelName, token, uid, username}) {
                 <button onClick={toggleCamera}>{cameraOn ? 'camera is ON' : 'camera is OFF'}</button>
                 <button onClick={toggleMic}>{micOn ? 'mic is ON' : 'mic is OFF'}</button>
                 <button onClick={leaveCall}>Leave call</button>
-                <button onClick={nextFocus}>focus next user</button>
             </div> 
         </div>
     );

@@ -13,6 +13,7 @@
     justify-items: center;
     align-items: center;
     width: 100%;
+    gap: 5px;
     
     grid-template-columns: 1fr 0.5fr;
 }

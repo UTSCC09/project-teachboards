@@ -1,4 +1,4 @@
-import { db } from "../../../firebase.js";
+import { db } from "@app/api/firebase.js";
 import { doc, collection, updateDoc, query, where, getDocs, deleteField, getDoc} from "firebase/firestore";
 
 
