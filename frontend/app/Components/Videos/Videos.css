@@ -14,21 +14,21 @@
     align-items: center;
     width: 100%;
     
-    grid-template-areas:
-        "v-focused v-focused v-v v-v v-v"
-        "v-focused v-focused v-v v-v v-v"
-        "v-focused v-focused v-v v-v v-v"
-        "v-focused v-focused v-v v-v v-v"
-    ;
+    grid-template-columns: 1fr 0.5fr;
 }
 
 .video-focused {
-    grid-area: "v-focused";
-    opacity: 0.1;
+    grid-row: 1 / 4;
+    grid-column: 1 / 2;
+}
+
+.board-focused {
+    grid-row: 4 / 7;
+    grid-column: 1 / 2;
 }
 
 .video-v {
-    grid-area: "v-v";
+    grid-column: 2 / 3;
 }
 
 .local-video-wrapper {
@@ -38,7 +38,6 @@
 
 .video-stream {
     flex-basis: 1;
-    width:500px;
 
     height: auto;
     object-fit: contain;

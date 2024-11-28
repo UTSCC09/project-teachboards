@@ -70,6 +70,9 @@ export default function Header() {
                                         {user && <li className="DD-Option">
                                             <Link href="/draw"><p>draw</p></Link>
                                         </li>}
+                                        {user && <li className="DD-Option">
+                                            <Link href="/room"><p>Room</p></Link>
+                                        </li>}
                                     </ul>
                                 </div>
                             )}

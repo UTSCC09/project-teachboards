@@ -18,10 +18,13 @@ import AgoraRTC, {
 import React, { useRef, useEffect, useState } from "react";
 import "./Videos.css"
 import LocalVideo from "../LocalVideo/LocalVideo";
+import {useAuth} from "../Content/AuthContext.js";
+
 
 export default function Videos({AppID, channelName, token, uid, username}) {
     const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
     const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
+    const {user} = useAuth();
 
     const remoteUsers = useRemoteUsers();
     const { videoTracks: remoteVideoTracks } = useRemoteVideoTracks(remoteUsers);
@@ -33,7 +36,7 @@ export default function Videos({AppID, channelName, token, uid, username}) {
     //debug 
     AgoraRTC.setLogLevel(1); 
 
-    const [ focusedUser, setFocusedUser ] = useState(-1);
+    const [ focusedUser, setFocusedUser ] = useState("local");
 
     //update the focused user
     useEffect( () => {
@@ -56,9 +59,9 @@ export default function Videos({AppID, channelName, token, uid, username}) {
     // remote videos
     const remoteVideoRefs = useRef([]);
     useEffect(() => {
-        remoteUsers.forEach( (user, index) => {
-            if (user && user.hasVideo && user.videoTrack && remoteVideoRefs.current[index] && index != focusedUser) {
-                user.videoTrack.play(remoteVideoRefs.current[index]);
+        remoteUsers.forEach( (usr, index) => {
+            if (usr && usr.hasVideo && usr.videoTrack && remoteVideoRefs.current[index] && index != focusedUser) {
+                usr.videoTrack.play(remoteVideoRefs.current[index]);
             }
         })
     }, [remoteUsers, remoteVideoTracks, focusedUser])
@@ -68,7 +71,6 @@ export default function Videos({AppID, channelName, token, uid, username}) {
         track.play()
     })
 
-    
     // connecting to agora
     const isConnected = useIsConnected();
 
@@ -76,11 +78,9 @@ export default function Videos({AppID, channelName, token, uid, username}) {
         appid: '5b04cf1dad0645189bd6533cef7c2158',
         channel: 'main',
         token: token,    
-        uid: uid
+        //uid: uid
     });
     usePublish([localMicrophoneTrack, localCameraTrack]);
-
-
 
     //controls
     function toggleCamera(e) {
@@ -111,12 +111,16 @@ export default function Videos({AppID, channelName, token, uid, username}) {
         setCalling(false);
     }
 
+    const handleFocusChange = (userId) => {
+        setFocusedUser(userId);
+    };
+
     return (
         <div className="videos-wrapper">
-            {isConnected  ? (
+            {isConnected ? (
                 <div className="video-grid-wrapper">
                     <LocalVideo 
-                    focused={focusedUser === 0}
+                    focused={focusedUser === "local"}
                     videoRef={localVideoRef}
                     audio={localMicrophoneTrack} 
                     onClick={(e) => setFocusedUser(0)}
@@ -126,10 +130,10 @@ export default function Videos({AppID, channelName, token, uid, username}) {
                     {remoteUsers.map((user, i) => (
                         <LocalVideo 
                         key={i}
-                        focused={focusedUser === i+1}
+                        focused={false}
                         videoRef={el => remoteVideoRefs.current[i] = el} 
                         audio={user.audioTrack} 
-                        onClick={(e) => setFocusedUser(i+1)}>
+                        onClick={() => handleFocusChange(i)}>
 
                         </LocalVideo>
                     ))}
