@@ -15,7 +15,6 @@
 }
 
 .HPFriends {
-    border-right: 1px solid rgb(90, 87, 87);
     flex-shrink: 0;
     flex-grow: 1;
     max-width: 20%; 
@@ -85,7 +84,6 @@
     box-sizing: border-box;
 }
 .HPRight {
-    border-left: 1px solid rgb(90, 87, 87);
     flex-shrink: 0;
     flex-grow: 1;
     max-width: 20%; 

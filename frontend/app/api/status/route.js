@@ -6,10 +6,15 @@ export async function POST(req){
     const body = await req.json();
     const id = body.id;
     const status = body.status;
+    const statusactual = status.statusactual;
+    const statusPriority = status.statusPriority;
     try{
         const userDB = doc(db, "users", id);
         await updateDoc(userDB,{
-            status:status,
+            status:{
+                statusactual:statusactual,
+                statusPriority:statusPriority
+            },
         });
 
         return new Response(JSON.stringify({message:"Succesfull status"}),{

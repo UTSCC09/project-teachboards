@@ -90,3 +90,10 @@ acutal whit hover:rgb(215, 211, 211);
 anoter off white: rgb(255, 252, 240);
 hover off white:rgb(229, 228, 218);
 */
+
+
+
+
+
+BASICALLY MAKE SURE YOU CHECK COOKIES BEFORE ANY IMPORTANT CALL... for security reason thanks... 
+like compare cookie id and the actual id that the user pushes 

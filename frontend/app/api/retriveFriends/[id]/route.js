@@ -22,7 +22,7 @@ export async function GET(req, { params }) {
 
         const userData = userInfo.data();
         const friends = userData.friends || {};
-        const friendsUsername = Object.keys(friends).slice(0,5);
+        const friendsUsername = Object.keys(friends);
 
             //THIS MIDDLE SECTION HERE IS A CHATGPT, again this chat has included images so i cant share my log, however the prompt i used was 
             // How do i now given the username of my friends query through them and retrived their status...
@@ -34,12 +34,19 @@ export async function GET(req, { params }) {
 
                 if (!friendSnapshot.empty) {
                     const friendData = friendSnapshot.docs[0].data();
-                    return { username, status: friendData.status };
+                    const status = friendData.status;
+                    return { 
+                        username, 
+                        status: status.statusactual || "offline", 
+                        statusPriority: status.statusPriority || 3 
+                    };
                 }
-                return { username, status: "offline" };
+                return { username, status: "offline", statusPriority: 3 };
             })
         );
-        return new Response(JSON.stringify({ friendsWithStatus }), {
+        const sortedFriends = friendsWithStatus.sort((a, b) => a.statusPriority - b.statusPriority);
+        const returnvalue = sortedFriends.slice(0,5);
+        return new Response(JSON.stringify({ friendsWithStatus:returnvalue }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

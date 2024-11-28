@@ -17,7 +17,7 @@ export async function POST(req){
     const role = body.role;
     let username = validator.escape(body.username);
     console.log(username);
-    const status = "online";
+    const status = {statusactual:"online",statusPriority:1};
 
     
     try{
