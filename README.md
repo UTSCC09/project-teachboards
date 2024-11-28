@@ -97,3 +97,6 @@ hover off white:rgb(229, 228, 218);
 
 BASICALLY MAKE SURE YOU CHECK COOKIES BEFORE ANY IMPORTANT CALL... for security reason thanks... 
 like compare cookie id and the actual id that the user pushes 
+
+
+also remember to add more button to friendsPending and to firends 

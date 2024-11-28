@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import "./friendPage.css";
 import { useAuth } from "../Content/AuthContext";
+import Link from "next/link";
 
 export default function FriendPage() {
     const [friends, setFriends] = useState([]);
@@ -12,7 +13,7 @@ export default function FriendPage() {
     const [penorfre, setpenorfre] = useState("Friends");
     const [penorfre2,setpenorfre2] = useState("Pending Friends");
     const { user } = useAuth();
-
+    const [num, setNum] = useState(10);
     useEffect(() => {
         if (user && user.id) {
             retriveFriends(); 
@@ -20,11 +21,13 @@ export default function FriendPage() {
             return () => clearInterval(interval); 
         }
     }, [user]);
+    
     useEffect(()=>{
         if (user && user.id){
             retrivePending();
         }
     },[mode, user])
+
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
@@ -33,7 +36,7 @@ export default function FriendPage() {
         if (!user || !user.id) return;
         const id = user.id;
         try {
-            const response = await fetch(`/api/retriveFriends/${id}`, {
+            const response = await fetch(`/api/retriveFriends/${id}/${num}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
@@ -138,7 +141,7 @@ export default function FriendPage() {
                     <button className="header-btn" onClick={handleSwitch}>
                         {penorfre2}
                     </button>
-                    <button className="header-btn">Messages</button>
+                    <Link href="/profile" className = "header-btn">My Profile</Link>
                 </header>
                 <h2 className="BRO">{penorfre}</h2>
                 {mode && (

@@ -33,7 +33,7 @@ export default function HomePage() {
         if (!user || !user.id) return;
         const id = user.id;
         try {
-            const response = await fetch(`/api/retriveFriends/${id}`, {method: "GET",headers: { "Content-Type": "application/json" },});
+            const response = await fetch(`/api/retriveFriends/${id}/${5}`, {method: "GET",headers: { "Content-Type": "application/json" },});
             const data = await response.json();
             if (!response.ok) { return;}
             console.log("Friends retrieved");
