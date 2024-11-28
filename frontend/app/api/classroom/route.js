@@ -21,7 +21,7 @@ export async function POST(req) {
         const newClassroom = await addDoc(classroomDB, {
             className,
             teacherID: id,
-            students: {}, 
+            students: [], 
             notes: {}, 
             createdAt:serverTimestamp(),
 

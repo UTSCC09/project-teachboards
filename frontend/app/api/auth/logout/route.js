@@ -1,7 +1,8 @@
 import { auth } from "../../../firebase.js";
 import { signOut } from "firebase/auth";
 
-export async function POST(req, res) {
+export async function POST(req,res) {
+
     try {
         await signOut(auth);
         return new Response(JSON.stringify({ message: "User logged out successfully" }), {

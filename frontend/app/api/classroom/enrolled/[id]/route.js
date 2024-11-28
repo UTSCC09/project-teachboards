@@ -1,4 +1,4 @@
-import { db } from "../../../firebase.js";
+import { db } from "../../../../firebase.js";
 import {collection,query, where, getDocs,limit, orderBy } from "firebase/firestore";
 
 
@@ -11,8 +11,8 @@ export async function GET(req,{params}){
             headers:{"Content-Type": "application/json"},
         });
     }
-    try{
-        const classroomItem = query(collection(db,"classRoom"), where("teacherID", "==", id),orderBy("createdAt","desc"), limit(10));
+    try{   
+        const classroomItem = query(collection(db,"classRoom"), where("students", "array-contains", id), orderBy("createdAt", "desc"),limit(10));
         const classReturn = await getDocs(classroomItem);
         if (classReturn.docs.length === 0){
             return new Response(JSON.stringify([]),{

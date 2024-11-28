@@ -1,0 +1,294 @@
+/*
+#A3C4F3;
+#C8E6C9;
+*/
+.body, html {
+    background-color: rgb(13, 16, 15);
+}
+
+.ClassRoomHomePage {
+    color: rgb(13, 16, 15);
+    font-family: Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: row; 
+    height: 90vh; 
+}
+
+.CPLeft {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 12%;
+    min-width:150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    text-align: center;
+    overflow: hidden;
+    
+}
+
+.CPLTitle {
+    margin-top: 10px;
+    color: rgb(232, 229, 229);
+    font-size: 20px;
+}
+
+.CPLContainer1{
+    margin: 10px auto; 
+    height: 45px; 
+    width: 90%; 
+    background-color:  rgb(35, 37, 36);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    color:  rgb(232, 229, 229);
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor:pointer;
+    transition:all 0.5s ease;
+}
+/*rgb(60, 63, 62);*/
+.CPLContainer:hover, .CPLContainer1:hover, .CPLContainer2:hover, .CPLContainer3:hover{
+    background-color: rgb(42, 45, 44);
+}
+
+.CPLContainer1active{
+    margin: 10px auto; 
+    height: 45px; 
+    width: 90%; 
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor:pointer;
+    transition:all 0.5s ease;
+    background-color: rgb(54, 58, 56);
+    color:rgb(13, 16, 15);
+}
+
+.CPLContainer2{
+    margin: 10px auto; 
+    height: 45px; 
+    width: 90%; 
+    background-color:  rgb(35, 37, 36);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    color:  rgb(111, 195, 136);
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor:pointer;
+    transition:all 0.5s ease;
+}
+.CPLContainer3{
+    margin: 10px auto; 
+    height: 45px; 
+    width: 90%; 
+    background-color:  rgb(35, 37, 36);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    color:  rgb(111, 166, 195);
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor:pointer;
+    transition:all 0.5s ease;
+}
+
+.CPLContainer {
+    margin: 10px auto; 
+    height: 60px; 
+    width: 75%; 
+    background-color: rgb(35, 37, 36);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    color: rgb(232, 229, 229);
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor:pointer;
+}
+
+.CPLHelperer {
+    font-weight:bold;
+    margin: 5px 0;
+    width: auto; 
+    overflow: hidden;
+    text-align: center;
+}
+
+.HFonline {
+    text-align: center;
+    margin-bottom:5px;
+    color: rgb(13, 16, 15);
+    background-color: #C8E6C9;
+    padding: 2px 8px; 
+    border-radius: 5px;
+    display: inline-block;
+    box-sizing: border-box;
+}
+.HFoffline{
+    text-align: center;
+    margin-bottom:5px;
+    color: rgb(232, 229, 229);
+    background-color: rgb(13, 16, 15);
+    padding: 2px 8px; 
+    border-radius: 5px;
+    display: inline-block;
+    box-sizing: border-box;
+}
+.HFbusy{
+    text-align: center;
+    margin-bottom:5px;
+    color: rgb(13, 16, 15);
+    background-color: #e6e2c8;
+    padding: 2px 8px; 
+    border-radius: 5px;
+    display: inline-block;
+    box-sizing: border-box;
+}
+.CPRight {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 12%;
+    min-width:150px;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+.CPRTitle {
+    margin-top: 10px;
+    color: rgb(232, 229, 229);
+    font-size: 20px;
+}
+
+.CPRContainer {
+    margin: 10px auto; 
+    height: 85px; 
+    width: 90%; 
+    background-color: rgb(35, 37, 36);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    color: rgb(232, 229, 229);
+    overflow: hidden;
+    box-sizing: border-box;
+    cursor:pointer;
+}
+.CPMiddle {
+    flex-shrink: 0;
+    flex-grow: 8; 
+    display: flex;
+    flex-direction: column;
+}
+
+.CPMtitle {
+    margin-top: 10px;
+    color: rgb(232, 229, 229);
+    font-size: 20px;
+    margin-left: 20px;
+}
+
+.CPMContainer {
+    display: flex;
+    position: relative;
+    background-color: rgb(35, 37, 36);
+    margin: 20px;
+    flex: 1; 
+    height: 100%; 
+    max-width: 100%; 
+}
+
+.SCREENBANG{
+    z-index:1;
+    position:fixed;
+    background-color:rgba(0, 0, 0, 0.124);
+    width:100%;
+    height:100vh;
+}
+
+.AddClassroomForm {
+    z-index: 10;
+    position: fixed; 
+    background-color: rgb(232, 229, 229);
+    width: 300px;
+    height: 200px;
+    top: 40%; 
+    padding: 20px;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    display: flex; 
+    flex-direction:column;
+    justify-content: center; 
+    align-items: center; 
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.AddClassroomForm h2 {
+    margin-bottom: 15px;
+    color: rgb(13, 16, 15);
+}
+
+.AddClassroomForm input {
+    width: 90%;
+    padding: 10px;
+    margin: 0 auto 15px; 
+    border: 1px solid #ccc;
+    color: rgb(13, 16, 15);
+    border-radius: 8px;
+}
+
+.CCButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly; 
+    width: 100%;
+    gap:20px;
+}
+
+.AddClassroom1{
+    width:100px;
+    height:50px;
+    margin-right:10px;
+    color: rgb(13, 16, 15);
+    background-color:rgb(186, 123, 123);
+    border-radius:8px;
+    transition:all 1s ease;
+}
+.AddClassroom1:hover{
+    background-color:rgb(162, 106, 106);
+}
+
+
+.AddClassroomButton2:hover{
+    background-color:rgb(100, 169, 121);
+}
+
+.AddClassroomButton2{
+    width:100px;
+    height:50px;
+    margin-left:10px;
+    color: rgb(13, 16, 15);
+    background-color:rgb(111, 195, 136);
+    border-radius:8px;
+    transition:all 1s ease;
+}
+

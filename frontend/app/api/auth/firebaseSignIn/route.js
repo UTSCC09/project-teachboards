@@ -2,11 +2,17 @@ import { auth, db, signInWithEmailAndPassword } from "../../../firebase.js";
 import validator from "validator";
 import { doc, getDoc } from "firebase/firestore";
 import { SignJWT } from "jose";
+import { sessionMiddlewear } from "../../../session.js";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 
-export async function POST(req) {
+export async function POST(req,res ) {
+
+    await new Promise((resolve, reject) => {sessionMiddlewear(req, res, (err) => {
+          if (err) reject(err); 
+          resolve();  });});
+
     const body = await req.json();
     const email = validator.escape(body.email);
     const password = body.password;
@@ -19,9 +25,13 @@ export async function POST(req) {
             throw new Error("User not found in the database");
         }
         const { firstName, lastName } = userDoc.data();
-        const token = await new SignJWT({ id, firstName, lastName })
+
+        req.session.userid = id;
+        req.session.save();
+
+        const token = await new SignJWT({id, firstName, lastName })
         .setProtectedHeader({alg:"HS256"}).setIssuedAt().setExpirationTime("7d").sign(JWT_SECRET);
-        
+
         return new Response(JSON.stringify({ message: "User signed in" }), {
             status: 201,
             headers: { 
