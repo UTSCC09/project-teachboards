@@ -11,6 +11,9 @@ export default function ProfilePage() {
     const [profileEmail, setProfileEmail] = useState("");
     const [profileUsername, setProfileUsername] = useState("");
 
+    const check = () => user && profileFirstName !== "" && profileLastName !== "" && profileEmail !== "" && profileUsername !== "";
+
+            
     const handleSubmit = async (e) => {
         const id = user.id;
         e.preventDefault();
@@ -69,7 +72,8 @@ export default function ProfilePage() {
     return (
         <div className="screen">
             <div className="profilePageContainer">
-                <div className="profileField">
+            {!check() && <p className = "loadingPP">Loading Please Wait...</p>}
+                {check() &&  <div className="profileField">
                     <label htmlFor="profileName">First Name:</label>
                     <input
                         id="profileFirstName"
@@ -77,8 +81,8 @@ export default function ProfilePage() {
                         value={profileFirstName}
                         onChange={(e) => setProfileFirstName(e.target.value)}
                     />
-                </div>
-                <div className="profileField">
+                </div>}
+                {check() && <div className="profileField">
                     <label htmlFor="profileName">Last Name:</label>
                     <input
                         id="profileLastName"
@@ -86,8 +90,8 @@ export default function ProfilePage() {
                         value={profileLastName}
                         onChange={(e) => setProfileLastName(e.target.value)}
                     />
-                </div>
-                <div className="profileField">
+                </div>}
+                {check() && <div className="profileField">
                     <label htmlFor="profileUsername">Username:</label>
                     <input
                         id="profileUsername"
@@ -95,8 +99,8 @@ export default function ProfilePage() {
                         value={profileUsername}
                         onChange={(e) => setProfileUsername(e.target.value)}
                     />
-                </div>
-                <div className="profileField">
+                </div>}
+                {check() &&   <div className="profileField">
                     <label htmlFor="profileEmail">Email:</label>
                     <input
                         id="profileEmail"
@@ -104,10 +108,10 @@ export default function ProfilePage() {
                         value={profileEmail}
                         onChange={(e) => setProfileEmail(e.target.value)}
                     />
-                </div>
-                <button className="submitButton" onClick={handleSubmit}>
+                </div>}
+                {check() &&   <button className="submitButton" onClick={handleSubmit}>
                     Submit
-                </button>
+                </button>}
             </div>
         </div>
     );

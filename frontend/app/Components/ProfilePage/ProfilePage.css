@@ -78,3 +78,8 @@ h2 {
 .submitButton:hover {
     background-color: rgb(27, 34, 31);
 }
+
+.loadingPP{
+    font-size:20px;
+    color:rgb(13, 16, 15);
+}

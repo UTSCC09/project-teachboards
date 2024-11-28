@@ -22,6 +22,7 @@ hover off white:rgb(229, 228, 218);
     align-items: center;
     padding: 10px 20px;
     height: 80px;
+    border-bottom: 1px solid rgb(90, 87, 87);
     width: 100%;
     align-self: flex-start;
 }

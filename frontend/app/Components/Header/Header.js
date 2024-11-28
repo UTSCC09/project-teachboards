@@ -48,9 +48,9 @@ export default function Header() {
                         </li>
                     ) : (
                         <>
-                            <li>
-                                <Link className="Nav-Options" href="/home"><p>Home</p></Link>
-                            </li>
+                           {user &&  <li>
+                            <Link className="Nav-Options" href="/home"><p>Home</p></Link>
+                            </li>}
                             {user && <li>
                                 <Link className="Nav-Options" href="/messages"><p>Messages</p></Link>
                             </li>}
@@ -77,9 +77,9 @@ export default function Header() {
             {menuDropDown && (
                                 <div className="DropDown" ref={modelRef}>
                                     <ul className="DropDown-List">
-                                        <li className="DD-Option">
+                                        {user && <li className="DD-Option">
                                             <Link href="/home">Home</Link>
-                                        </li>
+                                        </li>}
                                         {user && <li className="DD-Option">
                                             <Link href="/messages">Messages</Link>
                                         </li>}

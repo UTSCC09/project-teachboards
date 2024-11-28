@@ -1,5 +1,5 @@
 import { db } from "../../../firebase.js";
-import { getDoc, doc,getDocs, query, collection, where } from "firebase/firestore";
+import { getDoc, doc,getDocs, query, collection, where,limit } from "firebase/firestore";
 
 export async function GET(req, { params }) {
     const { id } = params;
@@ -22,7 +22,7 @@ export async function GET(req, { params }) {
 
         const userData = userInfo.data();
         const friends = userData.friends || {};
-        const friendsUsername = Object.keys(friends);
+        const friendsUsername = Object.keys(friends).slice(0,5);
 
             //THIS MIDDLE SECTION HERE IS A CHATGPT, again this chat has included images so i cant share my log, however the prompt i used was 
             // How do i now given the username of my friends query through them and retrived their status...
