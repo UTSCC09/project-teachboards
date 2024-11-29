@@ -23,21 +23,21 @@ export default function ClassRoomMainPage() {
     const slowdown2 = useRef();
 
     useEffect(() => {
-        const ctx = gsap.context(() => {
+        const animation = gsap.context(() => {
             if (teaching && slowdown1.current) {
                 gsap.fromTo(slowdown1.current.children,{ autoAlpha: 0, y: -20 },{ autoAlpha: 1, y: 0, duration: 1, ease: "power2.out", stagger: 0.1 } );
             } 
         });
-        return () => ctx.revert();
+        return () => animation.revert();
     }, [teaching]);
 
     useEffect(() => {
-        const ctx = gsap.context(() => {
+        const animation = gsap.context(() => {
             if (enrolled && slowdown2.current) {
                 gsap.fromTo(slowdown2.current.children,{ autoAlpha: 0, y: -20 },{ autoAlpha: 1, y: 0, duration: 1, ease: "power2.out", stagger: 0.1 });
 }
         });
-        return () => ctx.revert(); 
+        return () => enrolled.revert(); 
     }, [enrolled]);
 
     useEffect(() => {
