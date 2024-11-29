@@ -14,7 +14,7 @@ export default function Header() {
 
     const handleLogout = () =>{
         logout();
-        router.push("/home");
+        router.push("/landing");
     };
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
