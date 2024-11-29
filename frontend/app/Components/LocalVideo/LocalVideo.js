@@ -27,11 +27,13 @@ export default function LocalVideo( { videoRef, audio, onClick, focused, name })
     return (
         <div className={focused ? "single-video-wrapper video-focused" : "single-video-wrapper video-v"} onClick={onClick}>
             <video className="video-stream" style={{
-            borderColor: borderColor, // Dynamic border color
+                borderColor: borderColor, // Dynamic border color
             }} 
-            ref={videoRef} autoPlay playsInline onContextMenu={(e)=> e.preventDefault()} muted></video>
-            <p>{name} {volume}</p>
-            <Drawing canvasWidth={400} noControls/>
+            ref={videoRef} autoPlay playsInline onContextMenu={(e)=> e.preventDefault()} muted>
+                <div className={"testsquare"}></div>
+            </video>
+            {/* <p>{name} {volume}</p> */}
+            {/* <Drawing canvasWidth={400} noControls/> */}
         </div>
     );
 }

@@ -19,11 +19,21 @@ import React, { useRef, useEffect, useState } from "react";
 import "./Videos.css"
 import LocalVideo from "../LocalVideo/LocalVideo";
 import {useAuth} from "../Content/AuthContext.js";
+import Drawing from "../Drawing/Drawing.mjs";
 
 
-export default function Videos({AppID, channelName, token, uid, username}) {
+export default function Videos({classroomID, appId, channelName, token, uid, username, localBoardRef}) {
+
+    const client = useRTCClient();
     const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
     const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
+    const [testVar, toggleVar] = useState(false);
+
+    useEffect(() => {
+        console.log("Camera track loading:", isLoadingCam);
+        console.log("Local camera track:", localCameraTrack);
+    }, [isLoadingCam, localCameraTrack]);
+
     const {user} = useAuth();
 
     const remoteUsers = useRemoteUsers();
@@ -32,7 +42,10 @@ export default function Videos({AppID, channelName, token, uid, username}) {
 
     const [ cameraOn, setCameraOn ] = useState(true);
     const [ micOn, setMicOn ] = useState(true);
-    
+
+    // NOTES UPLOAD STATE
+    const [notesUploadState, setNotesUploadState] = useState(0);
+
     //debug 
     AgoraRTC.setLogLevel(1); 
 
@@ -46,15 +59,15 @@ export default function Videos({AppID, channelName, token, uid, username}) {
     function nextFocus() {
         setFocusedUser(focusedUser + 1);
     }
-
+ 
     // local video
     const localVideoRef = useRef();
     useEffect(() => {
-        if (localCameraTrack && localVideoRef.current) {
+        if (!isLoadingCam && localCameraTrack && localVideoRef.current) {
             if (cameraOn) localCameraTrack.play(localVideoRef.current);
             else localCameraTrack.stop();
         }
-    }, [localCameraTrack, cameraOn]);
+    }, [localCameraTrack, cameraOn, isLoadingCam]);
     
     // remote videos
     const remoteVideoRefs = useRef([]);
@@ -75,12 +88,12 @@ export default function Videos({AppID, channelName, token, uid, username}) {
     const isConnected = useIsConnected();
 
     useJoin({
-        appid: '5b04cf1dad0645189bd6533cef7c2158',
-        channel: 'main',
-        token: "007eJxTYJhuv/SsysN3X+ZNl/jfxLPoY9Q/R3PZ2e/Mkuw/XVT3LQ9SYDBNMjBJTjNMSUwxMDMxNbSwTEoxMzU2Tk5NM082MjS1+F7mkd4QyMjwt1KbgREKQXwWhtzEzDwGBgDVtiD2",
-    });
-    usePublish([localMicrophoneTrack, localCameraTrack]);
-
+        appid: "5b04cf1dad0645189bd6533cef7c2158",
+        channel: channelName,
+        token: token,
+        uid: uid
+     });
+     usePublish([localMicrophoneTrack, localCameraTrack]);
     //controls
     function toggleCamera(e) {
         if (cameraOn) {
@@ -122,7 +135,7 @@ export default function Videos({AppID, channelName, token, uid, username}) {
                     name={username}>
 
                     </LocalVideo>
-                    {remoteUsers.map((user, i) => (
+                    {remoteUsers.slice(0,3).map((user, i) => (
                         <LocalVideo 
                         key={i}
                         focused={focusedUser === user.uid}
@@ -137,10 +150,11 @@ export default function Videos({AppID, channelName, token, uid, username}) {
             ) : (
                 <div>Not connected</div>
             )}
+            <Drawing ref={localBoardRef}></Drawing>
             <div className="video-controls">
                 <button onClick={toggleCamera}>{cameraOn ? 'camera is ON' : 'camera is OFF'}</button>
                 <button onClick={toggleMic}>{micOn ? 'mic is ON' : 'mic is OFF'}</button>
-                <button onClick={leaveCall}>Leave call</button>
+                <button onClick={() => toggleVar(!testVar)}>debug</button> 
             </div> 
         </div>
     );

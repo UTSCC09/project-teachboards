@@ -5,7 +5,7 @@ import { SignJWT } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
-//
+// GETS ALL PAST NOTES FOR A STUDENT IN ALL CLASSROOMS
 
 export async function GET(req, { params }) {
     const {id} = params;

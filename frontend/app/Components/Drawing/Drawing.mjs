@@ -6,8 +6,8 @@ import ReactCanvasDraw from "react-canvas-draw";
 import { jsPDF } from "jspdf";
 import "./Drawing.css";
 
-const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, ref) => {
-    const canvasRef = useRef(null);
+const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef) => {
+    // const canvasRef = useRef(null);
     const [mode, setMode] = useState("pen");
     const [penSize, setPenSize] = useState(2);
     const [penColor, setPenColor] = useState("#000000");
@@ -80,19 +80,6 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, ref) => {
         setUndo([])
     };
 
-    const handleDownloadPDF = () => {
-        const canvas = canvasRef.current.canvas.drawing;
-        const imageData = canvas.toDataURL("image/png");
-
-        const pdf = new jsPDF({
-            orientation: "landscape",
-            unit: "px",
-            format: [canvas.width, canvas.height],
-        });
-
-        pdf.addImage(imageData, "PNG", 0, 0, canvas.width, canvas.height);
-        pdf.save("drawing.pdf");
-    };
 
     const saveToFirestore = () => {
         setUploadState(1);
@@ -142,7 +129,7 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, ref) => {
                     <button onClick={handleRedo}>Redo</button>
                     <button onClick={handleSave}>Save</button>
                     <button onClick={handleLoad}>Load</button>
-                    <button onClick={handleDownloadPDF}>Download as PDF</button>
+                    {/* <button onClick={handleUploadPDF}>Download as PDF</button> */}
                     <button onClick={saveToFirestore}>upload to class (test)</button>
                     { uploadState === 1 ? <p>uploading...</p> : uploadState === 2 ? <p>upload end</p> : <p>not uploading</p>}
                 </div>

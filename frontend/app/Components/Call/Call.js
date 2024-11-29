@@ -14,35 +14,74 @@ import AgoraRTC, {
   useRemoteUsers,
 } from "agora-rtc-react";
 import Link from "next/link";
-import { useState, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import Videos from "../Videos/Videos";
-export default function Call({channelName, appId}) {
+export default function Call({channelName, appId, token, uid, endCall}) {
 
     const client = useRTCClient(AgoraRTC.createClient({mode: "live", codec: "vp8", role: "host"}));
-    const token = "007eJxTYDCMe/yNa7sc+007eJxTYOgzfrQv8pWsTe+GGs6bp09cqP3Bdk0z4En8waJZJ8yOXFqqwGCaZGCSnGaYkphiYGZiamhhmZRiZmpsnJyaZp5sZGhq0R3tkS7Ax8AgOvcuMyMDIwMLAyMDiM8EJpnBJAuUzE3MzONiMLKwMDI2MTQyNwYAZScilQ==";
 
     const [ localUsername, setLocalUsername ] = useState("");
-    const [ localUID, setLocalUID ] = useState("");
 
-    useEffect(() => {
-        fetch('/api/auth/verifySession')
-            .then((res) => res.json()) // Await the response JSON here
-            .then((data) => {
-                console.log(data);
-                setLocalUsername(data.firstName); 
-                setLocalUID(data.id);
+
+    const [ viewState, setViewState ] = useState(0);
+    // 0 - default view
+    // 1 - viewing participants
+    // 2 - whiteboard
+
+    const localBoardRef = useRef();
+    const [boardUploadState, setBoardUploadState] = useState(0);
+
+    const saveToFirestore = () => {
+        setBoardUploadState(1);
+        const saveData = localBoardRef.current.getSaveData();
+        const classroomID = "76cdCVK4beEE8Ik74613"
+        fetch(`/api/classroom/${classroomID}/notes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                uid: '4Z3FohSY67OTCpoe25pge6YTsqD3',
+                noteContent: saveData
             })
-            .catch((err) => console.error('Error verifying session:', err)); // Handle any errors
-    }, []);
+        }).then((res) => res.json()).then((data) => {
+            console.log(data);
+            alert("UPLOADED!!!");
+        })
+        .catch((e) => {
+            alert("bad classroom upload")
+            console.error(error);
+        })
+        setBoardUploadState(2);
+    }
+
+    function handleLeaveCall() {
+        saveToFirestore();
+    }
+    useEffect( ()=> {
+        if (boardUploadState===2) {
+            endCall();
+        }
+    })
 
     return (
-        <AgoraRTCProvider className="call-wrapper"client={client}>
-            <div className="flex">
-                { token  && localUID && localUsername? 
+        <AgoraRTCProvider className="call-wrapper" client={client}>
+            <div className={"flex"}>
+                <p>{token}</p>
+                <p>{uid}</p>
+                { token && uid ? 
                 (
-                <Videos channelName={channelName} AppID={appId} token={token} uid={localUID} username={localUsername}/>
-                ) : (<p>waiting for token...</p>)
+                <Videos 
+                    className={"call-videos"}
+                    channelName={channelName}
+                    appId={appId}
+                    token={token}
+                    uid={uid}
+                    username={localUsername}
+                    localBoardRef={localBoardRef}/>
+                ) : (<p>Joining...</p>)
                 }
+                <button onClick={handleLeaveCall}>LEAVE CALL</button>
                 <Sidebar></Sidebar>
             </div>
         </AgoraRTCProvider>

@@ -1,13 +1,14 @@
-import { db } from "@app/api/firebase.js";
+import { db, storage } from "@app/api/firebase.js";
 import { doc, collection, addDoc, getDocs, query, where, getDoc } from "firebase/firestore";
+import { ref } from "firebase/storage"
 
-// uploads notes for given user
+// uploads notes for given user to this classroom
 export async function POST(req, {params}) {
   // TODO: Add authentication middleware 
   /**
    * req body:
    * uid: user id
-   * noteContent: react canvas draw object WARNING: IT MIGHT BE TOO BIG. TODO
+   * noteContent: A PDF WHICH IS GENERATED IN THE USER's BROWSER (allows arbitraty notes to be uplaoded)
    * classroom ID given by params.id
    * date: the time of the meeting date where notes were taken
    */
@@ -15,6 +16,10 @@ export async function POST(req, {params}) {
   const classroomId = params.id
 
   try {
+
+    // const pdfRef = ref(storage, `/classroom/${classroomId}/users/uid`)
+
+
     const notesRef = collection(db, "notes");
     const newNote = {
       authorId: uid,
@@ -36,4 +41,9 @@ export async function POST(req, {params}) {
       { status: 500 }
     );
   }
+}
+
+// gets notes FOR ALL USERS IN THIS CLASSROOM
+export async function GET(req, {params}) {
+
 }
