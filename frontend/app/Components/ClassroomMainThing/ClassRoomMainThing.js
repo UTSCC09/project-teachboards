@@ -190,7 +190,7 @@ export default function ClassRoomMainPage() {
     return (
         <div className = "ClassRoomHomePage">
         {windowWidth > 400 && <div className = "CPLeft">
-            <p className = "CPLTitle">Classrooms</p>
+            {windowWidth >= 800 &&<p className = "CPLTitle">Classrooms</p>}
             <button className="CPLContainer3" onClick={handlePopout}>Add Classroom</button>
             <button className="CPLContainer2" onClick={handlePopout2}>Enroll</button>
             <button className={`CPLContainer1${teaching ? 'active' : ''}`}  onClick={handleTeaching}>Teaching</button>
@@ -216,7 +216,18 @@ export default function ClassRoomMainPage() {
         <div className = "CPMiddle">
             <p className = "CPMtitle">Classroom Name</p>
             <div className = "CPMContainer">
-
+                    <p className = "CPMCTitle">Date Nov 29</p>
+                    <div className = "NotesContainer">
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                        <div className = "notes"></div>
+                    </div>
             </div>
         </div>
 

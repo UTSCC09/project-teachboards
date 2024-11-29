@@ -4,6 +4,9 @@
 */
 .body, html {
     background-color: rgb(13, 16, 15);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 .ClassRoomHomePage {
@@ -12,13 +15,15 @@
     display: flex;
     flex-direction: row; 
     height: 90vh; 
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .CPLeft {
     flex-shrink: 0;
     flex-grow: 0;
     width: 12%;
-    min-width:150px;
+    min-width:100px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -188,29 +193,6 @@
     box-sizing: border-box;
     cursor:pointer;
 }
-.CPMiddle {
-    flex-shrink: 0;
-    flex-grow: 8; 
-    display: flex;
-    flex-direction: column;
-}
-
-.CPMtitle {
-    margin-top: 10px;
-    color: rgb(232, 229, 229);
-    font-size: 20px;
-    margin-left: 20px;
-}
-
-.CPMContainer {
-    display: flex;
-    position: relative;
-    background-color: rgb(35, 37, 36);
-    margin: 20px;
-    flex: 1; 
-    height: 100%; 
-    max-width: 100%; 
-}
 
 .SCREENBANG{
     z-index:1;
@@ -288,3 +270,100 @@
     transition:all 1s ease;
 }
 
+
+
+
+.CPMiddle {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 76%;
+    display: flex;
+    flex-direction: column;
+}
+
+.CPMtitle {
+    margin-top: 10px;
+    color: rgb(232, 229, 229);
+    font-size: 20px;
+    margin-left: 20px;
+}
+
+.CPMContainer {
+    display: flex;
+    position: relative;
+    flex-direction:column;
+    background-color: rgb(35, 37, 36);
+    margin: 20px;
+    flex: 1; 
+    overflow-x:hidden;
+    height: 100%; 
+    max-width: 100%; 
+}
+
+
+.CPMCTitle{
+    color:rgb(232, 229, 229);
+    font-size:24px;
+    margin-left: 30px;
+    margin-top:10px;
+}
+
+.NotesContainer {
+    padding: 20px; 
+    border-radius: 16px; 
+    max-height: 80vh; 
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-around; 
+    align-items: center; 
+    gap: 15px; 
+    overflow-y: auto; 
+    box-sizing: border-box; 
+    width:100%;
+}
+
+.notes {
+    width: 150px; 
+    height: 150px; 
+    background-color: rgba(245, 245, 245, 0.865); 
+    color:rgb(13, 16, 15);
+    font-size: 16px; 
+    font-weight: bold; 
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    border-radius: 12px; 
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); 
+    transition:all 1s ease;
+    cursor: pointer;
+}
+
+.notes:hover {
+    transform: scale(1.05); 
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4); 
+}
+
+.notes:active {
+    transform: scale(0.95); 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+}
+
+@media (max-width: 800px) {
+    .ClassRoomHomePage {
+        flex-direction: column;
+        height: auto;
+    }
+    .CPLeft, .CPMiddle, .CPRight {
+        width: 100%; 
+        margin-bottom: 10px;
+    }
+    .NotesContainer {
+        padding: 15px;
+        gap: 10px;
+    }
+    .notes {
+        width: 120px; 
+        height: 120px;
+        font-size: 14px;
+    }
+}
