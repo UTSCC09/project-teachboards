@@ -106,82 +106,55 @@
     width: 70%; 
     background-color: rgb(35, 37, 36);
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    font-weight: bold;
+    text-align: center; 
     color: rgb(232, 229, 229);
     box-sizing: border-box;
-    overflow-y: scroll;
-    overflow-x:hidden;
-    cursor:pointer;
+    cursor: pointer;
     transition: all 1s ease;
     visibility: hidden;
+    line-height: 1; 
+    overflow: hidden; 
+    padding: 0; 
 }
+
 .CPLContaineractive{
     margin: 10px auto; 
     height: 60px; 
     width: 65%; 
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    font-weight: bold;
+    text-align: center; 
     box-sizing: border-box;
-    overflow-y: scroll;
-    overflow-x:hidden;
-    cursor:pointer;
+    cursor: pointer;
     transition: all 1s ease;
+    visibility: hidden;
+    line-height: 1; 
+    overflow: hidden; 
+    padding: 0; 
     background-color: rgb(54, 58, 56);
     color:rgb(13, 16, 15);
 }
-.CPLHelperer {
-    font-weight:bold;
-    margin: 5px 0;
-    width: auto; 
-    overflow: hidden;
-    text-align: center;
+
+.overflowhandler1, .overflowhandler2 {
+    height: 100%; 
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0; 
+    padding: 0; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
 }
-.overflowhandler1{
-    height:100vh;
-    overflow-y:scroll;
-    overflow-x:hidden;
-}
-.overflowhandler2{
-    height:100vh;
-    overflow-y:scroll;
-    overflow-x:hidden;
-}
-.HFonline {
-    text-align: center;
-    margin-bottom:5px;
-    color: rgb(13, 16, 15);
-    background-color: #C8E6C9;
-    padding: 2px 8px; 
-    border-radius: 5px;
-    display: inline-block;
-    box-sizing: border-box;
-}
-.HFoffline{
-    text-align: center;
-    margin-bottom:5px;
-    color: rgb(232, 229, 229);
-    background-color: rgb(13, 16, 15);
-    padding: 2px 8px; 
-    border-radius: 5px;
-    display: inline-block;
-    box-sizing: border-box;
-}
-.HFbusy{
-    text-align: center;
-    margin-bottom:5px;
-    color: rgb(13, 16, 15);
-    background-color: #e6e2c8;
-    padding: 2px 8px; 
-    border-radius: 5px;
-    display: inline-block;
-    box-sizing: border-box;
-}
+
 .CPRight {
     flex-shrink: 0;
     flex-grow: 0;

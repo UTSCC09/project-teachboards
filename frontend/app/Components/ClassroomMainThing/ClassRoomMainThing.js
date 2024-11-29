@@ -197,8 +197,7 @@ export default function ClassRoomMainPage() {
                 {teaching && <div className="overflowhandler1" ref={slowdown1}>
                 {classrooms.map((classroom) => (
                     <div key={classroom.classRoomID} className={`CPLContainer${currentClass?.classRoomID === classroom.classRoomID ? 'active' : ''}`}
-                     onClick={handleChange} data-data = {JSON.stringify(classroom)}>
-                        <p className="CPLHelperer">{classroom.className}</p>
+                     onClick={handleChange} data-data = {JSON.stringify(classroom)}>{classroom.className}
                     </div>
                 ))}
                 </div>}
@@ -208,8 +207,7 @@ export default function ClassRoomMainPage() {
                     <div key={classroom.classRoomID} 
                     onClick={handleChange}
                     className={`CPLContainer${currentClass?.classRoomID === classroom.classRoomID ? 'active' : ''}`}
-                     data-data = {JSON.stringify(classroom)}>
-                        <p className="CPLHelperer">{classroom.className}</p>
+                     data-data = {JSON.stringify(classroom)}>{classroom.className}
                     </div>
                     ))}
                 </div>}
