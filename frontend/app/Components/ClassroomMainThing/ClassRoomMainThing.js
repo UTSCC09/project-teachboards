@@ -189,7 +189,7 @@ export default function ClassRoomMainPage() {
     
     return (
         <div className = "ClassRoomHomePage">
-        {windowWidth > 400 && <div className = "CPLeft">
+        {windowWidth > 200 && <div className = "CPLeft">
             {windowWidth >= 800 &&<p className = "CPLTitle">Classrooms</p>}
             <button className="CPLContainer3" onClick={handlePopout}>Add Classroom</button>
             <button className="CPLContainer2" onClick={handlePopout2}>Enroll</button>
