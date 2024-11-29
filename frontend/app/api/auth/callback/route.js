@@ -51,7 +51,7 @@ export async function GET(request){
             response.cookies.set("session", token, {
                 httpOnly: true,
                 sameSite: "Strict",
-                secure: false,
+                secure: true,
                 path: "/",
                 maxAge: 60 * 60 * 24 * 7, // 7 days
             });

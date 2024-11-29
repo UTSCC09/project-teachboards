@@ -100,3 +100,9 @@ like compare cookie id and the actual id that the user pushes
 
 
 also remember to add more button to friendsPending and to firends 
+
+
+
+
+
+ADD FUCKING ERROR MESSAGES

@@ -36,7 +36,7 @@ export async function POST(req,res ) {
             status: 201,
             headers: { 
                 "Content-Type": "application/json" ,
-                "Set-Cookie": `session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`
+                "Set-Cookie": `session=${token}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=604800`
             },
         });
     } catch (error) {
