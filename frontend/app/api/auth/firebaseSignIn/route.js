@@ -2,7 +2,6 @@ import { auth, db, signInWithEmailAndPassword } from "../../../firebase.js";
 import validator from "validator";
 import { doc, getDoc } from "firebase/firestore";
 import { SignJWT } from "jose";
-import { sessionMiddlewear } from "../../../session.js";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
