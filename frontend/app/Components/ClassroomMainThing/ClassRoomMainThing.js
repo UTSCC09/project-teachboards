@@ -1,8 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Real.css";
 import Link from "next/link";
 import { useAuth } from "../Content/AuthContext.js";
+import {gsap} from "gsap";
 
 export default function ClassRoomMainPage() {
     const { user,checkAuthStatus} = useAuth();
@@ -16,7 +17,28 @@ export default function ClassRoomMainPage() {
     const [teaching, setTeaching] = useState(false);
     const [popout, setPopout] = useState(false);
 
-    const [currentClass, setCurrentClass] = useState("");
+    const [currentClass, setCurrentClass] = useState(null);
+
+    const slowdown1 = useRef();
+    const slowdown2 = useRef();
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            if (teaching && slowdown1.current) {
+                gsap.fromTo(slowdown1.current.children,{ autoAlpha: 0, y: -20 },{ autoAlpha: 1, y: 0, duration: 1, ease: "power2.out", stagger: 0.1 } );
+            } 
+        });
+        return () => ctx.revert();
+    }, [teaching]);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            if (enrolled && slowdown2.current) {
+                gsap.fromTo(slowdown2.current.children,{ autoAlpha: 0, y: -20 },{ autoAlpha: 1, y: 0, duration: 1, ease: "power2.out", stagger: 0.1 });
+}
+        });
+        return () => ctx.revert(); 
+    }, [enrolled]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -33,7 +55,6 @@ export default function ClassRoomMainPage() {
         e.preventDefault();
         const id = user.id;
         const pack = { id, className };
-
         try {
             const response = await fetch("/api/classroom", {
                 method: "POST",
@@ -49,6 +70,7 @@ export default function ClassRoomMainPage() {
             setPopout(false);
             setClassrooms([data,...classrooms]);
             setClassName(""); 
+            setTeaching(false);
             e.target.reset();
         } catch (error) {
             console.error("Error creating classroom:", error);
@@ -74,6 +96,7 @@ export default function ClassRoomMainPage() {
             setClassEnrolled([data, ...classenrolled]);
             setPopout2(false);
             setCode("");
+            setEnrolled(false);
             e.target.reset();
         }
         catch(error){
@@ -144,37 +167,52 @@ export default function ClassRoomMainPage() {
 
     const handleEnrolled = (e) =>{
         e.preventDefault();
+        if(teaching){
+            setTeaching(false);
+        }
         setEnrolled((prev) => !prev);
     };
 
     const handleTeaching = (e) =>{
         e.preventDefault();
+        if(enrolled){
+            setEnrolled(false);
+        }
         setTeaching((prev) => !prev);
     };
 
+    const handleChange = (e)=>{
+        e.preventDefault();
+        const data =  JSON.parse(e.currentTarget.getAttribute('data-data'));
+        setCurrentClass(data);
+    }
+    
     return (
         <div className = "ClassRoomHomePage">
-
         {windowWidth > 400 && <div className = "CPLeft">
             <p className = "CPLTitle">Classrooms</p>
             <button className="CPLContainer3" onClick={handlePopout}>Add Classroom</button>
             <button className="CPLContainer2" onClick={handlePopout2}>Enroll</button>
             <button className={`CPLContainer1${teaching ? 'active' : ''}`}  onClick={handleTeaching}>Teaching</button>
-                {teaching && <>
+                {teaching && <div className="overflowhandler1" ref={slowdown1}>
                 {classrooms.map((classroom) => (
-                    <div key={classroom.classRoomID} className="CPLContainer">
+                    <div key={classroom.classRoomID} className={`CPLContainer${currentClass?.classRoomID === classroom.classRoomID ? 'active' : ''}`}
+                     onClick={handleChange} data-data = {JSON.stringify(classroom)}>
                         <p className="CPLHelperer">{classroom.className}</p>
                     </div>
                 ))}
-                </>}
+                </div>}
             <button className = {`CPLContainer1${enrolled ? 'active' : ''}`} onClick={handleEnrolled}>Enrolled</button>
-                {enrolled && <>
+                {enrolled && <div className='overflowhandler2' ref={slowdown2}>
                     {classenrolled.map((classroom) => (
-                    <div key={classroom.classRoomID} className="CPLContainer">
+                    <div key={classroom.classRoomID} 
+                    onClick={handleChange}
+                    className={`CPLContainer${currentClass?.classRoomID === classroom.classRoomID ? 'active' : ''}`}
+                     data-data = {JSON.stringify(classroom)}>
                         <p className="CPLHelperer">{classroom.className}</p>
                     </div>
                     ))}
-                </>}
+                </div>}
         </div> }
 
         <div className = "CPMiddle">
@@ -203,7 +241,7 @@ export default function ClassRoomMainPage() {
                     onChange={(e) => setClassName(e.target.value)}
                     required
                 />
-                <div classname = "CCButton">
+                <div className = "CCButton">
                     <button className="AddClassroom1" onClick={handlePopout}>Cancel</button>
                     <button type="submit" className="AddClassroomButton2">Add</button>
                 </div>
@@ -222,7 +260,7 @@ export default function ClassRoomMainPage() {
                 onChange={(e) => setCode(e.target.value)}
                 required
             />
-            <div classname = "CCButton">
+            <div className = "CCButton">
                 <button className="AddClassroom1" onClick={handlePopout2}>Cancel</button>
                 <button type="submit" className="AddClassroomButton2">Add</button>
             </div>
@@ -234,35 +272,3 @@ export default function ClassRoomMainPage() {
     );
 }
 
-
-
-
-/*<div className="HomePageContainer">
-            <div className="welcome">{user ? `Welcome, ${user.firstName}` : "Please Login"}</div>
-            
-            {user && (
-                <form onSubmit={handleAddClassroom} className="AddClassroomForm">
-                    <input
-                        type="text"
-                        placeholder="Classroom Name"
-                        value={className}
-                        onChange={(e) => setClassName(e.target.value)}
-                        required
-                    />
-                    <button type="submit" className="AddClassroomButton">Add Classroom</button>
-                </form>
-            )}
-            
-            {user && (
-                <div className="ClassRoomComponentHolder">
-                {classrooms.map((classroom) => (
-                    <Link key={classroom.classRoomID} href={{pathname: `/classroom/${classroom.classRoomID}`, 
-                        query:{name: classroom.className}}}>
-                    <div key={classroom.classRoomID} id={classroom.classRoomID} className="ClassroomBox">
-                        {classroom.className}
-                    </div>
-                    </Link>
-                ))}
-                </div>
-            )}
-        </div> */

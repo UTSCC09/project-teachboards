@@ -24,7 +24,6 @@
     justify-content: flex-start;
     height: 100%;
     text-align: center;
-    overflow: hidden;
     
 }
 
@@ -46,9 +45,8 @@
     align-items: center; 
     color:  rgb(232, 229, 229);
     box-sizing: border-box;
-    overflow: hidden;
     cursor:pointer;
-    transition:all 0.5s ease;
+    transition:all 1s ease;
 }
 /*rgb(60, 63, 62);*/
 .CPLContainer:hover, .CPLContainer1:hover, .CPLContainer2:hover, .CPLContainer3:hover{
@@ -58,16 +56,15 @@
 .CPLContainer1active{
     margin: 10px auto; 
     height: 45px; 
-    width: 90%; 
+    width: 80%; 
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center; 
     box-sizing: border-box;
-    overflow: hidden;
     cursor:pointer;
-    transition:all 0.5s ease;
+    transition:all 1s ease;
     background-color: rgb(54, 58, 56);
     color:rgb(13, 16, 15);
 }
@@ -84,9 +81,8 @@
     align-items: center; 
     color:  rgb(111, 195, 136);
     box-sizing: border-box;
-    overflow: hidden;
     cursor:pointer;
-    transition:all 0.5s ease;
+    transition:all 1s ease;
 }
 .CPLContainer3{
     margin: 10px auto; 
@@ -100,15 +96,14 @@
     align-items: center; 
     color:  rgb(111, 166, 195);
     box-sizing: border-box;
-    overflow: hidden;
     cursor:pointer;
-    transition:all 0.5s ease;
+    transition:all 1s ease;
 }
 
 .CPLContainer {
     margin: 10px auto; 
     height: 60px; 
-    width: 75%; 
+    width: 70%; 
     background-color: rgb(35, 37, 36);
     border-radius: 10px;
     display: flex;
@@ -117,10 +112,29 @@
     align-items: center; 
     color: rgb(232, 229, 229);
     box-sizing: border-box;
-    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x:hidden;
     cursor:pointer;
+    transition: all 1s ease;
+    visibility: hidden;
 }
-
+.CPLContaineractive{
+    margin: 10px auto; 
+    height: 60px; 
+    width: 65%; 
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    box-sizing: border-box;
+    overflow-y: scroll;
+    overflow-x:hidden;
+    cursor:pointer;
+    transition: all 1s ease;
+    background-color: rgb(54, 58, 56);
+    color:rgb(13, 16, 15);
+}
 .CPLHelperer {
     font-weight:bold;
     margin: 5px 0;
@@ -128,7 +142,16 @@
     overflow: hidden;
     text-align: center;
 }
-
+.overflowhandler1{
+    height:100vh;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+.overflowhandler2{
+    height:100vh;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
 .HFonline {
     text-align: center;
     margin-bottom:5px;
