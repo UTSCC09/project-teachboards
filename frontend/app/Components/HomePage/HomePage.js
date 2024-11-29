@@ -58,13 +58,12 @@ export default function HomePage() {
                 })}
                 <Link href="/friends" className = "HPFContainer">
                         <p className="Helperer">See more</p>
-                    </Link>
+                </Link>
             </div> }
 
             <div className = "HPCenter">
                 <p className = "HPC">Recent Notes</p>
                 <div className = "NoteContainer">
-
                 </div>
             </div>
 

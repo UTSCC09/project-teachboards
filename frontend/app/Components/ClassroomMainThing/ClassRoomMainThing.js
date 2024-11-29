@@ -37,7 +37,7 @@ export default function ClassRoomMainPage() {
                 gsap.fromTo(slowdown2.current.children,{ autoAlpha: 0, y: -20 },{ autoAlpha: 1, y: 0, duration: 1, ease: "power2.out", stagger: 0.1 });
 }
         });
-        return () => enrolled.revert(); 
+        return () => animation.revert(); 
     }, [enrolled]);
 
     useEffect(() => {
