@@ -15,7 +15,9 @@ import AgoraRTC, {
 } from "agora-rtc-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react"
+import { jsPDF } from "jspdf";
 import Videos from "../Videos/Videos";
+
 export default function Call({channelName, appId, token, uid, endCall}) {
 
     const client = useRTCClient(AgoraRTC.createClient({mode: "live", codec: "vp8", role: "host"}));
@@ -31,27 +33,60 @@ export default function Call({channelName, appId, token, uid, endCall}) {
     const localBoardRef = useRef();
     const [boardUploadState, setBoardUploadState] = useState(0);
 
-    const saveToFirestore = () => {
+    const saveToFirestore = async () => {
         setBoardUploadState(1);
         const saveData = localBoardRef.current.getSaveData();
-        const classroomID = "76cdCVK4beEE8Ik74613"
-        fetch(`/api/classroom/${classroomID}/notes`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                uid: '4Z3FohSY67OTCpoe25pge6YTsqD3',
-                noteContent: saveData
-            })
-        }).then((res) => res.json()).then((data) => {
-            console.log(data);
-            alert("UPLOADED!!!");
-        })
-        .catch((e) => {
-            alert("bad classroom upload")
-            console.error(error);
-        })
+        
+
+        async function uploadPDF(pdfBlob) {
+            setBoardUploadState(1); // Start upload state
+    
+            const formData = new FormData();
+            formData.append('file', pdfBlob, 'drawing.pdf');
+
+    
+            const classroomId = "76cdCVK4beEE8Ik74613"
+            try {
+                const response = await fetch(`/api/classroom/${classroomId}/notes`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
+    
+                if (!response.ok) {
+                    console.error("bad classroom upload")
+                }
+
+                //setBoardUploadState(2); // Upload complete
+            } catch (error) {
+                console.error(error);
+                setBoardUploadState(0); // Reset upload state
+            }
+        };
+
+        const generatePDF = () => {
+            const canvas = localBoardRef.current.canvas.drawing;
+            const pdf = new jsPDF({
+                orientation: "landscape",
+                unit: "px",
+                format: [canvas.width, canvas.height],
+            });
+            const imageData = canvas.toDataURL("image/png");
+    
+            // You can customize this PDF generation
+            pdf.addImage(imageData, 'PNG', 0, 0, canvas.width, canvas.height);
+    
+            const pdfBlob = pdf.output('blob');  // Output as a Blobh
+            
+            return pdfBlob;
+        };
+        const pdfBlob = generatePDF();
+        uploadPDF(pdfBlob);
+
+    }
+    function testUpload() {
         setBoardUploadState(2);
     }
 
@@ -60,9 +95,10 @@ export default function Call({channelName, appId, token, uid, endCall}) {
     }
     useEffect( ()=> {
         if (boardUploadState===2) {
+            console.log("upload done byae")
             endCall();
         }
-    })
+    },[boardUploadState])
 
     return (
         <AgoraRTCProvider className="call-wrapper" client={client}>
@@ -82,6 +118,7 @@ export default function Call({channelName, appId, token, uid, endCall}) {
                 ) : (<p>Joining...</p>)
                 }
                 <button onClick={handleLeaveCall}>LEAVE CALL</button>
+                <button onClick={testUpload}>UPLOAD CANVAS</button>
                 <Sidebar></Sidebar>
             </div>
         </AgoraRTCProvider>

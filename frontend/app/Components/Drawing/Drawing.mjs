@@ -1,7 +1,7 @@
 'use client'
 
 
-import React, { useEffect, useState, useRef, forwardRef } from 'react';
+import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import ReactCanvasDraw from "react-canvas-draw";
 import { jsPDF } from "jspdf";
 import "./Drawing.css";
@@ -55,8 +55,6 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
         }
     }
 
-    useEffect(handleLoad, []);
-
     const handleUndo = () => {
         const saveData = canvasRef.current.getSaveData();
         setUndo([saveData, ...undo]);
@@ -80,7 +78,22 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
         setUndo([])
     };
 
+    const generatePDF = () => {
+        const pdf = new jsPDF();
+        const saveData = canvasRef.current.getSaveData();
 
+        // You can customize this PDF generation
+        pdf.addImage(saveData, 'PNG', 0, 0, canvasWidth, canvasHeight);
+
+        const pdfBlob = pdf.output('blob');  // Output as a Blob
+        return pdfBlob;
+    };
+
+    // useImperativeHandle(canvasRef, () => ({
+    //     generatePDF
+    // }));
+
+ 
     const saveToFirestore = () => {
         setUploadState(1);
         const saveData = canvasRef.current.getSaveData();

@@ -47,7 +47,7 @@ export async function GET(req) {
         teacherID: '1',
         channelName: channelName,
         active: false,
-        boardsId: boardsRef.id
+        boardsId: boardsDoc.id
     };
     await setDoc(roomDoc, roomData);
     return NextResponse.json({ roomID: roomData.channelName, status: 201});
