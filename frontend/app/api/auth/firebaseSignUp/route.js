@@ -21,6 +21,12 @@ export async function POST(req){
 
     
     try{
+        if (password.length < 8){
+            return new Response(JSON.stringify({ message: "Password must be at least 8 symbols long with a special symbol and capital letter"}), {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
         username = username.toLowerCase();
         const userQuery = query((collection(db, "users")), where("username", "==", username));
         const existingUser = await getDocs(userQuery);

@@ -13,6 +13,12 @@ export async function POST(req,res ) {
     const password = body.password;
 
     try {
+        if (password.length < 8){
+            return new Response(JSON.stringify({ message: "Password must be at least 8 symbols long with a special symbol and capital letter"}), {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
         const userInfo = await signInWithEmailAndPassword(auth, email, password);
         const id = userInfo.user.uid;
         const userDoc = await getDoc(doc(db, "users", id));
@@ -32,7 +38,7 @@ export async function POST(req,res ) {
         });
     } catch (error) {
         console.error("Error signing in:", error.message);
-        return new Response(JSON.stringify({ message: "User could not sign in" }), {
+        return new Response(JSON.stringify({ message: error.message}), {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });

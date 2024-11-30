@@ -7,10 +7,24 @@ import {useAuth} from "../Content/AuthContext";
 
 
 export default function Loginpage(){
-    const [errorMessage,seterrorMessage] = useState("Error mesasge");
     const [LoginOrOut, setLoginOrOut] = useState("Login");
     const router = useRouter();
     const { checkAuthStatus } = useAuth();
+
+
+    const [errormessage, seterrormessage] = useState("This is an error message actual");
+    const [haserror, sethaserror] = useState(false);
+
+    const handleerror = (message) => {
+        sethaserror(true);
+        seterrormessage(message);
+        setTimeout(removeerror, 5000);
+    };
+    const removeerror = ()=>{
+        seterrormessage("");
+        sethaserror(false);
+    }
+
     const googleAuth = () =>{
         window.location.href = `/api/auth/google`;
     };
@@ -28,7 +42,7 @@ export default function Loginpage(){
             });
             const userReturn = await response.json();
             if (!response.ok){
-                seterrorMessage("could not sign in rip");
+                handleerror("wrong password or email");
                 return;
             }
             console.log("User signed in successfully");
@@ -36,8 +50,7 @@ export default function Loginpage(){
             await checkAuthStatus();
             router.push("/home");
         } catch (error) {
-            console.error("Error signing in", error.message);
-            seterrorMessage("Could not sign in, please try again");
+            handleerror(error.message);
         }
     };
     
@@ -58,7 +71,7 @@ export default function Loginpage(){
             });
             const userReturn = await response.json();
             if (!response.ok){
-                seterrorMessage("Could not create account");
+                handleerror(userReturn.message);
                 return;
             }
             console.log("User created");
@@ -69,7 +82,7 @@ export default function Loginpage(){
         }
         catch(error){
             console.error("error signing up", error.message);
-            seterrorMessage(error.message);
+            handleerror(error.message);
         }
     };
 
@@ -104,7 +117,7 @@ export default function Loginpage(){
                 <label htmlFor="FirstName">First Name</label>
                 <input type="text" id="text" name="FirstName" required></input>
             </div>
-            <div className="SignInInput">z
+            <div className="SignInInput">
                 <label htmlFor="LastName">Last Name</label>
                 <input type="text" id="text" name="LastName" required></input>
             </div>
@@ -131,8 +144,8 @@ export default function Loginpage(){
             <div className="signup" onClick={switchform}>Click to SignIn</div>
             </form>
         </div>}
-
-
+    
+    {haserror && <div className = "errormessagepopup">{errormessage}</div>}
     </div>
     )
 }

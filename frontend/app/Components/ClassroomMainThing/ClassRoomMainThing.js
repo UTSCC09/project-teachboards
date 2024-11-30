@@ -29,6 +29,10 @@ export default function ClassRoomMainPage() {
     const [popout3, setpopout3] = useState(false);
 
     const [dateformvalue, setdateformvalue]  = useState(new Date().toISOString().split("T")[0]);
+
+
+    const [errormessage, seterrormessage] = useState("This is an error message actual");
+    const [haserror, sethaserror] = useState(false);
     useEffect(()=>{
         getNotes();
     },[selectedDate, setSelectedDate,currentClass])
@@ -103,7 +107,7 @@ export default function ClassRoomMainPage() {
             });
             const data = await response.json();
             if (!response.ok) {
-                console.log("Could not create classroom");
+                handleerror(data.message);
                 return;
             }
             console.log("Classroom created:", data.classRoomId);
@@ -114,6 +118,7 @@ export default function ClassRoomMainPage() {
             e.target.reset();
         } catch (error) {
             console.error("Error creating classroom:", error);
+            handleerror(error.message);
         }
     };
 
@@ -129,8 +134,9 @@ export default function ClassRoomMainPage() {
             });
             const data = await response.json();
             if (!response.ok){
-                console.log(data.message);
                 setCode("");
+                setClassrooms([]);
+                handleerror(data.message);
                 return;
             }
             setClassEnrolled([data, ...classenrolled]);
@@ -142,6 +148,7 @@ export default function ClassRoomMainPage() {
         catch(error){
             setCode("");
             console.error("error adding classroom",error);
+            handleerror(error.message);
         }
     }
 
@@ -156,13 +163,14 @@ export default function ClassRoomMainPage() {
                 });                
                 const data = await response.json();
                 if (!response.ok){
-                    console.log("could not get clasrooms");
                     setClassrooms([]);
+                    handleerror(data.message);
                     return;
                 }
                 setClassrooms(data);
             }
             catch(error){
+                handleerror(error.message);
                 console.error("error gettinv classroom", error);
             }
         }
@@ -178,13 +186,14 @@ export default function ClassRoomMainPage() {
                 });                
                 const data = await response.json();
                 if (!response.ok){
-                    console.log("could not get enrolled clasrooms");
                     setClassEnrolled([]);
+                    handleerror(data.message);
                     return;
                 }
                 setClassEnrolled(data);
             }
             catch(error){
+                handleerror(error.message);
                 console.error("error getting enrolled classroom", error);
             }
         }
@@ -206,7 +215,7 @@ export default function ClassRoomMainPage() {
 
             const data = await response.json();
             if (!response.ok){
-                console.error(response.message);
+                handleerror(data.message);
                 return;
             }
             //note im goint to need to get a next call thing here btw thanks  changge here thing 
@@ -215,9 +224,19 @@ export default function ClassRoomMainPage() {
             setpopout3(false);
         }
         catch(error){
+            handleerror(error.message);
             console.error(error);
         }
         return;
+    }
+    const handleerror = (message) => {
+        seterrormessage(message);
+        sethaserror(true);
+        setTimeout(removeerror, 5000);
+    };
+    const removeerror = ()=>{
+        seterrormessage("");
+        haserror(false);
     }
     const handlePopout = (e) =>{
         e.preventDefault();
@@ -383,6 +402,7 @@ export default function ClassRoomMainPage() {
             </form>
             </div>
         }
+        {haserror && <div className = "errormessagepopup">{errormessage}</div>}
     </div>
     );
 }

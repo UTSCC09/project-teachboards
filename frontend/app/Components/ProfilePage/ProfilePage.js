@@ -12,6 +12,18 @@ export default function ProfilePage() {
     const [profileUsername, setProfileUsername] = useState("");
 
     const check = () => user && profileFirstName !== "" && profileLastName !== "" && profileEmail !== "" && profileUsername !== "";
+    const [errormessage, seterrormessage] = useState("This is an error message actual");
+    const [haserror, sethaserror] = useState(false);
+
+    const handleerror = (message) => {
+        sethaserror(true);
+        seterrormessage(message);
+        setTimeout(removeerror, 5000);
+    };
+    const removeerror = ()=>{
+        seterrormessage("");
+        sethaserror(false);
+    }
 
             
     const handleSubmit = async (e) => {
@@ -31,7 +43,7 @@ export default function ProfilePage() {
             });
             const returnValue = await response.json();
             if (!response.ok){
-                console.error("could not change user values RIP");
+                handleerror(returnValue.message);
                 return;
             }         
             await checkAuthStatus();
@@ -39,6 +51,7 @@ export default function ProfilePage() {
         }
         catch(error){
             console.error("Error putting user data", error.message);
+            handleerror(error.message);
         }
     };
 
@@ -51,7 +64,8 @@ export default function ProfilePage() {
             });
             const returnValue = await response.json();
             if (!response.ok){
-                console.error("Could not get user values");
+                handleerror(returnValue);
+                return;
             }
             setProfileFirstName(returnValue.firstName);
             setProfileLastName(returnValue.lastName);
@@ -60,6 +74,7 @@ export default function ProfilePage() {
         }   
         catch(error){
             console.log("error getting user data", error.message);
+            handleerror(error.message);
         }
     };
 
@@ -113,6 +128,7 @@ export default function ProfilePage() {
                     Submit
                 </button>}
             </div>
+            {haserror && <div className = "errormessagepopup">{errormessage}</div>}
         </div>
     );
 }
