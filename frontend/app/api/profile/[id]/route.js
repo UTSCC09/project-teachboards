@@ -1,4 +1,4 @@
-import { db } from "../../../firebase.js";
+import { db } from "@app/api/firebase.js";
 import {updateDoc,doc, getDoc} from "firebase/firestore";
 import validator from "validator";
 import { SignJWT } from "jose";
