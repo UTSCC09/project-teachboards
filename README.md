@@ -106,3 +106,9 @@ also remember to add more button to friendsPending and to firends
 
 
 ADD FUCKING ERROR MESSAGES
+
+
+my remaining task 
+FINISH THE notes portion and the getting your calls portion 
+then finish setting up proper queries like add scrol triggers or like button to get more data...
+then add error messages and your ARE DONE....

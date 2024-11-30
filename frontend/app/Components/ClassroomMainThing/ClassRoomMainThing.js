@@ -31,7 +31,7 @@ export default function ClassRoomMainPage() {
     const [dateformvalue, setdateformvalue]  = useState(new Date().toISOString().split("T")[0]);
     useEffect(()=>{
         getNotes();
-    },[selectedDate, setSelectedDate])
+    },[selectedDate, setSelectedDate,currentClass])
 
     useEffect(() => {
         const animation = gsap.context(() => {
@@ -195,9 +195,13 @@ export default function ClassRoomMainPage() {
         try{
             const classRoomID = currentClass.classRoomID;
             const id = user.id;
-            const response = await fetch(`/api/classroom/scheduleMeeting/${classRoomID}`,{
+            const sendingcode = "123";
+            const date = dateformvalue;
+            //add here a random genearte for the code thing idk how thanks 
+            const response = await fetch(`/api/classroom/scheduleMeeting`,{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({id:id, classRoomID:classRoomID,sendingcode:sendingcode,date:date })
             })
 
             const data = await response.json();
@@ -206,7 +210,9 @@ export default function ClassRoomMainPage() {
                 return;
             }
             //note im goint to need to get a next call thing here btw thanks  changge here thing 
-            
+            //updatefunctionthing() not made yet 
+            console.log("added a new scheduled meeting");
+            setpopout3(false);
         }
         catch(error){
             console.error(error);
@@ -240,10 +246,10 @@ export default function ClassRoomMainPage() {
 
     const handleChange = (e)=>{
         e.preventDefault();
-        sethasclass(true);
         const data =  JSON.parse(e.currentTarget.getAttribute('data-data'));
         setCurrentClass(data);
-        getNotes();
+        getNotes()
+        sethasclass(true);
     }
     const datething = (e) =>{
         e.preventDefault();
@@ -300,12 +306,10 @@ export default function ClassRoomMainPage() {
                         <button onClick={handlePopout3} className = "schedulemeeting">Schedule Class</button>
                     </div>
                     <div className = "NotesContainer">
-                        {notes.length > 0 ? ( notes.map((note) =>(
+                        {notes.map((note) =>(
                             <div key={note.id} className = "notes">{note.name}</div>
-                        ))
-                    ) : (
-                        <div className="nonotes">No notes for this given day</div>
-                    )}
+                        ))}
+               
                     </div>
                     </>}
             </div>
@@ -321,7 +325,8 @@ export default function ClassRoomMainPage() {
 
         {popout &&  
             <div className="SCREENBANG">
-                <form onSubmit={handleAddClassroom} className="AddClassroomForm">
+                <form onSubmit={(e) => {e.preventDefault(); 
+                handleAddClassroom();}}  className="AddClassroomForm">
                 <h2>Add Classroom</h2>
                 <input
                     type="text"
@@ -340,7 +345,9 @@ export default function ClassRoomMainPage() {
 
         {popout2 && 
             <div className="SCREENBANG">
-            <form onSubmit={joinClassRoom} className="AddClassroomForm">
+            <form  onSubmit={(e) => {e.preventDefault(); 
+                joinClassRoom();}} 
+                className="AddClassroomForm">
             <h2>Classroom Code</h2>
             <input
                 type="text"
@@ -358,7 +365,9 @@ export default function ClassRoomMainPage() {
         }
         {popout3 && 
             <div className="SCREENBANG">
-            <form onSubmit={scheduleMeeting} className="AddClassroomForm">
+            <form onSubmit={(e) => {e.preventDefault(); 
+                scheduleMeeting();}} 
+                className="AddClassroomForm">
             <label htmlFor="date-picker">Select a Date:</label>
             <input 
                 type="date"
