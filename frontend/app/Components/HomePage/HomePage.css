@@ -139,6 +139,7 @@
 .NoteContainer {
     display: flex;
     position: relative;
+    border-radius:5px;
     background-color: rgb(35, 37, 36);
     margin: 20px;
     flex: 1; 

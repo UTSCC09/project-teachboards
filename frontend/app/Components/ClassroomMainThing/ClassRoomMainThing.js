@@ -4,6 +4,9 @@ import "./Real.css";
 import Link from "next/link";
 import { useAuth } from "../Content/AuthContext.js";
 import {gsap} from "gsap";
+import DatePicker from "react-datepicker";
+import { reauthenticateWithCredential } from "firebase/auth";
+
 
 export default function ClassRoomMainPage() {
     const { user,checkAuthStatus} = useAuth();
@@ -18,9 +21,17 @@ export default function ClassRoomMainPage() {
     const [popout, setPopout] = useState(false);
 
     const [currentClass, setCurrentClass] = useState(null);
-
+    const [hasclass, sethasclass] = useState(false);
     const slowdown1 = useRef();
     const slowdown2 = useRef();
+    const [notes, setNotes] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+    const [popout3, setpopout3] = useState(false);
+
+    const [dateformvalue, setdateformvalue]  = useState(new Date().toISOString().split("T")[0]);
+    useEffect(()=>{
+        getNotes();
+    },[selectedDate, setSelectedDate])
 
     useEffect(() => {
         const animation = gsap.context(() => {
@@ -50,6 +61,35 @@ export default function ClassRoomMainPage() {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            handleGetClassroom();
+            handleGetEnrolled();
+        }
+    }, [user,checkAuthStatus]); 
+
+
+    const getNotes = async () =>{
+        if (!user || !hasclass || !currentClass.classRoomID) return;
+        try{
+            const classroomID = currentClass.classRoomID;
+            setNotes([
+                { id: 1, name: "Person1", content: "This is content for Person1" },
+                { id: 2, name: "Person2", content: "This is content for Person2" },
+                { id: 3, name: "Person3", content: "This is content for Person3" },
+                { id: 4, name: "Person4", content: "This is content for Person4" },
+                { id: 5, name: "Person5", content: "This is content for Person5" },
+                { id: 6, name: "Person6", content: "This is content for Person6" },
+                { id: 7, name: "Person7", content: "This is content for Person7" },
+                { id: 8, name: "Person8", content: "This is content for Person8" },
+                { id: 9, name: "Person9", content: "This is content for Person9" },
+                { id: 10, name: "Person10", content: "This is content for Person10" }])
+        }
+        catch(error){
+            console.error("error getting notes");
+        }
+    }
 
     const handleAddClassroom = async (e) => {
         e.preventDefault();
@@ -149,13 +189,30 @@ export default function ClassRoomMainPage() {
             }
         }
     }
-    useEffect(() => {
-        if (user) {
-            handleGetClassroom();
-            handleGetEnrolled();
-        }
-    }, [user,checkAuthStatus]); 
 
+    const scheduleMeeting = async ()=>{
+        if (!user ||  !currentClass.classRoomID) return;
+        try{
+            const classRoomID = currentClass.classRoomID;
+            const id = user.id;
+            const response = await fetch(`/api/classroom/scheduleMeeting/${classRoomID}`,{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+            })
+
+            const data = await response.json();
+            if (!response.ok){
+                console.error(response.message);
+                return;
+            }
+            //note im goint to need to get a next call thing here btw thanks  changge here thing 
+            
+        }
+        catch(error){
+            console.error(error);
+        }
+        return;
+    }
     const handlePopout = (e) =>{
         e.preventDefault();
         setPopout((prev) => !prev);
@@ -183,10 +240,24 @@ export default function ClassRoomMainPage() {
 
     const handleChange = (e)=>{
         e.preventDefault();
+        sethasclass(true);
         const data =  JSON.parse(e.currentTarget.getAttribute('data-data'));
         setCurrentClass(data);
+        getNotes();
     }
+    const datething = (e) =>{
+        e.preventDefault();
+        const date = e.target.value;
+        const betterdate = new Date(date).toDateString();
+        setSelectedDate(date);
+        console.log(betterdate);
+    }
+
+    const handlePopout3 = (e) =>{
+        e.preventDefault();
+        setpopout3((prev) =>!prev);
     
+    }
     return (
         <div className = "ClassRoomHomePage">
         {windowWidth > 400 && <div className = "CPLeft">
@@ -214,20 +285,29 @@ export default function ClassRoomMainPage() {
         </div> }
 
         <div className = "CPMiddle">
-            <p className = "CPMtitle">Classroom Name</p>
+            <p className = "CPMtitle">{currentClass !== null ? currentClass.className : "Please Choose a Class"}</p>
             <div className = "CPMContainer">
-                    <p className = "CPMCTitle">Date Nov 29</p>
-                    <div className = "NotesContainer">
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
-                        <div className = "notes"></div>
+                    {hasclass && <>
+                    <div className = "CPMCTitle">
+                        <label htmlFor="date-picker">Select a Date:</label>
+                        <input 
+                            type="date"
+                            id="date-picker"
+                            value={selectedDate}
+                            onChange={datething}
+                            className="date-picker-input"
+                        />
+                        <button onClick={handlePopout3} className = "schedulemeeting">Schedule Class</button>
                     </div>
+                    <div className = "NotesContainer">
+                        {notes.length > 0 ? ( notes.map((note) =>(
+                            <div key={note.id} className = "notes">{note.name}</div>
+                        ))
+                    ) : (
+                        <div className="nonotes">No notes for this given day</div>
+                    )}
+                    </div>
+                    </>}
             </div>
         </div>
 
@@ -276,7 +356,24 @@ export default function ClassRoomMainPage() {
             </form>
             </div>
         }
-
+        {popout3 && 
+            <div className="SCREENBANG">
+            <form onSubmit={scheduleMeeting} className="AddClassroomForm">
+            <label htmlFor="date-picker">Select a Date:</label>
+            <input 
+                type="date"
+                id="date-picker"
+                value={dateformvalue}
+                onChange={(e) => setdateformvalue(e.target.value)}
+                className="date-picker-input"
+            />
+            <div className = "CCButton">
+                <button className="AddClassroom1" onClick={handlePopout3}>Cancel</button>
+                <button type="submit" className="AddClassroomButton2">Add</button>
+            </div>
+            </form>
+            </div>
+        }
     </div>
     );
 }
