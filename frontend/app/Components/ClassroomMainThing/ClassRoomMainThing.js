@@ -303,7 +303,7 @@ export default function ClassRoomMainPage() {
                             onChange={datething}
                             className="date-picker-input"
                         />
-                        <button onClick={handlePopout3} className = "schedulemeeting">Schedule Class</button>
+                       {teaching && <button onClick={handlePopout3} className = "schedulemeeting">Schedule Class</button>}
                     </div>
                     <div className = "NotesContainer">
                         {notes.map((note) =>(
