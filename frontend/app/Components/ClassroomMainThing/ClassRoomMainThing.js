@@ -75,23 +75,28 @@ export default function ClassRoomMainPage() {
 
 
     const getNotes = async () =>{
-        if (!user || !hasclass || !currentClass.classRoomID) return;
+        if (!user || !hasclass || !currentClass.classRoomID || !selectedDate) return;
+        const classRoomID = currentClass.classRoomID;
         try{
-            const classroomID = currentClass.classRoomID;
-            setNotes([
-                { id: 1, name: "Person1", content: "This is content for Person1" },
-                { id: 2, name: "Person2", content: "This is content for Person2" },
-                { id: 3, name: "Person3", content: "This is content for Person3" },
-                { id: 4, name: "Person4", content: "This is content for Person4" },
-                { id: 5, name: "Person5", content: "This is content for Person5" },
-                { id: 6, name: "Person6", content: "This is content for Person6" },
-                { id: 7, name: "Person7", content: "This is content for Person7" },
-                { id: 8, name: "Person8", content: "This is content for Person8" },
-                { id: 9, name: "Person9", content: "This is content for Person9" },
-                { id: 10, name: "Person10", content: "This is content for Person10" }])
+            const response = await fetch(`/api/classroom/getNotes/${classRoomID}/${selectedDate}`,{
+                method:"GET",
+                headers:{"Content-Type":"application/json"},
+            });
+
+            const data = await response.json();
+            if(!response.ok){
+                setNotes([]);
+                handleerror(data.message);
+                return;
+            }
+            console.log(data)
+            setNotes(data);
+            return;
         }
         catch(error){
+            setNotes([]);
             console.error("error getting notes");
+            handleerror(error.message);
         }
     }
 
@@ -236,7 +241,7 @@ export default function ClassRoomMainPage() {
     };
     const removeerror = ()=>{
         seterrormessage("");
-        haserror(false);
+        sethaserror(false);
     }
     const handlePopout = (e) =>{
         e.preventDefault();
@@ -310,7 +315,7 @@ export default function ClassRoomMainPage() {
         </div> }
 
         <div className = "CPMiddle">
-            <p className = "CPMtitle">{currentClass !== null ? currentClass.className : "Please Choose a Class"}</p>
+            <p className = "CPMtitle">{currentClass !== null ? currentClass.className + " | " + currentClass.id : "Please Choose a Class"}</p>
             <div className = "CPMContainer">
                     {hasclass && <>
                     <div className = "CPMCTitle">
@@ -324,11 +329,15 @@ export default function ClassRoomMainPage() {
                         />
                        {teaching && <button onClick={handlePopout3} className = "schedulemeeting">Schedule Class</button>}
                     </div>
-                    <div className = "NotesContainer">
-                        {notes.map((note) =>(
-                            <div key={note.id} className = "notes">{note.name}</div>
+                    <div className="NotesContainer">
+                        {notes.map((note, index) => (
+                            <a key={index} className="clickable" href={note} target="_blank" rel="noopener noreferrer">
+                                <iframe
+                                    src={note}
+                                    className="pdf"
+                                />
+                            </a>
                         ))}
-               
                     </div>
                     </>}
             </div>

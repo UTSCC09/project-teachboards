@@ -442,3 +442,27 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+
+.pdf {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    pointer-events: none;
+
+}
+.clickable {
+    width: 20%; 
+    height: 15vh; 
+    position: relative; 
+    text-decoration: none;
+    background: transparent; 
+    cursor: pointer; 
+    display: block; 
+    transition:all 1s ease;
+    overflow:hidden;
+}
+.clickable:hover {
+    transform:scale(1.07);
+}
