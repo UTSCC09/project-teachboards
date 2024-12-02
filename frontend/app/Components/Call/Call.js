@@ -14,18 +14,21 @@ import AgoraRTC, {
   useRemoteAudioTracks,
   useRemoteUsers,
 } from "agora-rtc-react";
+import AgoraRTM from "agora-rtm-sdk";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react"
 import { jsPDF } from "jspdf";
 import Videos from "../Videos/Videos";
+import Drawing from '../Drawing/Drawing.mjs';
 
-export default function Call({channelName, appId, token, uid, endCall}) {
+export default function Call({channelName, appId, token, rtmToken, uid, endCall}) {
 
     const client = useRTCClient(AgoraRTC.createClient({mode: "live", codec: "vp8", role: "host"}));
 
+    
+
     const [ localUsername, setLocalUsername ] = useState("");
     const [ readyEndCall, setReadyEndCall ]  = useState(false);
-
 
     const [ viewState, setViewState ] = useState(0);
     // 0 - default view
@@ -88,8 +91,8 @@ export default function Call({channelName, appId, token, uid, endCall}) {
         uploadPDF(pdfBlob);
 
     }
-
     function handleLeaveCall() {
+        rtm.current.logout();
         saveToFirestore();
     }
     useEffect( ()=> {
@@ -97,6 +100,22 @@ export default function Call({channelName, appId, token, uid, endCall}) {
             endCall();
         }
     },[readyEndCall])
+
+    //RTM STUFF
+    const rtmConfig = {
+
+    };
+    const rtm = useRef(new AgoraRTM.RTM(appId, uid.toString(), rtmConfig));
+
+    
+    rtm.current.addEventListener("status", event => {
+        // The current connection state.
+        const currentState = event.state;
+        // The reason why the connection state changes.
+        const changeReason = event.reason;
+        console.log(event);
+    });
+    const handChannel = "hand_"+channelName;
 
     return (
         <AgoraRTCProvider className="call-wrapper" client={client}>
@@ -110,7 +129,9 @@ export default function Call({channelName, appId, token, uid, endCall}) {
                     channelName={channelName}
                     appId={appId}
                     token={token}
-                    // rtmToken={rtmToken}
+                    rtmToken={rtmToken}
+                    rtm={rtm}
+                    handChannel={handChannel}
                     uid={uid}
                     username={localUsername}
                     localBoardRef={localBoardRef}/>
@@ -123,15 +144,38 @@ export default function Call({channelName, appId, token, uid, endCall}) {
     );
 }
 
+function TEMPBOI({appId, uid, rtmToken, localBoardRef}) {
+
+    const handChannel = `hand${+uid}`;
+    const rtmConfig = {
+        
+    }
+    
+
+    return (
+        <div>
+            <span>{uid}</span>
+            <button onClick={rtmLoggedIn ? rtmLogout : rtmLogin}>{rtmLoggedIn ? "LOG OUT" : "LOG IN" }</button>
+            <button onClick={rtmPublish}>PUBLISH</button>
+            <Drawing ref={localBoardRef}>
+                
+            </Drawing>
+        </div>
+    );
+}
+
 function Sidebar() {
 
     const remoteUsers = useRemoteUsers();
 
     return (
-        <ul>
-        {remoteUsers.map(user => (
-            <li key={user.uid}>{user.uid}</li>
-        ))}
-        </ul>
+        <div>
+            participants: 
+            <ul>
+            {remoteUsers.map(user => (
+                <li key={user.uid}>{user.uid}</li>
+            ))}
+            </ul>
+        </div>
     )
 }

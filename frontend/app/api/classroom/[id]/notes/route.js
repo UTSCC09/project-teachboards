@@ -2,6 +2,11 @@ import { db, storage, auth } from "@app/api/firebase.js";
 import { doc, collection, getDoc, addDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
+import * as cookie from "cookie";
+import { jwtVerify } from "jose";
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
+
 /**
  * @abstract creates a note, saves PDF, saves note's id to classroom.notes and user.notes array
  * 
@@ -15,6 +20,39 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
     };
  */
 export async function POST(req, { params }) {
+
+    const cookies = cookie.parse(req.headers.get("cookie") || "");
+    const sessionToken = cookies.session;
+
+    if (!sessionToken) {
+        return new Response(JSON.stringify({ message: "please login" }), { status: 401 });
+    }
+
+    const { payload } = await jwtVerify(sessionToken, JWT_SECRET);
+    const { id: uid, firstName, lastName } = payload; 
+
+    const classroomId = params.id; 
+    
+
+    const classroomRef = doc(db, "classRoom", classroomId);
+    if (classroomRef === null) {
+        return new Response(JSON.stringify({message:"classroom not found"}), {status: 404})
+    }
+    // if notes doesn't exist, then make it
+    let classroomData = (await getDoc(classroomRef)).data();
+    if (classroomData.notes === null) {
+        await updateDoc(classroomRef, {
+            notes: []
+        });
+        classroomData = (await getDoc(classroomRef)).data()
+    }
+    console.log(classroomData);
+
+    // make sure user is in the class they adding to
+    if (!classroomData.students.includes(uid) && classroomData.teacherID != uid) {
+        return new Response(JSON.stringify({message:"you aren't in that class"}), {status: 401})
+    }
+
 
     if (!params || !params.id) {
         return new Response(JSON.stringify({message:"missing file"}, {status: 400}));
@@ -35,27 +73,6 @@ export async function POST(req, { params }) {
 
     const timestamp = Date.now();
 
-    const classroomId = params.id; 
-    // TODO MAKE THIS SECURE BY GETTING UPLOADING WITH FIREBASE ADMIN SDK
-    const uid = formData.get("uid");
-
-    const classroomRef = doc(db, "classRoom", classroomId);
-    if (classroomRef === null) {
-        return new Response(JSON.stringify({message:"classroom not found"}), {status: 404})
-    }
-    // if notes doesn't exist, then make it
-    let classroomData = (await getDoc(classroomRef)).data();
-    if (classroomData.notes === null) {
-        await updateDoc(classroomRef, {
-            notes: []
-        });
-        classroomData = (await getDoc(classroomRef)).data()
-    }
-    console.log(classroomData);
-    // make sure user is in the class they adding to
-    if (!classroomData.students.includes(uid) && !classroomData.teacherID != uid) {
-        return new Response(JSON.stringify({message:"you aren't in that class"}), {status: 401})
-    }
 
     // adding the notes to Firebase Storage
     const buffer = Buffer.from(await file.arrayBuffer());

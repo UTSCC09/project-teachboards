@@ -44,10 +44,10 @@ export async function GET(req, {params}) {
 
         // token.js shenanigans below.
         // hardcode manual token for "main" channel ONLY for now
-        const {token, uid} = await generateToken({
+        const {token, rtmToken, uid} = await generateToken({
             channelName: roomID,
         });
-        return new Response(JSON.stringify({token, uid}), {
+        return new Response(JSON.stringify({token, rtmToken, uid}), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
@@ -72,31 +72,33 @@ export async function GET(req, {params}) {
 // const tokenExpirationInSecond = 3600
 // const privilegeExpirationInSecond = 3600
 // // Build token with uid
-// const tokenA = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channelName, uid, role, tokenExpirationInSecond, privilegeExpirationInSecond)
+// const tokenA = RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, tokenExpirationInSecond, privilegeExpirationInSecond)
 // console.log("Token with int uid: " + tokenA)
 
 // // Build token with user account
-// const tokenB = RtcTokenBuilder.buildTokenWithUserAccount(appID, appCertificate, channelName, account, role, tokenExpirationInSecond, privilegeExpirationInSecond)
+// const tokenB = RtcTokenBuilder.buildTokenWithUserAccount(appId, appCertificate, channelName, account, role, tokenExpirationInSecond, privilegeExpirationInSecond)
 // console.log("Token with user account: " + tokenB)
 
-// const tokenC = RtcTokenBuilder.buildTokenWithUidAndPrivilege(appID, appCertificate, channelName, uid,
+// const tokenC = RtcTokenBuilder.buildTokenWithUidAndPrivilege(appId, appCertificate, channelName, uid,
 //     expirationInSeconds, expirationInSeconds, expirationInSeconds, expirationInSeconds, expirationInSeconds)
 // console.log("Token with int uid and privilege:" + tokenC)
 
-// const tokenD = RtcTokenBuilder.BuildTokenWithUserAccountAndPrivilege(appID, appCertificate, channelName, account,
+// const tokenD = RtcTokenBuilder.BuildTokenWithUserAccountAndPrivilege(appId, appCertificate, channelName, account,
 //     expirationInSeconds, expirationInSeconds, expirationInSeconds, expirationInSeconds, expirationInSeconds)
 // console.log("Token with user account and privilege:" + tokenD)
 
 
 import {RtcTokenBuilder, Role} from 'agora-token/src/RtcTokenBuilder2'
+import { RtmTokenBuilder } from "agora-token/src/RtmTokenBuilder2";
 import {randomBytes} from 'crypto';
+
 
 async function generateToken({channelName}) {
 
     if (!channelName) return console.log("no channel name provided");
     console.log(channelName);
     
-    const appID = '5b04cf1dad0645189bd6533cef7c2158';
+    const appId = '5b04cf1dad0645189bd6533cef7c2158';
     const appCertificate = 'bbfcf7ddf67e4644a8e2da2ae7f5a452';
     const role = Role.PUBLISHER;
 
@@ -107,10 +109,17 @@ async function generateToken({channelName}) {
     const tokenExpirationInSecond = 3600
     const privilegeExpirationInSecond = 3600
     // Build token with uid
-    const token = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channelName, uid, role, tokenExpirationInSecond, privilegeExpirationInSecond)
-    console.log("Token With Integer Number Uid and privilege: " + token);
+    const token = RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, tokenExpirationInSecond, privilegeExpirationInSecond)
+    console.log("RTC Token With Integer Number Uid and privilege: " + token);
     console.log("uid:"+uid);
     console.log("channelname: "+channelName)
 
-    return {token, uid};
+    const stringUid = uid.toString();
+    const expirationInSeconds = 3600;
+
+    const rtmToken = RtmTokenBuilder.buildToken(appId, appCertificate, stringUid, expirationInSeconds);
+    console.log("Rtm Token: " + rtmToken);
+    console.log("stringUid: "+stringUid)
+
+    return {token, rtmToken, uid};
 }

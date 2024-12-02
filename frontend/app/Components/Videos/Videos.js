@@ -17,6 +17,7 @@ import AgoraRTC, {
     useLocalScreenTrack,
     LocalUser
   } from "agora-rtc-react";
+import AgoraRTM from "agora-rtm-sdk";
 
 import React, { useRef, useEffect, useState } from "react";
 
@@ -26,11 +27,10 @@ import {useAuth} from "../Content/AuthContext.js";
 import Drawing from "../Drawing/Drawing.mjs";
 
 
-export default function Videos({classroomID, appId, channelName, token, rtmToken, uid, username, localBoardRef}) {
+export default function Videos({classroomID, appId, channelName, token, rtmToken, rtm, handChannel, uid, username, localBoardRef}) {
 
-    //const client = useRTCClient();
-    //const uid = useLocalUID();
-
+    const client = useRTCClient();
+    AgoraRTC.setLogLevel(4);
 
     // Video track stuff
     const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
@@ -49,38 +49,13 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
 
     const [ cameraOn, setCameraOn ] = useState(true);
     const [ micOn, setMicOn ] = useState(true);
-
-    // NOTES UPLOAD STATE
-    const [notesUploadState, setNotesUploadState] = useState(0);
-    
-    // whiteboard
-    const testBoardStreamRef = useRef();
-
-    //debug 
-    AgoraRTC.setLogLevel(1); 
+    const [b, bb] = useState(false);
 
     const [ focusedUser, setFocusedUser ] = useState("local"); 
-    
-    useEffect( () => {
-        if(!localBoardRef.current) return;
-        const canvas = localBoardRef.current.canvas;
-        const canvasStream = canvas.captureStream(30);
 
-        const canvasTrack = AgoraRTC.createCustomVideoTrack({
-            mediaStreamTrack: canvasStream.getVideoTracks()[0],
-        })
-        canvasTrack.play(testBoardStreamRef.current);
-
-
-        client.publish([canvasTrack]);
-    }, [localBoardRef])
-
-    // useEffect( () => {
-    //     if (testBoardStreamRef.current) {
-    //         canvasTrack.play(testBoardStreamRef.current);
-    //     }
-    // }, [testBoardStreamRef])
- 
+    const [ compressedSaveData, setCompressedSaveData ] = useState("");
+    const [ localHandRaised, setHandRaised ] = useState(false);
+  
     // local video
     const localVideoRef = useRef();
     useEffect(() => {
@@ -116,7 +91,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
         token: token,
         uid: uid
      });
-     usePublish([localMicrophoneTrack, localCameraTrack]);
+    usePublish([localMicrophoneTrack, localCameraTrack]);
     //controls
     function toggleCamera(e) {
         if (cameraOn) {
@@ -142,24 +117,114 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
             })
         }
     }
-    function leaveCall(e) {
-        setCalling(false);
+
+    const [rtmLoggedIn, setRtmLoggedIn] = useState(false);
+    const [hands, setHands] = useState({});
+    rtm.current.addEventListener('message', (eventArgs) => {
+        const uid = eventArgs.publisher;
+        const message = eventArgs.message;
+        if (eventArgs.channel === handChannel) {
+            setHands(prevHands => ({
+                ...prevHands,
+                [uid]: message==='hand up'
+            }));
+        }
+    })
+    rtm.current.addEventListener("presence", event => {
+        if (event.eventType === "SNAPSHOT") {
+            sendHand();
+        }
+        else {
+          console.log(event.publisher + " is " + event.eventType);
+        }
+      });
+    useEffect(() => {
+        rtmLogin();
+    }, [])
+    async function rtmLogin() {
+        try { 
+            const result = await rtm.current.login({token: rtmToken});
+            setRtmLoggedIn(true);
+            try {
+                await rtm.current.subscribe(handChannel)
+                console.log("subbed to hand channel: "+handChannel)
+              } catch (err) {
+                console.error(err);
+              }
+          } catch (err) {
+            console.log(err, 'error occurs at login.');
+        }
     }
+    async function rtmLogout() {
+        try {
+            const result = await rtm.current.logout();
+            setRtmLoggedIn(false);
+            console.log("logged out")
+        } catch (err) {
+            console.log(err, 'error on logout')
+        }
+    } 
+    async function handUp() {
+      // Login 
+        if (rtmLoggedIn) {      // Send channel message
+            try { 
+                const publishOptions = { channelType: 'MESSAGE' }
+                await rtm.current.publish(handChannel, 'hand up', publishOptions);
+                console.log('asdf');
+            } catch (err) {
+                console.log(err, 'error occurs at publish message');
+            }
+        } else {
+            console.log("not logged in");
+        }
+    }
+    async function handDown() {
+        // Login 
+          if (rtmLoggedIn) {      // Send channel message
+              try { 
+                  const publishOptions = { channelType: 'MESSAGE'}
+                  await rtm.current.publish(handChannel, 'hand down', publishOptions);
+              } catch (err) {
+                  console.log(err, 'error occurs at publish message');
+              }
+          } else {
+              console.log("not logged in");
+          }
+      }
+
+    function toggleHand() {
+        setHandRaised(!localHandRaised);
+    }
+    function sendHand() {
+        if (localHandRaised)
+            handUp();
+        else {
+            handDown();
+        }
+    }
+    useEffect(() => {
+        sendHand()
+    }, [localHandRaised])
+    
 
     // TODO: MOBILE VIEW
     return (
         <div className="videos-wrapper">
+            <div className="hands">
+
+            </div>
             {isConnected ? (
                 <div className="video-grid-wrapper">
-                    <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => setFocusedUser("local")}
-                    >
+                    <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => setFocusedUser("local")}>
                         <VideoStream 
                             videoRef={localVideoRef}
                             audio={localMicrophoneTrack} 
                             name={username}
                         >
                         </VideoStream>
+                        {localHandRaised && <div className="hand">✋</div>}
                     </SingleVideoWrapper>
+                    {remoteUsers.length === 0 && <p>no remote users</p>}
                     {remoteUsers.slice(0,3).map((user, i) => (
                         <SingleVideoWrapper key={i} focused={focusedUser === user.uid} onClick={(e) => setFocusedUser(user.uid)}>
                             <VideoStream 
@@ -169,15 +234,9 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                                 whiteboard={null}
                             >
                             </VideoStream>
+                            {hands[user.uid.toString()] && <div className="hand">✋</div>}
                         </SingleVideoWrapper>
                     ))}
-                    <SingleVideoWrapper>
-                        <VideoStream
-                            videoRef={testBoardStreamRef}
-                        >
-
-                        </VideoStream>
-                    </SingleVideoWrapper>
                     <div className="board-focused">
                         <Drawing canvasWidth={500} canvasHeight={500} ref={localBoardRef}></Drawing>
                     </div>
@@ -186,8 +245,10 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                 <div>Not connected</div>
             )}
             <div className="video-controls">
+                <p>{remoteVideoTracks.length}</p>
                 <button onClick={toggleCamera}>{cameraOn ? 'camera is ON' : 'camera is OFF'}</button>
                 <button onClick={toggleMic}>{micOn ? 'mic is ON' : 'mic is OFF'}</button>
+                <button onClick={toggleHand}>{localHandRaised ? 'hand is UP' : 'hand is DOWN'}</button>
             </div> 
         </div>
     );

@@ -37,6 +37,7 @@ export default function GuestPage( {params} ) {
                 setNoRoom(true);
             setToken(data.token);
             setUID(data.uid);
+            setRtmToken(data.rtmToken);
             setCallStatus(1);
         })
         .catch((err) => console.error('Error verifying session:', err)); // Handle any errors
@@ -57,7 +58,7 @@ export default function GuestPage( {params} ) {
             { noRoom ? <p>That room does not exist, or you can't access it.</p> 
             : callStatus===1 ?
             // we set the call status to 0 for ending call to unmount video component and agora context etc
-                (<Call appId={options.appId} channelName={channel} token={token} uid={uid} endCall={() => {setCallStatus(0)}}></Call>) 
+                (<Call appId={options.appId} channelName={channel} token={token} rtmToken={rtmToken} uid={uid} endCall={() => {setCallStatus(0)}}></Call>) 
             : callStatus===0 ? (
                 <div className='roomControls'>
                     <p>

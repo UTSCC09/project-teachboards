@@ -142,7 +142,6 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
                     <button onClick={handleRedo}>Redo</button>
                     <button onClick={handleSave}>Save</button>
                     <button onClick={handleLoad}>Load</button>
-                    {/* <button onClick={handleUploadPDF}>Download as PDF</button> */}
                     <button onClick={saveToFirestore}>upload to class (test)</button>
                     { uploadState === 1 ? <p>uploading...</p> : uploadState === 2 ? <p>upload end</p> : <p>not uploading</p>}
                 </div>

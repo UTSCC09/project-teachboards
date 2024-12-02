@@ -5,6 +5,7 @@
     box-sizing: border-box;
     margin-top:50px;
     z-index:3;
+    color: black;
 }
 
 .canvasContainer {
@@ -45,6 +46,7 @@
 .canvas{
     will-change: transform;
     image-rendering: auto;
+    border: 1px solid grey;
 }
 .hidden {
     display:none;
