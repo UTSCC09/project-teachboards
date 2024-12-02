@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "agora-rtc-react": "^2.3.0",
+        "agora-rtm-sdk": "^2.2.0",
         "agora-token": "^2.0.3",
         "bufferutil": "^4.0.8",
         "cookie": "^1.0.1",

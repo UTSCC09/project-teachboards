@@ -1,8 +1,9 @@
 import { db, storage, auth } from "@app/api/firebase.js";
-import { collection, addDoc } from "firebase/firestore";
+import { doc, collection, getDoc, addDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 /**
+ * @abstract creates a note, saves PDF, saves note's id to classroom.notes and user.notes array
  * 
  * @param {*} req 
  * @param {*} param1 
@@ -20,7 +21,6 @@ export async function POST(req, { params }) {
     }
 
     const formData = await req.formData();
-
     const file = formData.get("file");
 
     if (!file) {
@@ -33,32 +33,72 @@ export async function POST(req, { params }) {
         return new Response(JSON.stringify({message:"must be PDF"}), {status: 422});
     }
 
+    const timestamp = Date.now();
+
     const classroomId = params.id; 
-    const uid = 1;
+    // TODO MAKE THIS SECURE BY GETTING UPLOADING WITH FIREBASE ADMIN SDK
+    const uid = formData.get("uid");
 
+    const classroomRef = doc(db, "classRoom", classroomId);
+    if (classroomRef === null) {
+        return new Response(JSON.stringify({message:"classroom not found"}), {status: 404})
+    }
+    // if notes doesn't exist, then make it
+    let classroomData = (await getDoc(classroomRef)).data();
+    if (classroomData.notes === null) {
+        await updateDoc(classroomRef, {
+            notes: []
+        });
+        classroomData = (await getDoc(classroomRef)).data()
+    }
+    console.log(classroomData);
+    // make sure user is in the class they adding to
+    if (!classroomData.students.includes(uid) && !classroomData.teacherID != uid) {
+        return new Response(JSON.stringify({message:"you aren't in that class"}), {status: 401})
+    }
+
+    // adding the notes to Firebase Storage
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = `${classroomId}-${uid}-${Date.now()}.pdf`;
+    const filename = `${classroomId}-${uid}-${timestamp}.pdf`;
 
-    const storagePath = `classroom/${classroomId}/session/${uid}`;
+    const storagePath = `classroom/${classroomId}/notes/${filename}`;
     const storageRef = ref(storage, storagePath);
-
 
     await uploadBytes(storageRef, buffer, {
         contentType: file.type,
     });
 
     const fileURL = await getDownloadURL(storageRef);
+    console.log(fileURL);
 
     const notesRef = collection(db, "notes");
     const newNote = {
       classroomId,
       authorId: uid,
       contentURL: fileURL,
-      timestamp: Date.now(),
+      timestamp: timestamp,
     };
-    const docRef = await addDoc(notesRef, newNote);
+    const noteRef = await addDoc(notesRef, newNote);
+    
+    // add the note to the classroom
+    await updateDoc(classroomRef, {
+        notes: arrayUnion(noteRef.id) 
+    });
 
-    return new Response(JSON.stringify({fileURL}));
+    // add note to the user
+    const userRef = doc(db, "users", uid);
+    let userData = (await getDoc(userRef)).data();
+    if (userData.notes === null) {
+        await updateDoc(userRef, {
+            notes: []
+        });
+        userData = (await getDoc(userRef)).data()
+    }
+    await updateDoc(classroomRef, {
+        notes: arrayUnion(noteRef.id) 
+    });
+    
+    return new Response(JSON.stringify({noteId: noteRef.id, fileURL: fileURL}), {status: 201});
 }
 
 // GET NOTGES FOR ALL STUDENTS IN THE CLASS

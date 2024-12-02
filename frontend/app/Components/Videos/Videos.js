@@ -13,21 +13,28 @@ import AgoraRTC, {
     useRemoteVideoTracks,
     useRemoteUsers,
     useIsConnected,
+    useLocalUID,
+    useLocalScreenTrack,
     LocalUser
   } from "agora-rtc-react";
+
 import React, { useRef, useEffect, useState } from "react";
+
 import "./Videos.css"
-import LocalVideo from "../LocalVideo/LocalVideo";
+import VideoStream from "../VideoStream/VideoStream";
 import {useAuth} from "../Content/AuthContext.js";
 import Drawing from "../Drawing/Drawing.mjs";
 
 
-export default function Videos({classroomID, appId, channelName, token, uid, username, localBoardRef}) {
+export default function Videos({classroomID, appId, channelName, token, rtmToken, uid, username, localBoardRef}) {
 
-    const client = useRTCClient();
+    //const client = useRTCClient();
+    //const uid = useLocalUID();
+
+
+    // Video track stuff
     const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
     const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
-    const [testVar, toggleVar] = useState(false);
 
     useEffect(() => {
         console.log("Camera track loading:", isLoadingCam);
@@ -45,20 +52,34 @@ export default function Videos({classroomID, appId, channelName, token, uid, use
 
     // NOTES UPLOAD STATE
     const [notesUploadState, setNotesUploadState] = useState(0);
+    
+    // whiteboard
+    const testBoardStreamRef = useRef();
 
     //debug 
     AgoraRTC.setLogLevel(1); 
 
-    const [ focusedUser, setFocusedUser ] = useState("local");
-
-    //update the focused user
+    const [ focusedUser, setFocusedUser ] = useState("local"); 
+    
     useEffect( () => {
-        
-    }, [focusedUser]);
+        if(!localBoardRef.current) return;
+        const canvas = localBoardRef.current.canvas;
+        const canvasStream = canvas.captureStream(30);
 
-    function nextFocus() {
-        setFocusedUser(focusedUser + 1);
-    }
+        const canvasTrack = AgoraRTC.createCustomVideoTrack({
+            mediaStreamTrack: canvasStream.getVideoTracks()[0],
+        })
+        canvasTrack.play(testBoardStreamRef.current);
+
+
+        client.publish([canvasTrack]);
+    }, [localBoardRef])
+
+    // useEffect( () => {
+    //     if (testBoardStreamRef.current) {
+    //         canvasTrack.play(testBoardStreamRef.current);
+    //     }
+    // }, [testBoardStreamRef])
  
     // local video
     const localVideoRef = useRef();
@@ -68,6 +89,8 @@ export default function Videos({classroomID, appId, channelName, token, uid, use
             else localCameraTrack.stop();
         }
     }, [localCameraTrack, cameraOn, isLoadingCam]);
+
+    // local whiteboard
     
     // remote videos
     const remoteVideoRefs = useRef([]);
@@ -123,39 +146,57 @@ export default function Videos({classroomID, appId, channelName, token, uid, use
         setCalling(false);
     }
 
+    // TODO: MOBILE VIEW
     return (
         <div className="videos-wrapper">
             {isConnected ? (
                 <div className="video-grid-wrapper">
-                    <LocalVideo 
-                    focused={focusedUser === "local"}
-                    videoRef={localVideoRef}
-                    audio={localMicrophoneTrack} 
-                    onClick={(e) => setFocusedUser("local")}
-                    name={username}>
-
-                    </LocalVideo>
+                    <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => setFocusedUser("local")}
+                    >
+                        <VideoStream 
+                            videoRef={localVideoRef}
+                            audio={localMicrophoneTrack} 
+                            name={username}
+                        >
+                        </VideoStream>
+                    </SingleVideoWrapper>
                     {remoteUsers.slice(0,3).map((user, i) => (
-                        <LocalVideo 
-                        key={i}
-                        focused={focusedUser === user.uid}
-                        videoRef={el => remoteVideoRefs.current[i] = el} 
-                        audio={user.audioTrack} 
-                        onClick={() => setFocusedUser(user.uid)}>
-
-                        </LocalVideo>
+                        <SingleVideoWrapper key={i} focused={focusedUser === user.uid} onClick={(e) => setFocusedUser(user.uid)}>
+                            <VideoStream 
+                                videoRef={el => remoteVideoRefs.current[i] = el} 
+                                audio={user.audioTrack} 
+                                onClick={() => setFocusedUser(user.uid)}
+                                whiteboard={null}
+                            >
+                            </VideoStream>
+                        </SingleVideoWrapper>
                     ))}
-                    <div>{focusedUser}</div>
+                    <SingleVideoWrapper>
+                        <VideoStream
+                            videoRef={testBoardStreamRef}
+                        >
+
+                        </VideoStream>
+                    </SingleVideoWrapper>
+                    <div className="board-focused">
+                        <Drawing canvasWidth={500} canvasHeight={500} ref={localBoardRef}></Drawing>
+                    </div>
                 </div>
             ) : (
                 <div>Not connected</div>
             )}
-            <Drawing ref={localBoardRef}></Drawing>
             <div className="video-controls">
                 <button onClick={toggleCamera}>{cameraOn ? 'camera is ON' : 'camera is OFF'}</button>
                 <button onClick={toggleMic}>{micOn ? 'mic is ON' : 'mic is OFF'}</button>
-                <button onClick={() => toggleVar(!testVar)}>debug</button> 
             </div> 
         </div>
     );
+}
+
+function SingleVideoWrapper({focused, children, onClick}) {
+    return (
+        <div className={focused ? "single-video-wrapper video-focused" : "single-video-wrapper video-v"} onClick={onClick}>
+            {children}
+        </div>
+    )
 }

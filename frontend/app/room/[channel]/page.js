@@ -10,7 +10,6 @@ let options = {
     // Set the channel name.
     // channel: "main",
     // Use a temp token
-    // token: "007eJxTYJhuv/SsysN3X+ZNl/jfxLPoY9Q/R3PZ2e/Mkuw/XVT3LQ9SYDBNMjBJTjNMSUwxMDMxNbSwTEoxMzU2Tk5NM082MjS1+F7mkd4QyMjwt1KbgREKQXwWhtzEzDwGBgDVtiD2"
 };
 
 
@@ -18,6 +17,7 @@ let options = {
 export default function GuestPage( {params} ) {
 
     const [token, setToken] = useState(null);
+    const [rtmToken, setRtmToken] = useState(null);
     const [ uid, setUID ] = useState(null);
     const [ ready, setReady ] = useState(false);
     const [ noRoom, setNoRoom ] = useState(false);
@@ -54,20 +54,20 @@ export default function GuestPage( {params} ) {
 
     return (
         <div>
-            <div className='roomControls'>
-                    <p>
-                    Room: {channel}
-                    {/* THIS IS ALSO THE CHANNEL NAME */}
-                </p>
-                <button className={"callButton"} onClick={joinCall}>JOIN CALL</button>
-                <button onClick={makeRoom}>MAKE ROOM</button>
-            </div>
-            
             { noRoom ? <p>That room does not exist, or you can't access it.</p> 
             : callStatus===1 ?
             // we set the call status to 0 for ending call to unmount video component and agora context etc
                 (<Call appId={options.appId} channelName={channel} token={token} uid={uid} endCall={() => {setCallStatus(0)}}></Call>) 
-            : callStatus===0 ? <p>not in call</p> : <p>no call status?</p>
+            : callStatus===0 ? (
+                <div className='roomControls'>
+                    <p>
+                        Room: {channel}
+                        {/* THIS IS ALSO THE CHANNEL NAME */}
+                    </p>
+                    <button className={"callButton"} onClick={joinCall}>JOIN CALL</button>
+                    <button onClick={makeRoom}>MAKE ROOM</button>
+                </div>
+            ) : <p>no call status?</p>
             }
         </div>
     );

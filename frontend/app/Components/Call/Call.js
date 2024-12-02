@@ -3,6 +3,7 @@
 import './Call.css'
 import AgoraRTC, {
   AgoraRTCProvider,
+  AgoraRTCScreenShareProvider,
   LocalVideoTrack,
   RemoteUser,
   useJoin,
@@ -23,6 +24,7 @@ export default function Call({channelName, appId, token, uid, endCall}) {
     const client = useRTCClient(AgoraRTC.createClient({mode: "live", codec: "vp8", role: "host"}));
 
     const [ localUsername, setLocalUsername ] = useState("");
+    const [ readyEndCall, setReadyEndCall ]  = useState(false);
 
 
     const [ viewState, setViewState ] = useState(0);
@@ -43,23 +45,23 @@ export default function Call({channelName, appId, token, uid, endCall}) {
     
             const formData = new FormData();
             formData.append('file', pdfBlob, 'drawing.pdf');
+            formData.append('uid', 1);
 
-    
+            //TODO: REMOVE HARDCODE
             const classroomId = "76cdCVK4beEE8Ik74613"
             try {
                 const response = await fetch(`/api/classroom/${classroomId}/notes`, {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
                 });
     
                 if (!response.ok) {
                     console.error("bad classroom upload")
                 }
+                console.log(response.json())
 
-                //setBoardUploadState(2); // Upload complete
+                setBoardUploadState(2); // Upload complete
+                setReadyEndCall(true);
             } catch (error) {
                 console.error(error);
                 setBoardUploadState(0); // Reset upload state
@@ -86,19 +88,15 @@ export default function Call({channelName, appId, token, uid, endCall}) {
         uploadPDF(pdfBlob);
 
     }
-    function testUpload() {
-        setBoardUploadState(2);
-    }
 
     function handleLeaveCall() {
         saveToFirestore();
     }
     useEffect( ()=> {
-        if (boardUploadState===2) {
-            console.log("upload done byae")
+        if (readyEndCall) {
             endCall();
         }
-    },[boardUploadState])
+    },[readyEndCall])
 
     return (
         <AgoraRTCProvider className="call-wrapper" client={client}>
@@ -112,13 +110,13 @@ export default function Call({channelName, appId, token, uid, endCall}) {
                     channelName={channelName}
                     appId={appId}
                     token={token}
+                    // rtmToken={rtmToken}
                     uid={uid}
                     username={localUsername}
                     localBoardRef={localBoardRef}/>
                 ) : (<p>Joining...</p>)
                 }
                 <button onClick={handleLeaveCall}>LEAVE CALL</button>
-                <button onClick={testUpload}>UPLOAD CANVAS</button>
                 <Sidebar></Sidebar>
             </div>
         </AgoraRTCProvider>
