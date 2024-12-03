@@ -19,7 +19,9 @@ export async function POST(req,){
         await updateDoc(classRoomDB,{
             [`meetingtime.${date}`]: { code: sendingcode },
         });
-        return new Response(JSON.stringify({ message: "Meeting time successfully added." }),{
+        const returnValue = {key:date,code:sendingcode};
+
+        return new Response(JSON.stringify( returnValue ),{
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

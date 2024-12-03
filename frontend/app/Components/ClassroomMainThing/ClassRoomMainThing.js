@@ -237,7 +237,6 @@ export default function ClassRoomMainPage() {
             const id = user.id;
             const sendingcode = "123";
             const date = dateformvalue;
-            //add here a random genearte for the code thing idk how thanks 
             const response = await fetch(`/api/classroom/scheduleMeeting`,{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
@@ -249,8 +248,7 @@ export default function ClassRoomMainPage() {
                 handleerror(data.message);
                 return;
             }
-            //note im goint to need to get a next call thing here btw thanks  changge here thing 
-            //updatefunctionthing() not made yet 
+            setMeeting((prevMeetings) => [data, ...prevMeetings]);
             console.log("added a new scheduled meeting");
             setpopout3(false);
         }
