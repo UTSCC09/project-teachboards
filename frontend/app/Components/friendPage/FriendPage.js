@@ -73,7 +73,7 @@ export default function FriendPage() {
         if (!user || !user.id) return;
         const id = user.id;
         try {
-            const response = await fetch(`/api/retrivePending/${id}`, {
+            const response = await fetch(`/api/retrivePending/${id}/${num}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });

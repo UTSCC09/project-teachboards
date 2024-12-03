@@ -1,8 +1,8 @@
-import { db } from "../../../firebase.js";
+import { db } from "../../../../firebase.js";
 import { getDoc, doc} from "firebase/firestore";
 
 export async function GET(req, { params }) {
-    const { id } = params;
+    const { id,num } = params;
     if (!id) {
         return new Response(JSON.stringify({ message: "ID is invalid, please try again" }), {
             status: 400,
