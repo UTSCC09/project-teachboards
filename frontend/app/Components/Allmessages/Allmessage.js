@@ -1,8 +1,8 @@
 "use client";
-import "./Allmessage.css";
 import React, { useState, useEffect,useRef } from "react";
 import { useAuth } from "../Content/AuthContext.js";
 import {io} from "socket.io-client";
+import "./mes.css";
 
 //const socket = io("http://localhost:4000");
 
@@ -152,96 +152,84 @@ export default function Allmessage() {
 
 //
   return (
-    <div className="AM-container">
-
-      <div className="AM-left-panel">
-        <button className="AM-create-chat-btn" onClick={handleNewChat}>
-          Create New Chat
+    <div className = "AMContainer">
+      <div className = "AMTOP">
+        <button className = "AMTLeft"  onClick={handleNewChat}>
+            <p className ="AMTLTitle">Add Messages</p>
         </button>
-        <div className="AM-chat-list">
-            {Array.isArray(chatrooms) ? (
-                chatrooms.map((chat) => (
-                    <div
-                    key={chat.chatID}
-                    className={`AM-chat-item ${
-                        currentChat?.chatID === chat.chatID ? "AM-active" : ""
-                    }`}
-                    onClick={() => {
-                        switchChat(chat);
-                    }}
-                    
-                >
-                    {chat.chatName}
-                </div>                
-                ))
-            ) : (
-        <div>No chatrooms available.</div>
-            )}
-</div>
 
-      </div>
-
-      <div className="AM-right-panel">
-        {currentChat ? (
-          <>
-            <div className="AM-chat-header">{currentChat.chatName}</div>
-            <div className="AM-chat-messages">
-                {messages.map((msg, index) => (
-                    <div
-                        key={msg.id || `msg-${index}`} 
-                        className={`AM-message AM-NONE`}
-                    >
-                        {msg.messageSender + ": " + msg.messageText}
-                    </div>
-                ))}
-            </div>
-            <div className="AM-chat-input">
-                <textarea 
-                    className="AM-textarea"
-                    placeholder="Type your message and press Enter to send..."
-                    value={sendMessage} 
-                    onChange={(e) => {
-                        setsendMessage(e.target.value);
-                    }} 
-                    onKeyDown={handleEnter} 
-                ></textarea>
-            </div>
-          </>
-        ) : (
-          <div className="AM-chat-messages">Select a chat to start messaging!</div>
-        )}
-      </div>
-
-      {createOpen && (
-        <div className="AM-create">
-          <div className="AM-create-content">
-            <form onSubmit={handleCreateChat}>
-                <input
-                  type="text"
-                  placeholder="Chat Name:"
-                  value={chatName}
-                  onChange={(e) => setChatName(e.target.value)}
-                  required
-                />
-              <label>
-                <input
-                  type="text"
-                  placeholder="Usernames (space-separated):"
-                  value={usernames}
-                  onChange={(e) => setUsernames(e.target.value)}
-                  required
-                />
-              </label>
-              <div className="AM-create-buttons">
-                <button type="button" className="AMCancel" onClick={() => setCreateOpen(false)}>
-                    Cancel
-                </button>
-                <button type="submit" className="AMCreate">Create</button>
-              </div>
-            </form>
-          </div>
+        <div className = "AMTRight">
+            <p className = "AMTRTitle">{currentChat !== null ? currentChat.chatName : "Please Choose a Chat"}</p>
         </div>
-      )}
+      </div>
+      
+      <div className = "BOTTOM">
+        <div className = "BLEFT">
+          {chatrooms.length !== 0 && <>
+            {chatrooms.map((chat) =>(
+               <div key={chat.chatID} className = "regularinfo"
+               onClick={() => {switchChat(chat);}}
+               >
+                <p className="chatName">{chat.chatName}</p>
+               </div>
+            ))}
+            </>}
+          </div>
+
+          <div className ="BRight">
+            {currentChat && <>
+            <div className = "BRTop">
+              {messages.map((msg, index) => (
+                <div key={msg.id || `msg-${index}`} className="message">
+                  {msg.messageSender + ": " + msg.messageText}
+                </div>
+              ))}
+            </div>
+
+            <div className = "BRRightBottom">
+              <textarea 
+                className="textinput"
+                placeholder="Type your message and press Enter to send..."
+                value={sendMessage} 
+                onChange={(e) => {setsendMessage(e.target.value);}} 
+                onKeyDown={handleEnter} 
+              ></textarea>
+            </div>
+            </>}
+          </div>
+      </div>
+      {
+        createOpen && 
+          <div className="SCREENBANG">
+          <form onSubmit={handleCreateChat}
+              className="AddClassroomForm">
+          <label htmlFor ="chatNAMEINPUT">Chat Name:</label>
+          <input 
+            type="text"
+            id="ChatNAMEINPUT"
+            placeholder="Chat Name:"
+            value={chatName}
+            onChange={(e) => setChatName(e.target.value)}
+            required
+            className="date-picker-input"
+          />
+           <label htmlFor="UsernameINPUT">Username space separated</label>
+          <input 
+            placeholder="Usernames (space-separated):"
+            id="UsernameINPUT"
+            value={usernames}
+            onChange={(e) => setUsernames(e.target.value)}
+            required
+            className="date-picker-input"
+          />
+          <div className = "CCButton">
+              <button className="AddClassroom1"  onClick={() => setCreateOpen(false)}>Cancel</button>
+              <button type="submit" className="AddClassroomButton2">Create</button>
+          </div>
+          </form>
+          </div>  
+        }
     </div>
   );
 }
+
