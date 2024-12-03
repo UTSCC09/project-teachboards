@@ -204,7 +204,8 @@ export default function ClassRoomMainPage() {
         }
     }
 
-    const scheduleMeeting = async ()=>{
+    const scheduleMeeting = async (e)=>{
+        e.preventDefault();
         if (!user ||  !currentClass.classRoomID) return;
         try{
             const classRoomID = currentClass.classRoomID;
@@ -353,8 +354,8 @@ export default function ClassRoomMainPage() {
 
         {popout &&  
             <div className="SCREENBANG">
-                <form onSubmit={(e) => {e.preventDefault(); 
-                handleAddClassroom();}}  className="AddClassroomForm">
+                <form onSubmit={handleAddClassroom}  
+                className="AddClassroomForm">
                 <h2>Add Classroom</h2>
                 <input
                     type="text"
@@ -373,8 +374,7 @@ export default function ClassRoomMainPage() {
 
         {popout2 && 
             <div className="SCREENBANG">
-            <form  onSubmit={(e) => {e.preventDefault(); 
-                joinClassRoom();}} 
+            <form  onSubmit={joinClassRoom} 
                 className="AddClassroomForm">
             <h2>Classroom Code</h2>
             <input
@@ -393,8 +393,7 @@ export default function ClassRoomMainPage() {
         }
         {popout3 && 
             <div className="SCREENBANG">
-            <form onSubmit={(e) => {e.preventDefault(); 
-                scheduleMeeting();}} 
+            <form onSubmit={scheduleMeeting} 
                 className="AddClassroomForm">
             <label htmlFor="date-picker">Select a Date:</label>
             <input 
