@@ -43,7 +43,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
     const { videoTracks: remoteVideoTracks } = useRemoteVideoTracks(remoteUsers);
     const { audioTracks: remoteAudioTracks } = useRemoteAudioTracks(remoteUsers);
 
-    const [ cameraOn, setCameraOn ] = useState(true);
+    const [ cameraOn, setCameraOn ] = useState(false);
     const [ micOn, setMicOn ] = useState(true);
 
     const [ focusedUser, setFocusedUser ] = useState("local"); 
@@ -73,7 +73,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
     };
     useEffect(() => {
         if (localVideoTrack && localBoardVideoRef.current) {
-            if (cameraOn) localVideoTrack.play(localBoardVideoRef.current);
+            localVideoTrack.play(localBoardVideoRef.current);
         }
     }, [localVideoTrack, cameraOn]);
     useEffect(() => {
@@ -87,9 +87,9 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
     // remote videos
     const remoteVideoRefs = useRef([]);
     useEffect(() => {
-        remoteUsers.forEach( (usr, index) => {
-            if (usr && usr.hasVideo && usr.videoTrack && remoteVideoRefs.current[index] && index != focusedUser) {
-                usr.videoTrack.play(remoteVideoRefs.current[index]);
+        remoteVideoTracks.forEach( (track, index) => {
+            if (track) {
+                track.play(remoteVideoRefs.current[index]);
             }
         })
     }, [remoteUsers, remoteVideoTracks, focusedUser])
@@ -115,7 +115,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
         token: token,
         uid: uid
      }, true);
-    usePublish([localMicrophoneTrack, localVideoTrack, localCameraTrack], readyPublish);
+    usePublish([localMicrophoneTrack, localVideoTrack], readyPublish);
 
     //controls
     function toggleCamera(e) {
@@ -240,7 +240,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
             </div>
             {isConnected ? (
                 <div className="video-grid-wrapper">
-                    <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => focusedUser==="local" ? setFocusedUser(null) : setFocusedUser("local")}>
+                    {/* <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => focusedUser==="local" ? setFocusedUser(null) : setFocusedUser("local")}>
                         <VideoStream 
                             videoRef={localVideoRef}
                             audio={localMicrophoneTrack} 
@@ -249,7 +249,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                         </VideoStream>
                         {<div className="video-name">{uid}</div>}
                         {localHandRaised && <div className="hand">✋</div>}
-                    </SingleVideoWrapper>
+                    </SingleVideoWrapper> */}
                     <SingleVideoWrapper focused={focusedUser === "localBoard"} onClick={(e) => focusedUser==="localBoard" ? setFocusedUser(null) : setFocusedUser("localBoard")}>
                         <VideoStream 
                             videoRef={localBoardVideoRef}
@@ -270,7 +270,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                                 whiteboard={null}
                             >
                             </VideoStream>
-                            {<div className="video-name">{user.uid}</div>}
+                            {<div className="video-name">{user.uid}'s Whiteboard</div>}
                             {hands[user.uid.toString()] && <div className="hand">✋</div>}
                         </SingleVideoWrapper>
                     ))}
@@ -283,7 +283,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
             )}
             <div className="video-controls">
                 <p>{remoteUsers.length}</p>
-                <button onClick={toggleCamera}>{cameraOn ? 'camera is ON' : 'camera is OFF'}</button>
+                {/* <button onClick={toggleCamera}>{cameraOn ? 'camera is ON' : 'camera is OFF'}</button> */}
                 <button onClick={toggleMic}>{micOn ? 'mic is ON' : 'mic is OFF'}</button>
                 <button onClick={toggleHand}>{localHandRaised ? 'hand is UP' : 'hand is DOWN'}</button>
             </div> 

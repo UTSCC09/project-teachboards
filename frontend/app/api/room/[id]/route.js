@@ -46,26 +46,18 @@ export async function POST(req, {params}) {
             // TODO set it to true n stuff 
         }
 
-        // TODO
-        // NEED SOMETHING HERE TO CHECK IF YOU ARE ALLOWED TO ACCESS THE ROOM (classroom stuff)
-        // should the room be associated
-        // if ("bad user") {
-        //     return new Response(JSON.stringify({ message: "Room with ID " + roomID + " not found or permission denied" }), {
-        //         status: 404,
-        //         headers: { "Content-Type": "application/json" },
-        //     });
-        // }
-        let last_uid = null;
+        // let last_uid = null;
         // Now we need to generate a token for the user in the channel of the room
         // if they've already been in the room we will use the same uid
-        const last_user = roomData.users.find(el => el.uid === fUid);
-        if (last_user) {
-            last_uid = last_user.agoraUid;
-        } 
+        
+        // const last_user = roomData.users !== null ? roomData.users.find(el => el.uid === fUid) : null;
+        // if (last_user) {
+        //     last_uid = last_user.agoraUid;
+        // } 
         // token.js shenanigans below.
         // hardcode manual token for "main" channel ONLY for now
         const {token, rtmToken, uid} = await generateToken({
-            channelName: roomID, last_uid: last_uid 
+            channelName: roomID
         });
         const roomRef = doc(db, "rooms", roomDoc.id);
 
@@ -73,10 +65,7 @@ export async function POST(req, {params}) {
             await updateDoc(roomRef, {
                 users: arrayUnion({uid: fUid, agoraUid: uid})
             })
-        else 
-            await updateDoc(roomRef, {
-                users: [{uid: fUid, agoraUid: uid}]
-            })
+        
 
         return new Response(JSON.stringify({token, rtmToken, uid}), {
             status: 200,
@@ -124,7 +113,7 @@ import { RtmTokenBuilder } from "agora-token/src/RtmTokenBuilder2";
 import {randomBytes} from 'crypto';
 
 
-async function generateToken({channelName, last_uid}) {
+async function generateToken({channelName}) {
 
     if (!channelName) return console.log("no channel name provided");
     console.log(channelName);
@@ -135,7 +124,7 @@ async function generateToken({channelName, last_uid}) {
 
     // randomly generate a UID for this token
     const byteArray = randomBytes(4);
-    const uid = last_uid || byteArray.readUInt32BE(0);
+    const uid = byteArray.readUInt32BE(0);
 
     const tokenExpirationInSecond = 3600
     const privilegeExpirationInSecond = 3600
