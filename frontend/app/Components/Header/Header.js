@@ -86,6 +86,9 @@ export default function Header() {
                                         {user && <li className="DD-Option">
                                             <Link href="/friends">Socials</Link>
                                         </li>}
+                                        {user && <li className="DD-Option">
+                                            <Link href="/credits">Credits</Link>
+                                        </li>}
                                         <li className="DD-Option">
                                             {user ? (
                                                 <button onClick={handleLogout}>LOGOUT</button>

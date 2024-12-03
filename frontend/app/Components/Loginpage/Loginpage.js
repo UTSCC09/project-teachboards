@@ -133,6 +133,13 @@ export default function Loginpage(){
                 <label htmlFor="password">Password</label> 
                 <input type="password" id="password" name="password" required></input>
             </div>
+            <div className="SignInInput">
+                <label htmlFor="role"></label>
+                <select id="role" name="role" required>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                </select>
+            </div>
             <button type="submit" className="SignInBtn">SignUp</button>
             <div className="signup" onClick={switchform}>Click to SignIn</div>
             </form>
