@@ -1,18 +1,35 @@
+'use client'
 
-"use client"
-import { useRef, useEffect } from 'react';
-import "./VideoStream.css";
+import AgoraRTC, {
+    AgoraRTCProvider,
+    LocalVideoTrack,
+    RemoteUser,
+    useJoin,
+    useLocalCameraTrack,
+    useLocalMicrophoneTrack,
+    usePublish,
+    useRTCClient,
+    useRemoteAudioTracks,
+    useRemoteVideoTracks,
+    useRemoteUsers,
+    useVolumeLevel,
+    useIsConnected,
+    LocalUser
+  } from "agora-rtc-react";
+import React, { useRef, useEffect, useState } from "react";
+import Drawing from "../Drawing/Drawing"
 
-export default function VideoStream({stream}) {
-    const videoRef = useRef(null);
+export default function VideoStream( { videoRef, audio, name }) {
+    
+    const volume = useVolumeLevel(audio);
 
-    useEffect(() => {
-        if (videoRef.current && stream) {
-            videoRef.current.srcObject = stream;
-        }
-    }, [stream]);
+    const borderColor = volume > 0.3 ? "lime" : "grey";
 
     return (
-        <video className="video-stream" ref={videoRef} autoPlay playsInline onContextMenu={(e)=> e.preventDefault()}></video>
+        <video className="video-stream" style={{
+            borderColor: borderColor, 
+        }} 
+        ref={videoRef} autoPlay playsInline onContextMenu={(e)=> e.preventDefault()} muted>
+        </video>
     );
 }

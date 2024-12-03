@@ -1,6 +1,7 @@
-import {setDoc, collection, query, where, getDocs, updateDoc, doc, arrayUnion,limit, orderBy } from "firebase/firestore";
+// app/api/room/route.js
 import { NextResponse } from 'next/server'; 
 import { db } from '@app/api/firebase';
+import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { getRandomValues } from "crypto";
 
 import * as cookie from "cookie";
@@ -8,10 +9,7 @@ import { jwtVerify } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
-
-export async function POST(req,){
-    const body = await req.json();
-    const {id, classRoomID, date} = body;
+export async function fakepost(req) {
 
     const cookies = cookie.parse(req.headers.get("cookie") || "");
     const sessionToken = cookies.session;
@@ -65,32 +63,5 @@ export async function POST(req,){
         channelName: channelName
     };
     await setDoc(roomDoc, roomData);
-
-    try{
-        if (!id || !classRoomID || !channelName){
-            return new Response(JSON.stringify({message:"ID is invalid please try again"}),{
-                status:400,
-                headers:{"Content-Type": "application/json"},
-            });
-        }
-        //add secuirity check for teacher to make sure its their classroom i think here thanks 
-    
-        const classRoomDB = doc(db,"classRoom",classRoomID);
-        await updateDoc(classRoomDB,{
-            [`meetingtime.${date}`]: { code: channelName },
-        });
-        const returnValue = {key:date,code:sendingcode};
-
-        return new Response(JSON.stringify( returnValue ),{
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
-    }
-    catch (error) {
-        console.error("Error:", error.message);
-        return new Response(JSON.stringify({ message: "could not make meeting" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-        });
-    }
+    return NextResponse.json({ roomID: roomData.channelName, status: 201});
 }

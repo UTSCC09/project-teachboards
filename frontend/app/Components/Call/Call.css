@@ -1,0 +1,9 @@
+.call-videos {
+    width: 50vw;
+}
+
+
+.flex {
+    display:flex;
+    flex-direction: column;
+}

@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useAuth } from "../Content/AuthContext.js";
 import {gsap} from "gsap";
 import DatePicker from "react-datepicker";
-import { reauthenticateWithCredential } from "firebase/auth";
-
+import { useRouter } from "next/navigation";
 
 export default function ClassRoomMainPage() {
     const { user,checkAuthStatus} = useAuth();
@@ -36,6 +35,8 @@ export default function ClassRoomMainPage() {
 
     const [meeting, setMeeting] = useState([]);
 
+
+    const router = useRouter();
 
     useEffect(()=>{
         getNotes();
@@ -235,12 +236,11 @@ export default function ClassRoomMainPage() {
         try{
             const classRoomID = currentClass.classRoomID;
             const id = user.id;
-            const sendingcode = "123";
             const date = dateformvalue;
             const response = await fetch(`/api/classroom/scheduleMeeting`,{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({id:id, classRoomID:classRoomID,sendingcode:sendingcode,date:date })
+                body:JSON.stringify({id:id, classRoomID:classRoomID,date:date })
             })
 
             const data = await response.json();
@@ -251,6 +251,7 @@ export default function ClassRoomMainPage() {
             setMeeting((prevMeetings) => [data, ...prevMeetings]);
             console.log("added a new scheduled meeting");
             setpopout3(false);
+            meetingtimeSetup();
         }
         catch(error){
             handleerror(error.message);
@@ -258,6 +259,7 @@ export default function ClassRoomMainPage() {
         }
         return;
     }
+
     const handleerror = (message) => {
         seterrormessage(message);
         sethaserror(true);
@@ -370,7 +372,10 @@ export default function ClassRoomMainPage() {
         {windowWidth > 1300 && <div className = "CPRight">
             <p className = "CPRTitle">Next Call</p>
             {meeting.map((meet)=>(
-                    <div key = {meet.code} className= "CPRContainer">{meet.key}</div>
+                    <div key = {meet.code} className= "CPRContainer">
+                        <p>{meet.key}</p>
+                        <button onClick={() => router.push("/room/"+meet.code)}> Join room {meet.code}</button>
+                    </div>
             ))}
         </div>}
 

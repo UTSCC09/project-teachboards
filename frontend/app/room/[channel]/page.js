@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Call from '../../Components/Call/Call';
 import "./style.css"
-import { useRouter } from 'next/dist/client/router';
 
 let options = {
     // Pass your app ID here.
@@ -26,8 +25,6 @@ export default function GuestPage( {params} ) {
     
     const { channel } = params;
 
-    const router = useRouter();
-
     // gets the token
     function joinCall() {
         if (token || uid) return;
@@ -46,15 +43,6 @@ export default function GuestPage( {params} ) {
         .catch((err) => console.error('Error verifying session:', err)); // Handle any errors
     }
 
-    function makeRoom() {
-        fetch(`/api/room`, {
-            method: 'POST'
-        })
-        .then((res) => res.json())
-        .then((data) => {
-        })
-    }
-
     return (
         <div>
             { noRoom ? <p>That room does not exist, or you can't access it.</p> 
@@ -68,7 +56,6 @@ export default function GuestPage( {params} ) {
                         {/* THIS IS ALSO THE CHANNEL NAME */}
                     </p>
                     <button className={"callButton"} onClick={joinCall}>JOIN CALL</button>
-                    <button onClick={makeRoom}>MAKE ROOM</button>
                 </div>
             ) : <p>no call status?</p>
             }
