@@ -9,7 +9,7 @@ import { jwtVerify } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
-export async function GET(req) {
+export async function POST(req) {
 
     const cookies = cookie.parse(req.headers.get("cookie") || "");
     const sessionToken = cookies.session;
@@ -31,7 +31,7 @@ export async function GET(req) {
 
     let channelName = null;
 
-    let tries = 5;
+    let tries = 10;
 
     const generateChannelName = () => {
         const array = new Uint32Array(1);
@@ -54,6 +54,7 @@ export async function GET(req) {
         }
         --tries;
     }
+
 
 
     // TODO: add classroom stuff to room (might need to move to different route for this)

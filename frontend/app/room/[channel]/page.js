@@ -45,7 +45,7 @@ export default function GuestPage( {params} ) {
 
     function makeRoom() {
         fetch(`/api/room`, {
-            method: 'GET'
+            method: 'POST'
         })
         .then((res) => res.json())
         .then((data) => {
