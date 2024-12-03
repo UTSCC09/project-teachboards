@@ -124,25 +124,165 @@
 }
 .HPCenter {
     flex-shrink: 0;
-    flex-grow: 8; 
+    flex-grow: 0;
+    width: 76%;
     display: flex;
     flex-direction: column;
 }
 
-.HPC {
-    margin-top: 10px;
-    color: rgb(232, 229, 229);
-    font-size: 20px;
-    margin-left: 20px;
-}
 
-.NoteContainer {
+.CPMContainer {
     display: flex;
     position: relative;
-    border-radius:5px;
+    flex-direction:column;
     background-color: rgb(35, 37, 36);
+    border-radius:5px;
     margin: 20px;
     flex: 1; 
+    overflow-x:hidden;
     height: 100%; 
     max-width: 100%; 
+}
+
+
+.CPMtitle{
+    color:rgb(232, 229, 229);
+    background-color: transparent;
+    font-size:24px;
+    margin-left: 30px;
+    margin-top:10px;
+    display:flex;
+    justify-content: flex-start;
+    align-items:center;
+    text-align:center;
+}
+.NotesContainer {
+    padding: 20px; 
+    border-radius: 16px; 
+    max-height: 80vh; 
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-around; 
+    align-items: center; 
+    gap: 15px; 
+    overflow-y: auto; 
+    box-sizing: border-box; 
+    width:100%;
+}
+
+.notes {
+    width: 150px; 
+    height: 150px; 
+    background-color: rgba(245, 245, 245, 0.865); 
+    color: rgb(13, 16, 15);
+    font-size: 16px; 
+    font-weight: bold; 
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    border-radius: 12px; 
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); 
+    transition: all 1s ease;
+    cursor: pointer;
+    word-break: break-all;
+    overflow-wrap: anywhere; 
+    text-align: center;
+    white-space: normal; 
+    box-sizing: border-box; 
+    padding: 10px; 
+    line-height: 1.4;
+}
+
+.notes:hover {
+    transform: scale(1.05); 
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4); 
+}
+
+.notes:active {
+    transform: scale(0.95); 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.nonotes{
+    font-size:20px;
+    color:rgb(232, 229, 229);
+}
+@media (max-width:900px){
+    .HPCenter {
+        flex-shrink: 0;
+        flex-grow: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+}
+@media (max-width: 800px) {
+    .ClassRoomHomePage {
+        flex-direction: column;
+        height: auto;
+    }
+    .CPLeft, .CPMiddle, .CPRight {
+        width: 100%; 
+        margin-bottom: 10px;
+    }
+    .NotesContainer {
+        padding: 15px;
+        gap: 10px;
+    }
+    .notes {
+        width: 120px; 
+        height: 120px;
+        font-size: 14px;
+    }
+}
+
+
+.errormessagepopup {
+    position: fixed;
+    z-index: 1000;
+    background-color: rgb(211, 118, 118);
+    width: 200px;
+    height: 100px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    color: rgb(232, 229, 229);
+    font-size: 14px;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    padding: 10px;
+    line-height: 1.4;
+    white-space: normal;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.pdf {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    pointer-events: none;
+
+}
+.clickable {
+    width: 20%; 
+    height: 15vh; 
+    position: relative; 
+    text-decoration: none;
+    background: transparent; 
+    cursor: pointer; 
+    display: block; 
+    transition:all 1s ease;
+    overflow:hidden;
+}
+.clickable:hover {
+    transform:scale(1.07);
 }

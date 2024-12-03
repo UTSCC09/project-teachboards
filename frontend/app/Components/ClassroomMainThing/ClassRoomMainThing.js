@@ -34,6 +34,10 @@ export default function ClassRoomMainPage() {
 
     const [errormessage, seterrormessage] = useState("This is an error message actual");
     const [haserror, sethaserror] = useState(false);
+
+    const [meeting, setMeeting] = useState([]);
+
+
     useEffect(()=>{
         getNotes();
     },[selectedDate, setSelectedDate,currentClass])
@@ -71,10 +75,31 @@ export default function ClassRoomMainPage() {
         if (user) {
             handleGetClassroom();
             handleGetEnrolled();
+            handleMeetingTime();
         }
     }, [user,checkAuthStatus]); 
 
+    const handleMeetingTime = async ()=>{
+            if (!user) return;
+            const id = user.id;
+            try{
+                const response = await fetch(`/api/getMeetings/${id}`,{
+                    method:"GET",
+                    headers:{"Content-Type":'application/json'},
+                })
 
+                const data = await response.json();
+                if (!response.ok){
+                    return;
+                    console.error(data.message);
+                }
+                console.log(data);
+                setMeeting(data);
+            }
+            catch(error){
+                console.error(error.message);
+            }
+        }
     const getNotes = async () =>{
         if (!user || !hasclass || !currentClass.classRoomID || !selectedDate) return;
         const classRoomID = currentClass.classRoomID;
@@ -205,7 +230,8 @@ export default function ClassRoomMainPage() {
         }
     }
 
-    const scheduleMeeting = async ()=>{
+    const scheduleMeeting = async (e)=>{
+        e.preventDefault();
         if (!user ||  !currentClass.classRoomID) return;
         try{
             const classRoomID = currentClass.classRoomID;
@@ -376,14 +402,15 @@ export default function ClassRoomMainPage() {
 
         {windowWidth > 1300 && <div className = "CPRight">
             <p className = "CPRTitle">Next Call</p>
-            { 
-            }
-
+            {meeting.map((meet)=>(
+                    <div key = {meet.code} className= "CPRContainer">{meet.key}</div>
+            ))}
         </div>}
 
         {popout &&  
             <div className="SCREENBANG">
-                <form onSubmit={handleAddClassroom}  className="AddClassroomForm">
+                <form onSubmit={handleAddClassroom}  
+                className="AddClassroomForm">
                 <h2>Add Classroom</h2>
                 <input
                     type="text"
@@ -402,8 +429,7 @@ export default function ClassRoomMainPage() {
 
         {popout2 && 
             <div className="SCREENBANG">
-            <form  onSubmit={(e) => {e.preventDefault(); 
-                joinClassRoom();}} 
+            <form  onSubmit={joinClassRoom} 
                 className="AddClassroomForm">
             <h2>Classroom Code</h2>
             <input
@@ -422,8 +448,7 @@ export default function ClassRoomMainPage() {
         }
         {popout3 && 
             <div className="SCREENBANG">
-            <form onSubmit={(e) => {e.preventDefault(); 
-                scheduleMeeting();}} 
+            <form onSubmit={scheduleMeeting} 
                 className="AddClassroomForm">
             <label htmlFor="date-picker">Select a Date:</label>
             <input 
