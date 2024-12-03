@@ -11,6 +11,21 @@ export default function ProfilePage() {
     const [profileEmail, setProfileEmail] = useState("");
     const [profileUsername, setProfileUsername] = useState("");
 
+    const check = () => user && profileFirstName !== "" && profileLastName !== "" && profileEmail !== "" && profileUsername !== "";
+    const [errormessage, seterrormessage] = useState("This is an error message actual");
+    const [haserror, sethaserror] = useState(false);
+
+    const handleerror = (message) => {
+        sethaserror(true);
+        seterrormessage(message);
+        setTimeout(removeerror, 5000);
+    };
+    const removeerror = ()=>{
+        seterrormessage("");
+        sethaserror(false);
+    }
+
+            
     const handleSubmit = async (e) => {
         const id = user.id;
         e.preventDefault();
@@ -28,7 +43,7 @@ export default function ProfilePage() {
             });
             const returnValue = await response.json();
             if (!response.ok){
-                console.error("could not change user values RIP");
+                handleerror(returnValue.message);
                 return;
             }         
             await checkAuthStatus();
@@ -36,6 +51,7 @@ export default function ProfilePage() {
         }
         catch(error){
             console.error("Error putting user data", error.message);
+            handleerror(error.message);
         }
     };
 
@@ -48,7 +64,8 @@ export default function ProfilePage() {
             });
             const returnValue = await response.json();
             if (!response.ok){
-                console.error("Could not get user values");
+                handleerror(returnValue);
+                return;
             }
             setProfileFirstName(returnValue.firstName);
             setProfileLastName(returnValue.lastName);
@@ -57,6 +74,7 @@ export default function ProfilePage() {
         }   
         catch(error){
             console.log("error getting user data", error.message);
+            handleerror(error.message);
         }
     };
 
@@ -69,7 +87,8 @@ export default function ProfilePage() {
     return (
         <div className="screen">
             <div className="profilePageContainer">
-                <div className="profileField">
+            {!check() && <p className = "loadingPP">Loading Please Wait...</p>}
+                {check() &&  <div className="profileField">
                     <label htmlFor="profileName">First Name:</label>
                     <input
                         id="profileFirstName"
@@ -77,8 +96,8 @@ export default function ProfilePage() {
                         value={profileFirstName}
                         onChange={(e) => setProfileFirstName(e.target.value)}
                     />
-                </div>
-                <div className="profileField">
+                </div>}
+                {check() && <div className="profileField">
                     <label htmlFor="profileName">Last Name:</label>
                     <input
                         id="profileLastName"
@@ -86,8 +105,8 @@ export default function ProfilePage() {
                         value={profileLastName}
                         onChange={(e) => setProfileLastName(e.target.value)}
                     />
-                </div>
-                <div className="profileField">
+                </div>}
+                {check() && <div className="profileField">
                     <label htmlFor="profileUsername">Username:</label>
                     <input
                         id="profileUsername"
@@ -95,8 +114,8 @@ export default function ProfilePage() {
                         value={profileUsername}
                         onChange={(e) => setProfileUsername(e.target.value)}
                     />
-                </div>
-                <div className="profileField">
+                </div>}
+                {check() &&   <div className="profileField">
                     <label htmlFor="profileEmail">Email:</label>
                     <input
                         id="profileEmail"
@@ -104,11 +123,12 @@ export default function ProfilePage() {
                         value={profileEmail}
                         onChange={(e) => setProfileEmail(e.target.value)}
                     />
-                </div>
-                <button className="submitButton" onClick={handleSubmit}>
+                </div>}
+                {check() &&   <button className="submitButton" onClick={handleSubmit}>
                     Submit
-                </button>
+                </button>}
             </div>
+            {haserror && <div className = "errormessagepopup">{errormessage}</div>}
         </div>
     );
 }

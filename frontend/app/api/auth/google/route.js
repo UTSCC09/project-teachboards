@@ -20,9 +20,7 @@ export async function GET(){
     });
     return NextResponse.redirect(`${googleURL}?${options.toString()}`);
 }
-
-
-
+//CODE ENDS HERE
 
 
 

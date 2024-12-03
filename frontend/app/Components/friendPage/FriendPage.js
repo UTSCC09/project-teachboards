@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import "./friendPage.css";
 import { useAuth } from "../Content/AuthContext";
+import Link from "next/link";
 
 export default function FriendPage() {
     const [friends, setFriends] = useState([]);
@@ -12,6 +13,22 @@ export default function FriendPage() {
     const [penorfre, setpenorfre] = useState("Friends");
     const [penorfre2,setpenorfre2] = useState("Pending Friends");
     const { user } = useAuth();
+    const [num, setNum] = useState(10);
+
+    const [errormessage, seterrormessage] = useState("This is an error message actual");
+    const [haserror, sethaserror] = useState(false);
+
+    const handleerror = (message) => {
+        sethaserror(true);
+        seterrormessage(message);
+        setTimeout(removeerror, 5000);
+    };
+    const removeerror = ()=>{
+        seterrormessage("");
+        sethaserror(false);
+    }
+
+
 
     useEffect(() => {
         if (user && user.id) {
@@ -20,11 +37,13 @@ export default function FriendPage() {
             return () => clearInterval(interval); 
         }
     }, [user]);
+    
     useEffect(()=>{
         if (user && user.id){
             retrivePending();
         }
     },[mode, user])
+
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
@@ -33,19 +52,20 @@ export default function FriendPage() {
         if (!user || !user.id) return;
         const id = user.id;
         try {
-            const response = await fetch(`/api/retriveFriends/${id}`, {
+            const response = await fetch(`/api/retriveFriends/${id}/${num}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
             const data = await response.json();
             if (!response.ok) {
-                console.log("Could not retrieve friends");
+                handleerror(data.message);
                 return;
             }
             console.log("Friends retrieved");
             setFriends(data.friendsWithStatus || []);
         } catch (error) {
             console.error("Error retrieving friends:", error);
+            handleerror(error.message);
         }
     };
 
@@ -53,19 +73,20 @@ export default function FriendPage() {
         if (!user || !user.id) return;
         const id = user.id;
         try {
-            const response = await fetch(`/api/retrivePending/${id}`, {
+            const response = await fetch(`/api/retrivePending/${id}/${num}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
             const data = await response.json();
             if (!response.ok) {
-                console.log("Could not retrieve pending friend requests");
+                handleerror(data.message);
                 return;
             }
             console.log("Pending friends retrieved");
             setPendingFriends(data.friendsUsername || []);
         } catch (error) {
             console.error("Error retrieving pending friends:", error);
+            handleerror(error.message);
         }
     };
     
@@ -81,14 +102,15 @@ export default function FriendPage() {
             });
             const data = await response.json();
             if (!response.ok) {
-                console.log("Could not add friend");
+                handleerror(data.message);
                 return;
             }
             console.log("Friend added:", data);
             setUsername("");
             setShowPopup(false);
         } catch (error) {
-            console.error("Error adding friend:", error);
+            console.error("Error adding friend:", error)
+            handleerror(error.message);
         }
     };
 
@@ -115,9 +137,9 @@ export default function FriendPage() {
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({username:username}),
             });
-            await response.json();
+            const data = await response.json();
             if (!response.ok){
-                console.log("could not accepted friend");
+                handleerror(data.message);
                 return;
             }
             console.log("accepted friend");
@@ -126,6 +148,7 @@ export default function FriendPage() {
         }  
         catch(error){
             console.error("Error accept friend:", error);
+            handleerror(error.message);
         }
     };
     return (
@@ -138,7 +161,7 @@ export default function FriendPage() {
                     <button className="header-btn" onClick={handleSwitch}>
                         {penorfre2}
                     </button>
-                    <button className="header-btn">Messages</button>
+                    <Link href="/profile" className = "header-btn">My Profile</Link>
                 </header>
                 <h2 className="BRO">{penorfre}</h2>
                 {mode && (
@@ -193,6 +216,7 @@ export default function FriendPage() {
                     </div>
                 </div>
             )}
+                {haserror && <div className = "errormessagepopup">{errormessage}</div>}
     </>
     );
 }

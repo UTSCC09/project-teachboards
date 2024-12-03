@@ -15,7 +15,7 @@ export default function Status() {
                 await fetch(`/api/status`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: id, status: status }),
+                    body: JSON.stringify({ id: id, status:status}),
                 });
             } catch (error) {
                 console.log("Failed to send status check");
@@ -23,8 +23,8 @@ export default function Status() {
         };
         const startloop = () => {
             if (!statusLoopRef.current) {
-                sendStatus("online");
-                statusLoopRef.current = setInterval(() => sendStatus("online"), 60000);
+                sendStatus({statusactual:"online",statusPriority:1});
+                statusLoopRef.current = setInterval(() => sendStatus({statusactual:"online",statusPriority:1}), 60000);
             }
         };
         const stopLoop = () => {
@@ -43,14 +43,14 @@ export default function Status() {
                 if (tabActiveRef.current) {
                     tabActiveRef.current = false; 
                     stopLoop();
-                    sendStatus("busy");
+                    sendStatus({statusactual:"busy",statusPriority:2});
                 }
             }
         };
         const removeAll = () =>{
             stopLoop();
             statusLoopRef.current = null;
-            sendStatus("offline");
+            sendStatus({statusactual:"offline",statusPriority:2});
         }
         startloop();
         window.addEventListener("beforeunload", removeAll);
@@ -59,7 +59,7 @@ export default function Status() {
         return () => {
             stopLoop();
             removeAll();
-            sendStatus("offline");
+            sendStatus({statusactual:"offline",statusPriority:2});
             window.removeEventListener("beforeunload", removeAll);
             document.removeEventListener("visibilitychange", onTab);
         };

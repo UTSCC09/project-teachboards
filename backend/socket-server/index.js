@@ -71,13 +71,11 @@ export function socketStuff(io){
         socket.emit("send-error",{message:"Cannot save message"});
       }
     });
-    //disconnecting 
     socket.on("disconnect", () =>{
       console.log("user disconnected", socket.id);
     });
   });
 } 
-// Function to start the server
 export function createServer(port, corsOptions) {
     return new Server(port, {
       cors: corsOptions,

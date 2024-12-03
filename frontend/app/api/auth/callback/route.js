@@ -3,7 +3,6 @@ import { OAuth2Client } from 'google-auth-library';
 import { doc, updateDoc, setDoc, addDoc,collection, getDocs, query, where } from "firebase/firestore";
 import {db } from "../../../firebase.js";
 import { SignJWT } from "jose";
-
 const GOOGLE_CLIENTID = process.env.NEXT_PUBLIC_GOOGLE_CLIENTID;
 const GOOGLE_SECRET = process.env.NEXT_PUBLIC_GOOGLE_SECRET;
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
@@ -52,7 +51,7 @@ export async function GET(request){
             response.cookies.set("session", token, {
                 httpOnly: true,
                 sameSite: "Strict",
-                secure: false,
+                secure: true,
                 path: "/",
                 maxAge: 60 * 60 * 24 * 7, // 7 days
             });

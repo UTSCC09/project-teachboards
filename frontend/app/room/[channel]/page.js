@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Call from '../../Components/Call/Call';
 import "./style.css"
+import { useRouter } from 'next/dist/client/router';
 
 let options = {
     // Pass your app ID here.
@@ -24,6 +25,8 @@ export default function GuestPage( {params} ) {
     const [ callStatus, setCallStatus] = useState(0);
     
     const { channel } = params;
+
+    const router = useRouter();
 
     // gets the token
     function joinCall() {
@@ -49,7 +52,6 @@ export default function GuestPage( {params} ) {
         })
         .then((res) => res.json())
         .then((data) => {
-            alert("room created:"+data.roomID)
         })
     }
 

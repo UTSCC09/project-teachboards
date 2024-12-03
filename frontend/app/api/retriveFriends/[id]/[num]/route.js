@@ -1,9 +1,9 @@
-import { db } from "../../../firebase.js";
-import { getDoc, doc,getDocs, query, collection, where } from "firebase/firestore";
+import { db } from "../../../../firebase.js";
+import { getDoc, doc,getDocs, query, collection, where,limit } from "firebase/firestore";
 
 export async function GET(req, { params }) {
-    const { id } = params;
-    if (!id) {
+    const { id,num } = params;
+    if (!id || !num) {
         return new Response(JSON.stringify({ message: "ID is invalid, please try again" }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -34,12 +34,19 @@ export async function GET(req, { params }) {
 
                 if (!friendSnapshot.empty) {
                     const friendData = friendSnapshot.docs[0].data();
-                    return { username, status: friendData.status };
+                    const status = friendData.status;
+                    return { 
+                        username, 
+                        status: status.statusactual || "offline", 
+                        statusPriority: status.statusPriority || 3 
+                    };
                 }
-                return { username, status: "offline" };
+                return { username, status: "offline", statusPriority: 3 };
             })
         );
-        return new Response(JSON.stringify({ friendsWithStatus }), {
+        const sortedFriends = friendsWithStatus.sort((a, b) => a.statusPriority - b.statusPriority);
+        const returnvalue = sortedFriends.slice(0,num);
+        return new Response(JSON.stringify({ friendsWithStatus:returnvalue }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

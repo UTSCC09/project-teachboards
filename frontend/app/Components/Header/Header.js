@@ -14,7 +14,7 @@ export default function Header() {
 
     const handleLogout = () =>{
         logout();
-        router.push("/home");
+        router.push("/landing");
     };
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
@@ -48,17 +48,17 @@ export default function Header() {
                         </li>
                     ) : (
                         <>
-                            <li>
-                                <Link className="Nav-Options" href="/home"><p>Home</p></Link>
-                            </li>
+                           {user &&  <li>
+                            <Link className="Nav-Options" href="/home"><p>Home</p></Link>
+                            </li>}
+                            {user && <li>
+                                <Link className="Nav-Options" href="/classroomHome"><p>Classrooms</p></Link>
+                            </li>}
                             {user && <li>
                                 <Link className="Nav-Options" href="/messages"><p>Messages</p></Link>
                             </li>}
                             {user && <li>
-                                <Link className="Nav-Options" href="/friends"><p>Friends</p></Link>
-                            </li>}
-                            {user && <li>
-                                <Link className="Nav-Options" href="/profile"><p>Profile</p></Link>
+                                <Link className="Nav-Options" href="/friends"><p>Socials</p></Link>
                             </li>}
                             <li>
                                 {user ? (
@@ -67,9 +67,6 @@ export default function Header() {
                                     <Link className="Nav-Options" href="/login"><p>Login</p></Link>
                                 )}
                             </li>
-                            {user && <li>
-                                <Link className="Nav-Options" href="/draw"><p>draw</p></Link>
-                            </li>}
                         </>
                     )}
                 </ul>
@@ -77,17 +74,17 @@ export default function Header() {
             {menuDropDown && (
                                 <div className="DropDown" ref={modelRef}>
                                     <ul className="DropDown-List">
-                                        <li className="DD-Option">
+                                        {user && <li className="DD-Option">
                                             <Link href="/home">Home</Link>
-                                        </li>
+                                        </li>}
+                                        {user && <li className="DD-Option">
+                                            <Link href="/classroomHome"><p>Classrooms</p></Link>
+                                        </li>}
                                         {user && <li className="DD-Option">
                                             <Link href="/messages">Messages</Link>
                                         </li>}
                                         {user && <li className="DD-Option">
-                                            <Link href="/friends">Friends</Link>
-                                        </li>}
-                                        {user && <li className="DD-Option">
-                                            <Link href="/profile">Profile</Link>
+                                            <Link href="/friends">Socials</Link>
                                         </li>}
                                         <li className="DD-Option">
                                             {user ? (
@@ -96,9 +93,6 @@ export default function Header() {
                                                 <Link href="/login">Login</Link>
                                             )}
                                         </li>
-                                        {user && <li className="DD-Option">
-                                            <Link href="/draw"><p>draw</p></Link>
-                                        </li>}
                                     </ul>
                                 </div>
             )}

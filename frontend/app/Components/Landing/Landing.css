@@ -1,7 +1,53 @@
 .body, html{
     background-color:rgb(13, 16, 15);
+    font-family: Helvetica, Arial, sans-serif;
 }
 .Entire{
-    height:100vh;
+    display:flex;
+    flex-direction:column;
+    height:50vh;
     width:100%;
+    justify-content: center;
+    align-items:center;
+    text-align:center;
+    color:rgb(232, 229, 229);
+}
+
+.ETeachboards{
+    position: relative;
+    display: inline-block;
+    font-size:80px;
+}
+.ETeachboards span {
+    position: relative; 
+    display: inline-block; 
+}
+
+.EHElper{
+    font-size:50px;
+}
+.ELoginButton{
+    margin-top:10px;
+    font-size:40px;
+    padding:10px 30px;
+    border-radius:10px;
+    background-color:rgb(13, 16, 15);
+    color:rgb(232, 229, 229);
+    transition:all 2s ease;
+}
+
+.ELoginButton:hover{
+    color:rgb(13, 16, 15);
+    background-color: rgb(232, 229, 229);
+}
+
+
+@media (max-width:1000px){
+    .ETeachboards{
+        font-size:50px;
+    }
+
+    .ELoginButton{
+        font-size:20px;
+    }
 }
