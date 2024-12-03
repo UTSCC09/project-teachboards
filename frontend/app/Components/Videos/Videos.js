@@ -35,11 +35,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
     // Video track stuff
     const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
     const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
-
-    useEffect(() => {
-        console.log("Camera track loading:", isLoadingCam);
-        console.log("Local camera track:", localCameraTrack);
-    }, [isLoadingCam, localCameraTrack]);
+    const [ localVideoTrack, setLocalVideoTrack ] = useState();
 
     const {user} = useAuth();
 
@@ -49,15 +45,37 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
 
     const [ cameraOn, setCameraOn ] = useState(true);
     const [ micOn, setMicOn ] = useState(true);
-    const [b, bb] = useState(false);
 
     const [ focusedUser, setFocusedUser ] = useState("local"); 
 
     const [ compressedSaveData, setCompressedSaveData ] = useState("");
     const [ localHandRaised, setHandRaised ] = useState(false);
+
+    const [ readyPublish, setReadyPublish ] = useState(false)
   
     // local video
     const localVideoRef = useRef();
+    const localBoardVideoRef = useRef();
+
+    const createWhiteboardTrack = () => {
+        const canvas = localBoardRef.current.canvas.drawing;
+        const ctx = canvas.getContext('2d');
+        const fps = 30; // High FPS for smooth updates
+        const stream = canvas.captureStream(fps); // Create a MediaStream from the canvas
+    
+        //streamRef.current = stream; // Save the stream reference
+    
+        const videoTrack = AgoraRTC.createCustomVideoTrack({
+          mediaStreamTrack: stream.getVideoTracks()[0], // Use the video track from the MediaStream
+        });
+        setLocalVideoTrack(videoTrack);
+        setReadyPublish(true)
+    };
+    useEffect(() => {
+        if (localVideoTrack && localBoardVideoRef.current) {
+            if (cameraOn) localVideoTrack.play(localBoardVideoRef.current);
+        }
+    }, [localVideoTrack, cameraOn]);
     useEffect(() => {
         if (!isLoadingCam && localCameraTrack && localVideoRef.current) {
             if (cameraOn) localCameraTrack.play(localVideoRef.current);
@@ -65,7 +83,6 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
         }
     }, [localCameraTrack, cameraOn, isLoadingCam]);
 
-    // local whiteboard
     
     // remote videos
     const remoteVideoRefs = useRef([]);
@@ -84,6 +101,13 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
 
     // connecting to agora
     const isConnected = useIsConnected();
+    useEffect( () => {
+        console.log("coonnect")
+        if (isConnected) {
+            createWhiteboardTrack();
+            console.log("create whiteboards")
+        }
+    }, [isConnected])
 
     useJoin({
         appid: "5b04cf1dad0645189bd6533cef7c2158",
@@ -91,7 +115,8 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
         token: token,
         uid: uid
      }, true);
-    usePublish([localMicrophoneTrack, localCameraTrack], true);
+    usePublish([localMicrophoneTrack, localVideoTrack, localCameraTrack], readyPublish);
+
     //controls
     function toggleCamera(e) {
         if (cameraOn) {
@@ -215,22 +240,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
             </div>
             {isConnected ? (
                 <div className="video-grid-wrapper">
-                    <div className="video-grid-all">
-                        {remoteUsers.slice(0,3).map((user, i) => (
-                            <SingleVideoWrapper key={i} focused={focusedUser === user.uid} onClick={(e) => setFocusedUser(user.uid)}>
-                                <VideoStream 
-                                    videoRef={el => remoteVideoRefs.current[i] = el} 
-                                    audio={user.audioTrack} 
-                                    onClick={() => setFocusedUser(user.uid)}
-                                    whiteboard={null}
-                                >
-                                </VideoStream>
-                                {<div className="video-name">{user.uid}</div>}
-                                {hands[user.uid.toString()] && <div className="hand">✋</div>}
-                            </SingleVideoWrapper>
-                        ))}
-                    </div>
-                    <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => setFocusedUser("local")}>
+                    <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => focusedUser==="local" ? setFocusedUser(null) : setFocusedUser("local")}>
                         <VideoStream 
                             videoRef={localVideoRef}
                             audio={localMicrophoneTrack} 
@@ -240,9 +250,19 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                         {<div className="video-name">{uid}</div>}
                         {localHandRaised && <div className="hand">✋</div>}
                     </SingleVideoWrapper>
+                    <SingleVideoWrapper focused={focusedUser === "localBoard"} onClick={(e) => focusedUser==="localBoard" ? setFocusedUser(null) : setFocusedUser("localBoard")}>
+                        <VideoStream 
+                            videoRef={localBoardVideoRef}
+                            audio={localMicrophoneTrack} 
+                            name={username}
+                        >
+                        </VideoStream>
+                        {<div className="video-name">{uid}'s Whiteboard</div>}
+                        {localHandRaised && <div className="hand">✋</div>}
+                    </SingleVideoWrapper>
                     {remoteUsers.length === 0 && <p>no remote users</p>}
                     {remoteUsers.slice(0,3).map((user, i) => (
-                        <SingleVideoWrapper key={i} focused={focusedUser === user.uid} onClick={(e) => setFocusedUser(user.uid)}>
+                        <SingleVideoWrapper key={i} focused={focusedUser === user.uid} onClick={(e) => focusedUser===user.uid ? setFocusedUser(null) : setFocusedUser(user.uid)}>
                             <VideoStream 
                                 videoRef={el => remoteVideoRefs.current[i] = el} 
                                 audio={user.audioTrack} 
@@ -255,14 +275,14 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                         </SingleVideoWrapper>
                     ))}
                     <div className="board-focused">
-                        <Drawing canvasWidth={500} canvasHeight={500} ref={localBoardRef}></Drawing>
+                        <Drawing canvasWidth={800} canvasHeight={800} ref={localBoardRef}></Drawing>
                     </div>
                 </div>
             ) : (
                 <div>Connecting...</div>
             )}
             <div className="video-controls">
-                <p>{remoteVideoTracks.length}</p>
+                <p>{remoteUsers.length}</p>
                 <button onClick={toggleCamera}>{cameraOn ? 'camera is ON' : 'camera is OFF'}</button>
                 <button onClick={toggleMic}>{micOn ? 'mic is ON' : 'mic is OFF'}</button>
                 <button onClick={toggleHand}>{localHandRaised ? 'hand is UP' : 'hand is DOWN'}</button>

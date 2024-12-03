@@ -89,7 +89,6 @@ export default function Call({channelName, appId, token, rtmToken, uid, endCall}
         };
         const pdfBlob = generatePDF();
         uploadPDF(pdfBlob);
-
     }
     function handleLeaveCall() {
         rtm.current.logout();

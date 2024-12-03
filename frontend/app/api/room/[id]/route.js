@@ -28,8 +28,6 @@ export async function POST(req, {params}) {
         });
     }
     try {
-
-        
         const roomsRef = collection(db, "rooms");
         const q = query(roomsRef, where("channelName", "==", roomID));
         const querySnapshot = await getDocs(q);

@@ -10,9 +10,10 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
     // const canvasRef = useRef(null);
     const [mode, setMode] = useState("pen");
     const [penSize, setPenSize] = useState(2);
-    const [penColor, setPenColor] = useState("#000000");
-    const [backgroundColor, setBackgroundColor] = useState("#ffffff");
-    const [tempColor, setTempColor] = useState("#000000");
+    const [penColor, setPenColor] = useState("#e8e5e5");
+    ///rgb(232, 229, 229) rgb(13, 16, 15)
+    const [backgroundColor, setBackgroundColor] = useState("#0d100f");
+    const [tempColor, setTempColor] = useState("#e8e5e5");
     const [tempSize, setTempSize] = useState(2);
     const [undo, setUndo] = useState([[]]);
     const [uploadState, setUploadState] = useState(0);
@@ -118,15 +119,10 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
                     />
                     }
                     <button onClick={handleUndo}>Undo</button>
-                    {/* <button onClick={handleRedo}>Redo</button> */}
-                    {/* <button onClick={handleSave}>Save</button>
-                    <button onClick={handleLoad}>Load</button> */}
                     <button onClick={goLeft}> {"<"} </button>
                     <button onClick={goRight}> {">"} </button>
                     <button onClick={clearCanvas}>clear</button>
                     <p>{canvasIndex+1} of {canvasCount}</p>
-
-                    { uploadState === 1 ? <p>uploading...</p> : uploadState === 2 ? <p>upload end</p> : <p>not uploading</p>}
                 </div>
                 <div className="canvas" onPointerUp={() => {handleSave();}}>
                     <ReactCanvasDraw
