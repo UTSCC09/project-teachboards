@@ -9,6 +9,7 @@ export default function HomePage() {
     const { user } = useAuth();
     const [windowWidth, setWindowWidth] = useState();
     const {friends, setFriends} = getData();
+    const [notes, setNotes] = useState([]);
     
     useEffect(() => {
         const handleResize = () => {
@@ -24,10 +25,36 @@ export default function HomePage() {
     useEffect(() => {
         if (user && user.id) {
             retriveFriends(); 
+            getNotes();
             const interval = setInterval(() => {retriveFriends(); }, 60000); 
             return () => clearInterval(interval); 
         }
     }, [user]);
+
+
+    const getNotes = async () =>{
+        if (!user) return;
+        const id = user.id;
+        try{
+            const response = await fetch(`/api/getNotes/${id}`,{
+                method:"GET",
+                headers:{"Content-Type":"application/json"},
+            });
+
+            const data = await response.json();
+            if(!response.ok){
+                setNotes([]);
+                return;
+            }
+            console.log("gel");
+            setNotes(data);
+            return;
+        }
+        catch(error){
+            setNotes([]);
+            console.error("error getting notes");
+        }
+    }
 
     const retriveFriends = async () => {
         if (!user || !user.id) return;
@@ -62,8 +89,18 @@ export default function HomePage() {
             </div> }
 
             <div className = "HPCenter">
-                <p className = "HPC">Recent Notes</p>
-                <div className = "NoteContainer">
+                <p className = "CPMtitle">Recent Notes</p>
+                <div className = "CPMContainer">
+                    <div className="NotesContainer">
+                            {notes.map((note, index) => (
+                                <a key={index} className="clickable" href={note} target="_blank" rel="noopener noreferrer">
+                                    <iframe
+                                        src={note}
+                                        className="pdf"
+                                    />
+                                </a>
+                            ))}
+                        </div>
                 </div>
             </div>
 

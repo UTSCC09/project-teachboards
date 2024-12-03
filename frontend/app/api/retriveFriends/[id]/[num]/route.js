@@ -46,6 +46,8 @@ export async function GET(req, { params }) {
         );
         const sortedFriends = friendsWithStatus.sort((a, b) => a.statusPriority - b.statusPriority);
         const returnvalue = sortedFriends.slice(0,num);
+        //stop here 
+        
         return new Response(JSON.stringify({ friendsWithStatus:returnvalue }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
