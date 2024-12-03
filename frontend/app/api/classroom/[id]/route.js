@@ -12,7 +12,7 @@ export async function GET(req,{params}){
         });
     }
     try{
-        const classroomItem = query(collection(db,"classRoom"), where("teacherID", "==", id),orderBy("createdAt","desc"), limit(25));
+        const classroomItem = query(collection(db,"classRoom"), where("teacherID", "==", id), orderBy("createdAt","desc"), limit(25));
         const classReturn = await getDocs(classroomItem);
         if (classReturn.docs.length === 0){
             return new Response(JSON.stringify([]),{

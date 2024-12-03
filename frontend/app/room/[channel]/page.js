@@ -29,7 +29,7 @@ export default function GuestPage( {params} ) {
     function joinCall() {
         if (token || uid) return;
         // should fetch a token plus uid for you to use
-        fetch(`/api/room/${channel}`)
+        fetch(`/api/room/${channel}`, {method: "POST"})
         .then((res) => res.json()) // Await the response JSON here
         .then((data) => {
             // if there's not token, then the room doesn't exist.

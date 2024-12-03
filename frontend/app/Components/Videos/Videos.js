@@ -90,8 +90,8 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
         channel: channelName,
         token: token,
         uid: uid
-     });
-    usePublish([localMicrophoneTrack, localCameraTrack]);
+     }, true);
+    usePublish([localMicrophoneTrack, localCameraTrack], true);
     //controls
     function toggleCamera(e) {
         if (cameraOn) {
@@ -123,12 +123,12 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
     rtm.current.addEventListener('message', (eventArgs) => {
         const uid = eventArgs.publisher;
         const message = eventArgs.message;
-        if (eventArgs.channel === handChannel) {
-            setHands(prevHands => ({
-                ...prevHands,
-                [uid]: message==='hand up'
-            }));
-        }
+
+        console.log(uid + ": " + message)
+        setHands(prevHands => ({
+            ...prevHands,
+            [uid]: message==='hand up'
+        }));
     })
     rtm.current.addEventListener("presence", event => {
         if (event.eventType === "SNAPSHOT") {
@@ -222,6 +222,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                             name={username}
                         >
                         </VideoStream>
+                        {<div className="video-name">{uid}</div>}
                         {localHandRaised && <div className="hand">✋</div>}
                     </SingleVideoWrapper>
                     {remoteUsers.length === 0 && <p>no remote users</p>}
@@ -234,6 +235,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                                 whiteboard={null}
                             >
                             </VideoStream>
+                            {<div className="video-name">{user.uid}</div>}
                             {hands[user.uid.toString()] && <div className="hand">✋</div>}
                         </SingleVideoWrapper>
                     ))}
@@ -242,7 +244,7 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
                     </div>
                 </div>
             ) : (
-                <div>Not connected</div>
+                <div>Connecting...</div>
             )}
             <div className="video-controls">
                 <p>{remoteVideoTracks.length}</p>

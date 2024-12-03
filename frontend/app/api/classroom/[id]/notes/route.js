@@ -11,7 +11,7 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
  * @abstract creates a note, saves PDF, saves note's id to classroom.notes and user.notes array
  * 
  * @param {*} req 
- * @param {*} param1 
+ * @param {string} params.id  
  * @returns const newNote = {
       classroomId: ID OF CLASSROOM
       uid: USER ID

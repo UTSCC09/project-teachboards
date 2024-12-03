@@ -1,9 +1,26 @@
 import { db } from "@app/api/firebase.js";
-import { getDoc, doc, collection, query, where, getDocs} from "firebase/firestore";
+import { getDoc, doc, collection, query, where, getDocs, arrayUnion, updateDoc} from "firebase/firestore";
+
+import * as cookie from "cookie";
+import { jwtVerify } from "jose";
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 // grants access token for a room given its ID
-export async function GET(req, {params}) {
+export async function POST(req, {params}) {
+
+    const cookies = cookie.parse(req.headers.get("cookie") || "");
+    const sessionToken = cookies.session;
+
+    if (!sessionToken) {
+        return new Response(JSON.stringify({ message: "please login" }), { status: 401 });
+    }
+
+    const { payload } = await jwtVerify(sessionToken, JWT_SECRET);
+    const { id: fUid, firstName, lastName } = payload; 
+    //fUid firebase uid
     const roomID = params.id;
+
     if (!roomID) {
         return new Response(JSON.stringify({ message: "invalid or missing room ID" }), {
             status: 400,
@@ -33,20 +50,36 @@ export async function GET(req, {params}) {
 
         // TODO
         // NEED SOMETHING HERE TO CHECK IF YOU ARE ALLOWED TO ACCESS THE ROOM (classroom stuff)
+        // should the room be associated
         // if ("bad user") {
         //     return new Response(JSON.stringify({ message: "Room with ID " + roomID + " not found or permission denied" }), {
         //         status: 404,
         //         headers: { "Content-Type": "application/json" },
         //     });
         // }
-
+        let last_uid = null;
         // Now we need to generate a token for the user in the channel of the room
-
+        // if they've already been in the room we will use the same uid
+        const last_user = roomData.users.find(el => el.uid === fUid);
+        if (last_user) {
+            last_uid = last_user.agoraUid;
+        } 
         // token.js shenanigans below.
         // hardcode manual token for "main" channel ONLY for now
         const {token, rtmToken, uid} = await generateToken({
-            channelName: roomID,
+            channelName: roomID, last_uid: last_uid 
         });
+        const roomRef = doc(db, "rooms", roomDoc.id);
+
+        if (roomData.users)
+            await updateDoc(roomRef, {
+                users: arrayUnion({uid: fUid, agoraUid: uid})
+            })
+        else 
+            await updateDoc(roomRef, {
+                users: [{uid: fUid, agoraUid: uid}]
+            })
+
         return new Response(JSON.stringify({token, rtmToken, uid}), {
             status: 200,
             headers: { "Content-Type": "application/json" },
@@ -93,7 +126,7 @@ import { RtmTokenBuilder } from "agora-token/src/RtmTokenBuilder2";
 import {randomBytes} from 'crypto';
 
 
-async function generateToken({channelName}) {
+async function generateToken({channelName, last_uid}) {
 
     if (!channelName) return console.log("no channel name provided");
     console.log(channelName);
@@ -104,7 +137,7 @@ async function generateToken({channelName}) {
 
     // randomly generate a UID for this token
     const byteArray = randomBytes(4);
-    const uid = byteArray.readUInt32BE(0);
+    const uid = last_uid || byteArray.readUInt32BE(0);
 
     const tokenExpirationInSecond = 3600
     const privilegeExpirationInSecond = 3600

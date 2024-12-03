@@ -14,8 +14,10 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
     const [backgroundColor, setBackgroundColor] = useState("#ffffff");
     const [tempColor, setTempColor] = useState("#000000");
     const [tempSize, setTempSize] = useState(2);
-    const [undo, setUndo] = useState([]);
+    const [undo, setUndo] = useState([[]]);
     const [uploadState, setUploadState] = useState(0);
+    const [canvasIndex, setCanvasIndex] = useState(0);
+    const [canvasCount, setCanvasCount] = useState(1);
 
     const selectTextMode = () => setMode("text");
 
@@ -37,85 +39,62 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
     const handleSave = () => {
         const saveData = canvasRef.current.getSaveData();
         console.log(saveData);
-        localStorage.setItem("drawing", saveData);
+        localStorage.setItem(`drawing${canvasIndex}`, saveData);
     };
 
     const handleLoad = () => {
-        const savedData = localStorage.getItem("drawing");
+        const savedData = localStorage.getItem(`drawing${canvasIndex}`);
         if (savedData) {
             canvasRef.current.loadSaveData(savedData, true);
+        } else {
+            canvasRef.current.clear();
         }
     };
-
-    const setCanvas = (data) => {
-        try {
-            canvasRef.current.loadSaveData(data, true);
-        } catch (e) {
-            throw new Error(e);
-        }
-    }
 
     const handleUndo = () => {
         const saveData = canvasRef.current.getSaveData();
-        setUndo([saveData, ...undo]);
+        setUndo(prevArrayData => {
+            const newArrayData = [...prevArrayData];
+    
+            // Ensure the array at the current canvasIndex is initialized as an empty array
+            if (!newArrayData[canvasIndex]) {
+                newArrayData[canvasIndex] = [];  // Initialize it if it's undefined
+            }
+    
+            if (canvasIndex >= canvasCount) {
+                newArrayData.push([saveData]);
+            } else {
+                newArrayData[canvasIndex] = [...newArrayData[canvasIndex], saveData];
+            }
+            return newArrayData;
+        });
         canvasRef.current.undo();
-    }
+    };
 
     const handleRedo = () => {
-        if (undo.length > 0) {
-            const lastinfo = undo[0];
-            try {
-                setUndo(undo.slice(1));
-                canvasRef.current.loadSaveData(lastinfo, true);
-            }
-            catch {
-                return;
-            }
+            
+    }
+
+    const goLeft = () => {
+        handleSave();
+        if (canvasIndex > 0) {
+            setCanvasIndex(canvasIndex-1);
         }
     }
-
-    const stopUndo = () => {
-        setUndo([])
-    };
-
-    const generatePDF = () => {
-        const pdf = new jsPDF();
-        const saveData = canvasRef.current.getSaveData();
-
-        // You can customize this PDF generation
-        pdf.addImage(saveData, 'PNG', 0, 0, canvasWidth, canvasHeight);
-
-        const pdfBlob = pdf.output('blob');  // Output as a Blob
-        return pdfBlob;
-    };
-
-    // useImperativeHandle(canvasRef, () => ({
-    //     generatePDF
-    // }));
-
- 
-    const saveToFirestore = () => {
-        setUploadState(1);
-        const saveData = canvasRef.current.getSaveData();
-        const classroomID = "76cdCVK4beEE8Ik74613"
-        fetch(`/api/classroom/${classroomID}/notes`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                uid: '4Z3FohSY67OTCpoe25pge6YTsqD3',
-                noteContent: saveData
-            })
-        }).then((res) => {
-            console.log(res.message);
-        })
-        .catch((e) => {
-            alert("bad classroom upload")
-            console.error(error);
-        })
-        setUploadState(2);
+    const goRight = () => {
+        handleSave();
+        if (canvasIndex+1 >= canvasCount)setCanvasCount(canvasCount+1)
+        setCanvasIndex(canvasIndex+1);
     }
+
+    const clearCanvas = () => {
+        canvasRef.current.clear();
+    }
+
+    useEffect( () => {
+        handleLoad();
+    }, [canvasIndex]);
+
 
     return (
         <div className="total">
@@ -139,13 +118,17 @@ const Drawing = forwardRef(({ canvasWidth, canvasHeight, noControls }, canvasRef
                     />
                     }
                     <button onClick={handleUndo}>Undo</button>
-                    <button onClick={handleRedo}>Redo</button>
-                    <button onClick={handleSave}>Save</button>
-                    <button onClick={handleLoad}>Load</button>
-                    <button onClick={saveToFirestore}>upload to class (test)</button>
+                    {/* <button onClick={handleRedo}>Redo</button> */}
+                    {/* <button onClick={handleSave}>Save</button>
+                    <button onClick={handleLoad}>Load</button> */}
+                    <button onClick={goLeft}> {"<"} </button>
+                    <button onClick={goRight}> {">"} </button>
+                    <button onClick={clearCanvas}>clear</button>
+                    <p>{canvasIndex+1} of {canvasCount}</p>
+
                     { uploadState === 1 ? <p>uploading...</p> : uploadState === 2 ? <p>upload end</p> : <p>not uploading</p>}
                 </div>
-                <div className="canvas" onPointerUp={stopUndo}>
+                <div className="canvas" onPointerUp={() => {handleSave();}}>
                     <ReactCanvasDraw
                         ref={canvasRef}
                         brushColor={penColor}

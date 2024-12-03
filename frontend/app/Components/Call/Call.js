@@ -72,13 +72,13 @@ export default function Call({channelName, appId, token, rtmToken, uid, endCall}
         };
 
         const generatePDF = () => {
-            const canvas = localBoardRef.current.canvas.drawing;
+            const canvas = localBoardRef.current.canvas;
             const pdf = new jsPDF({
                 orientation: "landscape",
                 unit: "px",
                 format: [canvas.width, canvas.height],
             });
-            const imageData = canvas.toDataURL("image/png");
+            const imageData = canvas.getDataURL("image/png");
     
             // You can customize this PDF generation
             pdf.addImage(imageData, 'PNG', 0, 0, canvas.width, canvas.height);
@@ -120,8 +120,8 @@ export default function Call({channelName, appId, token, rtmToken, uid, endCall}
     return (
         <AgoraRTCProvider className="call-wrapper" client={client}>
             <div className={"flex"}>
-                <p>{token}</p>
-                <p>{uid}</p>
+                {/* <p>{token}</p>
+                <p>{uid}</p> */}
                 { token && uid ? 
                 (
                 <Videos 
