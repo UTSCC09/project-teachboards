@@ -10,7 +10,28 @@ export default function HomePage() {
     const [windowWidth, setWindowWidth] = useState();
     const {friends, setFriends} = getData();
     const [notes, setNotes] = useState([]);
-    
+    const [meeting, setMeeting] = useState([]);
+    const handleMeetingTime = async ()=>{
+        if (!user) return;
+        const id = user.id;
+        try{
+            const response = await fetch(`/api/getMeetings/${id}`,{
+                method:"GET",
+                headers:{"Content-Type":'application/json'},
+            })
+
+            const data = await response.json();
+            if (!response.ok){
+                return;
+                console.error(data.message);
+            }
+            console.log(data);
+            setMeeting(data);
+        }
+        catch(error){
+            console.error(error.message);
+        }
+    }
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
@@ -26,6 +47,7 @@ export default function HomePage() {
         if (user && user.id) {
             retriveFriends(); 
             getNotes();
+            handleMeetingTime();
             const interval = setInterval(() => {retriveFriends(); }, 60000); 
             return () => clearInterval(interval); 
         }
@@ -46,7 +68,6 @@ export default function HomePage() {
                 setNotes([]);
                 return;
             }
-            console.log("gel");
             setNotes(data);
             return;
         }
@@ -106,10 +127,9 @@ export default function HomePage() {
 
             {windowWidth > 1300 && <div className = "HPRight">
                 <p className = "HPR">Next Call</p>
-                <div className = "HPRContainer"></div>
-                <div className = "HPRContainer"></div>
-                <div className = "HPRContainer"></div>
-                <div className = "HPRContainer"></div>
+                {meeting.map((meet)=>(
+                    <div key = {meet.code} className= "HPRContainer">{meet.key}</div>
+                ))}
             </div>}
 
 
