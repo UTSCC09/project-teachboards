@@ -111,7 +111,7 @@ export async function POST(req, { params }) {
         });
         userData = (await getDoc(userRef)).data()
     }
-    await updateDoc(classroomRef, {
+    await updateDoc(userRef, {
         notes: arrayUnion(noteRef.id) 
     });
     

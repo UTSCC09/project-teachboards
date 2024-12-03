@@ -9,7 +9,7 @@ import { jwtVerify } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
-export async function POST(req) {
+export async function fakepost(req) {
 
     const cookies = cookie.parse(req.headers.get("cookie") || "");
     const sessionToken = cookies.session;
@@ -54,7 +54,6 @@ export async function POST(req) {
         }
         --tries;
     }
-
 
 
     // TODO: add classroom stuff to room (might need to move to different route for this)

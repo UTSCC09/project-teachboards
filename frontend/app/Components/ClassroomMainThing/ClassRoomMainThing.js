@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useAuth } from "../Content/AuthContext.js";
 import {gsap} from "gsap";
 import DatePicker from "react-datepicker";
-import { reauthenticateWithCredential } from "firebase/auth";
-
+ 
 
 export default function ClassRoomMainPage() {
     const { user,checkAuthStatus} = useAuth();
@@ -27,6 +26,8 @@ export default function ClassRoomMainPage() {
     const [notes, setNotes] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
     const [popout3, setpopout3] = useState(false);
+
+    const [meetings, setMeetings] = useState({});
 
     const [dateformvalue, setdateformvalue]  = useState(new Date().toISOString().split("T")[0]);
 
@@ -209,13 +210,12 @@ export default function ClassRoomMainPage() {
         try{
             const classRoomID = currentClass.classRoomID;
             const id = user.id;
-            const sendingcode = "123";
             const date = dateformvalue;
             //add here a random genearte for the code thing idk how thanks 
             const response = await fetch(`/api/classroom/scheduleMeeting`,{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({id:id, classRoomID:classRoomID,sendingcode:sendingcode,date:date })
+                body:JSON.stringify({id:id, classRoomID:classRoomID,date:date })
             })
 
             const data = await response.json();
@@ -227,6 +227,7 @@ export default function ClassRoomMainPage() {
             //updatefunctionthing() not made yet 
             console.log("added a new scheduled meeting");
             setpopout3(false);
+            meetingtimeSetup();
         }
         catch(error){
             handleerror(error.message);
@@ -234,6 +235,36 @@ export default function ClassRoomMainPage() {
         }
         return;
     }
+
+    const meetingtimeSetup = async () => {
+        if(!currentClass) return;
+        try{
+            //add here a random genearte for the code thing idk how thanks 
+            const classRoomID=currentClass.classRoomID
+            const response = await fetch(`/api/classroom/${classRoomID}/meetings`,{
+                method:"GET",
+                headers:{"Content-Type":"application/json"},
+            })
+
+            const data = await response.json();
+            if (!response.ok){
+                handleerror(data.message);
+                return;
+            }
+            setMeetings(data.meetings);
+        }
+        catch(error){
+            handleerror(error.message);
+            console.error(error);
+        }
+    }
+    useEffect( () => {
+        console.log({meetings});
+    }, [meetings])
+    useEffect( () => {
+        meetingtimeSetup();
+    }, [currentClass])
+
     const handleerror = (message) => {
         seterrormessage(message);
         sethaserror(true);
@@ -345,16 +376,14 @@ export default function ClassRoomMainPage() {
 
         {windowWidth > 1300 && <div className = "CPRight">
             <p className = "CPRTitle">Next Call</p>
-            <div className = "CPRContainer"></div>
-            <div className = "CPRContainer"></div>
-            <div className = "CPRContainer"></div>
-            <div className = "CPRContainer"></div>
+            { 
+            }
+
         </div>}
 
         {popout &&  
             <div className="SCREENBANG">
-                <form onSubmit={(e) => {e.preventDefault(); 
-                handleAddClassroom();}}  className="AddClassroomForm">
+                <form onSubmit={handleAddClassroom}  className="AddClassroomForm">
                 <h2>Add Classroom</h2>
                 <input
                     type="text"
