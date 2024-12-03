@@ -19,10 +19,6 @@
     row-gap: 10px;
 }
 
-.video-grid-wrapper>* {
-    outline: 1px solid red;
-}
-
 .video-focused {
     grid-row: 1 / 2;
     grid-column: 1 / 4;

@@ -215,6 +215,21 @@ export default function Videos({classroomID, appId, channelName, token, rtmToken
             </div>
             {isConnected ? (
                 <div className="video-grid-wrapper">
+                    <div className="video-grid-all">
+                        {remoteUsers.slice(0,3).map((user, i) => (
+                            <SingleVideoWrapper key={i} focused={focusedUser === user.uid} onClick={(e) => setFocusedUser(user.uid)}>
+                                <VideoStream 
+                                    videoRef={el => remoteVideoRefs.current[i] = el} 
+                                    audio={user.audioTrack} 
+                                    onClick={() => setFocusedUser(user.uid)}
+                                    whiteboard={null}
+                                >
+                                </VideoStream>
+                                {<div className="video-name">{user.uid}</div>}
+                                {hands[user.uid.toString()] && <div className="hand">✋</div>}
+                            </SingleVideoWrapper>
+                        ))}
+                    </div>
                     <SingleVideoWrapper focused={focusedUser === "local"} onClick={(e) => setFocusedUser("local")}>
                         <VideoStream 
                             videoRef={localVideoRef}
